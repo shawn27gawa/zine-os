@@ -21,17 +21,20 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   validate:
-    name: Validate example publication
+    name: Validate ZineOS publications
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -43,3 +46,7 @@ jobs:
       - name: Validate basic ZineOS template
         run: |
           python scripts/validate_zine.py templates/basic/zine.yaml
+
+      - name: Validate ZINE_001
+        run: |
+          python scripts/validate_zine.py examples/ZINE_001/zine.yaml
