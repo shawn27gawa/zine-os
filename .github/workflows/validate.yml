@@ -9,6 +9,7 @@ on:
       - "templates/**"
       - "examples/**"
       - "scripts/validate_zine.py"
+      - "scripts/build_preview.py"
       - ".github/workflows/validate.yml"
 
   pull_request:
@@ -17,6 +18,7 @@ on:
       - "templates/**"
       - "examples/**"
       - "scripts/validate_zine.py"
+      - "scripts/build_preview.py"
       - ".github/workflows/validate.yml"
 
   workflow_dispatch:
@@ -26,7 +28,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate ZineOS publications
+    name: Validate and build ZineOS publications
     runs-on: ubuntu-latest
 
     steps:
@@ -50,3 +52,15 @@ jobs:
       - name: Validate ZINE_001
         run: |
           python scripts/validate_zine.py examples/ZINE_001/zine.yaml
+
+      - name: Build ZINE_001 HTML preview
+        run: |
+          python scripts/build_preview.py examples/ZINE_001/zine.yaml preview/ZINE_001.html
+
+      - name: Upload ZINE_001 HTML preview
+        uses: actions/upload-artifact@v7
+        with:
+          name: ZINE_001-preview
+          path: preview/ZINE_001.html
+          if-no-files-found: error
+          retention-days: 14
