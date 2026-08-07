@@ -1,0 +1,279 @@
+zineos_version: "0.1"
+
+project:
+  id: "zine-001-our-memory"
+  title: "Our Memory"
+  description: "A draft zine about memory, travel, photographs, reflection, and unfinished meaning."
+  language: "en"
+  status: "draft"
+
+metadata:
+  creator: "Shunya Ninagawa"
+  contributors: []
+  edition: 1
+  created: "2026-08-08"
+  published: null
+  tags:
+    - memory
+    - travel
+    - photography
+    - reflection
+    - zine
+
+assets:
+  - id: "cover-001"
+    type: "image"
+    source: "assets/cover-001.jpg"
+    title: "Cover image"
+
+  - id: "photo-001"
+    type: "image"
+    source: "assets/photo-001.jpg"
+    title: "Opening photo"
+
+  - id: "map-001"
+    type: "map"
+    source: "assets/map-001.jpg"
+    title: "Travel map"
+
+  - id: "photo-002"
+    type: "image"
+    source: "assets/photo-002.jpg"
+    title: "Main photograph"
+
+  - id: "photo-003"
+    type: "image"
+    source: "assets/photo-003.jpg"
+    title: "Close-up source image"
+
+  - id: "photo-004"
+    type: "image"
+    source: "assets/photo-004.jpg"
+    title: "Gallery image 1"
+
+  - id: "photo-005"
+    type: "image"
+    source: "assets/photo-005.jpg"
+    title: "Gallery image 2"
+
+  - id: "photo-006"
+    type: "image"
+    source: "assets/photo-006.jpg"
+    title: "Gallery image 3"
+
+  - id: "photo-007"
+    type: "image"
+    source: "assets/photo-007.jpg"
+    title: "Gallery image 4"
+
+  - id: "essay-001"
+    type: "text"
+    source: "content/essay-001.md"
+    title: "Opening reflection"
+
+sequence:
+  - id: "opening"
+    title: "Opening"
+
+  - id: "memory"
+    title: "Memory"
+
+  - id: "journey"
+    title: "Journey"
+
+  - id: "reflection"
+    title: "Reflection"
+
+  - id: "future"
+    title: "Future"
+
+  - id: "ending"
+    title: "Ending"
+
+pages:
+  - id: "page-001"
+    pages: [1]
+    section: "opening"
+    blocks:
+      - id: "block-001"
+        type: "PHOTO"
+        asset: "cover-001"
+        caption: "Cover"
+    layout:
+      type: "cover"
+
+  - id: "spread-002-003"
+    pages: [2, 3]
+    section: "opening"
+    blocks:
+      - id: "block-002"
+        type: "PHOTO"
+        asset: "photo-001"
+    layout:
+      type: "full-bleed-spread"
+
+  - id: "page-004"
+    pages: [4]
+    section: "memory"
+    blocks:
+      - id: "block-003"
+        type: "TEXT"
+        content: "Memory Index"
+
+      - id: "block-004"
+        type: "TEXT"
+        content: "Filled cells indicate pages that hold memory. Empty cells remain open."
+
+    layout:
+      type: "memory-index-grid"
+      settings:
+        rows: 4
+        columns: 5
+        filled_cells:
+          - 1
+          - 2
+          - 4
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 13
+          - 14
+        empty_cells_meaning: "Pages not yet filled by memory."
+        visual_reference: "■■□■□ / ■■■■■ / ■□■■□ / □□□□□"
+
+  - id: "page-005"
+    pages: [5]
+    section: "journey"
+    blocks:
+      - id: "block-005"
+        type: "MAP"
+        asset: "map-001"
+        caption: "Route and places"
+    layout:
+      type: "map-page"
+
+  - id: "page-006"
+    pages: [6]
+    section: "reflection"
+    blocks:
+      - id: "block-006"
+        type: "ESSAY"
+        asset: "essay-001"
+    layout:
+      type: "essay-page"
+
+  - id: "page-007"
+    pages: [7]
+    section: "journey"
+    blocks:
+      - id: "block-007"
+        type: "PHOTO"
+        asset: "photo-002"
+    layout:
+      type: "full-page"
+
+  - id: "page-008"
+    pages: [8]
+    section: "memory"
+    blocks:
+      - id: "block-008"
+        type: "CLOSEUP"
+        asset: "photo-003"
+        region:
+          x: 0.35
+          y: 0.20
+          width: 0.30
+          height: 0.30
+    layout:
+      type: "detail-page"
+
+  - id: "page-009"
+    pages: [9]
+    section: "memory"
+    blocks:
+      - id: "block-009"
+        type: "GALLERY"
+        assets:
+          - "photo-004"
+          - "photo-005"
+          - "photo-006"
+          - "photo-007"
+        caption: "A set of remembered moments"
+    layout:
+      type: "gallery-grid"
+
+  - id: "page-010"
+    pages: [10]
+    section: "reflection"
+    blocks:
+      - id: "block-010"
+        type: "QUESTION"
+        content: "What place would you return to?"
+    layout:
+      type: "question-page"
+
+  - id: "page-011"
+    pages: [11]
+    section: "future"
+    blocks:
+      - id: "block-011"
+        type: "CHECKLIST"
+        title: "Things we did"
+        items:
+          - text: "Followed the route"
+            checked: true
+          - text: "Collected small memories"
+            checked: true
+          - text: "Tried to write them down"
+            checked: true
+    layout:
+      type: "checklist-page"
+
+  - id: "page-012"
+    pages: [12]
+    section: "future"
+    blocks:
+      - id: "block-012"
+        type: "CHECKLIST"
+        title: "Things to do next time"
+        items:
+          - text: "Return to a favorite place"
+            checked: false
+          - text: "Leave more empty space"
+            checked: false
+          - text: "Record the memories we missed"
+            checked: false
+    layout:
+      type: "checklist-page"
+
+  - id: "page-013"
+    pages: [13]
+    section: "ending"
+    blocks:
+      - id: "block-013"
+        type: "QUOTE"
+        content: "Some memories stay unfinished on purpose."
+    layout:
+      type: "quote-page"
+
+  - id: "page-014"
+    pages: [14]
+    section: "ending"
+    blocks:
+      - id: "block-014"
+        type: "TEXT"
+        content: "End."
+    layout:
+      type: "minimal"
+
+output:
+  medium: "print"
+  page_size: "A5"
+  orientation: "portrait"
+  binding: "saddle-stitch"
+  bleed_mm: 3
+  color_mode: "CMYK"
+  resolution_dpi: 300
