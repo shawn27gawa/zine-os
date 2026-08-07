@@ -347,9 +347,11 @@ def render_page_unit(page_unit, assets, zine_dir, output_dir):
             <span class="layout-name">{escape(layout_type)}</span>
         </header>
 
-        <div class="page-body">
-            {special_layout}
-            {blocks_html}
+        <div class="page-sheet">
+            <div class="page-body">
+                {special_layout}
+                {blocks_html}
+            </div>
         </div>
     </article>
     """
@@ -439,59 +441,85 @@ def build_html(zine_data, zine_path, output_path):
         opacity: 0.65;
     }
 
-    .publication {
-        padding: 48px 5vw 100px;
-        display: grid;
-        gap: 36px;
-    }
+.publication {
+    padding: 48px 5vw 100px;
+    display: grid;
+    gap: 48px;
+    overflow-x: auto;
+}
 
-    .page-unit {
-        background: #fffef9;
-        border: 1px solid #d8d5ca;
-        min-height: 520px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
+.page-unit {
+    margin: 0 auto;
+}
 
-    .page-unit.single {
-        max-width: 620px;
-        width: 100%;
-        margin: 0 auto;
-    }
+.page-unit.single {
+    width: 148mm;
+}
 
-    .page-unit.spread {
-        max-width: 1120px;
-        width: 100%;
-        margin: 0 auto;
-    }
+.page-unit.spread {
+    width: 296mm;
+}
 
-    .page-header {
-        padding: 14px 18px;
-        border-bottom: 1px solid #ddd9ce;
-        display: flex;
-        justify-content: space-between;
-        gap: 16px;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-    }
+.page-header {
+    width: 100%;
+    padding: 10px 2px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
 
-    .page-number {
-        font-weight: 700;
-    }
+.page-number {
+    font-weight: 700;
+}
 
-    .section-name {
-        margin-left: 12px;
-        opacity: 0.45;
-    }
+.section-name {
+    margin-left: 12px;
+    opacity: 0.45;
+}
 
-    .layout-name {
-        opacity: 0.45;
-        text-align: right;
-    }
+.layout-name {
+    opacity: 0.45;
+    text-align: right;
+}
 
-    .page-body {
-        padding: 32px;
-    }
+.page-sheet {
+    position: relative;
+    background: #fffef9;
+    border: 1px solid #d8d5ca;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.page-unit.single .page-sheet {
+    width: 148mm;
+    height: 210mm;
+}
+
+.page-unit.spread .page-sheet {
+    width: 296mm;
+    height: 210mm;
+}
+
+.page-unit.spread .page-sheet::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    border-left: 1px dashed rgba(0, 0, 0, 0.16);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.page-body {
+    width: 100%;
+    height: 100%;
+    padding: 12mm;
+    overflow: hidden;
+}
 
     .block {
         position: relative;
