@@ -3,7 +3,7 @@ zineos_version: "0.1"
 project:
   id: "zine-001-our-memory"
   title: "Our Memory"
-  description: "A draft zine about memory, travel, photographs, reflection, and unfinished meaning."
+  description: "A 26-page zine about memory, place, photography, reflection, unfinished space, and future desire."
   language: "en"
   status: "draft"
 
@@ -19,6 +19,8 @@ metadata:
     - photography
     - reflection
     - zine
+    - personal
+    - print
 
 assets:
   - id: "cover-001"
@@ -29,57 +31,125 @@ assets:
   - id: "photo-001"
     type: "image"
     source: "assets/photo-001.jpg"
-    title: "Opening photo"
+    title: "Place photograph"
 
   - id: "map-001"
     type: "map"
     source: "assets/map-001.jpg"
-    title: "Travel map"
+    title: "Route map"
 
   - id: "photo-002"
     type: "image"
     source: "assets/photo-002.jpg"
-    title: "Main photograph"
+    title: "Gallery image 1"
 
   - id: "photo-003"
     type: "image"
     source: "assets/photo-003.jpg"
-    title: "Close-up source image"
+    title: "Gallery image 2"
 
   - id: "photo-004"
     type: "image"
     source: "assets/photo-004.jpg"
-    title: "Gallery image 1"
+    title: "Gallery image 3"
 
   - id: "photo-005"
     type: "image"
     source: "assets/photo-005.jpg"
-    title: "Gallery image 2"
+    title: "Gallery image 4"
 
   - id: "photo-006"
     type: "image"
     source: "assets/photo-006.jpg"
-    title: "Gallery image 3"
+    title: "Full spread image 1"
+
+  - id: "bottle-001"
+    type: "image"
+    source: "assets/bottle-001.png"
+    title: "Aperol bottle cutout"
 
   - id: "photo-007"
     type: "image"
     source: "assets/photo-007.jpg"
-    title: "Gallery image 4"
+    title: "Drink memory photograph"
 
-  - id: "essay-001"
-    type: "text"
-    source: "content/essay-001.md"
-    title: "Opening reflection"
+  - id: "photo-008"
+    type: "image"
+    source: "assets/photo-008.jpg"
+    title: "Reflection photograph"
+
+  - id: "detail-001"
+    type: "image"
+    source: "assets/detail-001.jpg"
+    title: "Detail image 1"
+
+  - id: "detail-002"
+    type: "image"
+    source: "assets/detail-002.jpg"
+    title: "Detail image 2"
+
+  - id: "photo-009"
+    type: "image"
+    source: "assets/photo-009.jpg"
+    title: "Context photograph"
+
+  - id: "photo-010"
+    type: "image"
+    source: "assets/photo-010.jpg"
+    title: "Standalone photograph"
+
+  - id: "photo-011"
+    type: "image"
+    source: "assets/photo-011.jpg"
+    title: "Image-text page photograph"
+
+  - id: "photo-012"
+    type: "image"
+    source: "assets/photo-012.jpg"
+    title: "Full spread image 2"
+
+  - id: "photo-013"
+    type: "image"
+    source: "assets/photo-013.jpg"
+    title: "Collage image 1"
+
+  - id: "photo-014"
+    type: "image"
+    source: "assets/photo-014.jpg"
+    title: "Collage image 2"
+
+  - id: "photo-015"
+    type: "image"
+    source: "assets/photo-015.jpg"
+    title: "Collage image 3"
+
+  - id: "photo-016"
+    type: "image"
+    source: "assets/photo-016.jpg"
+    title: "Collage image 4"
+
+  - id: "photo-017"
+    type: "image"
+    source: "assets/photo-017.jpg"
+    title: "Writing transition photograph"
+
+  - id: "photo-018"
+    type: "image"
+    source: "assets/photo-018.jpg"
+    title: "Question lead-in photograph"
 
 sequence:
   - id: "opening"
     title: "Opening"
 
+  - id: "place"
+    title: "Place"
+
   - id: "memory"
     title: "Memory"
 
-  - id: "journey"
-    title: "Journey"
+  - id: "drink"
+    title: "Drink"
 
   - id: "reflection"
     title: "Reflection"
@@ -96,44 +166,354 @@ pages:
     section: "opening"
     blocks:
       - id: "block-001"
-        type: "PHOTO"
-        asset: "cover-001"
-        caption: "Cover"
-    layout:
-      type: "cover"
+        type: "TEXT"
+        content: "OUR MEMORY"
 
-  - id: "spread-002-003"
-    pages: [2, 3]
-    section: "opening"
-    blocks:
       - id: "block-002"
-        type: "PHOTO"
-        asset: "photo-001"
-    layout:
-      type: "full-bleed-spread"
-
-  - id: "page-004"
-    pages: [4]
-    section: "memory"
-    blocks:
-      - id: "block-003"
         type: "TEXT"
-        content: "Memory Index"
-
-      - id: "block-004"
-        type: "TEXT"
-        content: "Filled cells indicate pages that hold memory. Empty cells remain open."
-
+        content: "Filled cells indicate remembered moments. Empty cells remain open for unfinished or future memory."
     layout:
       type: "memory-index-grid"
       settings:
-        rows: 4
-        columns: 5
+        rows: 5
+        columns: 6
+        filled_cells:
+          - 1
+          - 3
+          - 4
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 13
+          - 15
+          - 16
+          - 18
+        empty_cells_meaning: "Unrecorded, unfinished, or future memory."
+        title_style: "hand-drawn"
+
+  - id: "page-002"
+    pages: [2]
+    section: "place"
+    blocks:
+      - id: "block-003"
+        type: "PHOTO"
+        asset: "photo-001"
+
+      - id: "block-004"
+        type: "CAPTION"
+        content: "Place, address, or location note."
+    layout:
+      type: "photo-with-location-note"
+
+  - id: "page-003"
+    pages: [3]
+    section: "place"
+    blocks:
+      - id: "block-005"
+        type: "MAP"
+        asset: "map-001"
+        caption: "Route and places."
+    layout:
+      type: "map-page"
+
+  - id: "spread-004-005"
+    pages: [4, 5]
+    section: "memory"
+    blocks:
+      - id: "block-006"
+        type: "GALLERY"
+        assets:
+          - "photo-002"
+          - "photo-003"
+          - "photo-004"
+          - "photo-005"
+        caption: "Fragmented memory gallery."
+    layout:
+      type: "asymmetric-gallery"
+      settings:
+        motif: "wave-lines"
+        density: "mixed"
+
+  - id: "spread-006-007"
+    pages: [6, 7]
+    section: "memory"
+    blocks:
+      - id: "block-007"
+        type: "PHOTO"
+        asset: "photo-006"
+    layout:
+      type: "full-bleed-spread"
+
+  - id: "page-008"
+    pages: [8]
+    section: "drink"
+    blocks:
+      - id: "block-008"
+        type: "PHOTO"
+        asset: "bottle-001"
+        caption: "Aperol"
+
+      - id: "block-009"
+        type: "TEXT"
+        content: |
+          Aperol Spritz
+
+          Ingredients
+          - Aperol
+          - Prosecco
+          - Soda water
+          - Ice
+          - Orange slice
+
+          Method
+          1. Fill a glass with ice.
+          2. Add Aperol.
+          3. Add Prosecco.
+          4. Top with soda water.
+          5. Garnish with an orange slice.
+    layout:
+      type: "recipe-page"
+      notes: "Represented with PHOTO + TEXT until a dedicated RECIPE Block exists."
+
+  - id: "page-009"
+    pages: [9]
+    section: "drink"
+    blocks:
+      - id: "block-010"
+        type: "PHOTO"
+        asset: "photo-007"
+
+      - id: "block-011"
+        type: "TEXT"
+        content: "A short reflection or memory connected to the drink."
+    layout:
+      type: "image-with-reflection"
+      settings:
+        motif: "wave-lines"
+
+  - id: "page-010"
+    pages: [10]
+    section: "reflection"
+    blocks:
+      - id: "block-012"
+        type: "PHOTO"
+        asset: "photo-008"
+    layout:
+      type: "full-page"
+
+  - id: "page-011"
+    pages: [11]
+    section: "reflection"
+    blocks:
+      - id: "block-013"
+        type: "TEXT"
+        content: |
+          A message, reflection, or written response to the image on Page 10.
+
+          This page is intended to hold words:
+          messages, thoughts, remembered events, or short writing connected to the previous image.
+    layout:
+      type: "reflective-notes"
+      settings:
+        line_structure: "multiple-horizontal-lines"
+        handwritten_feel: true
+
+  - id: "page-012"
+    pages: [12]
+    section: "memory"
+    blocks:
+      - id: "block-014"
+        type: "CLOSEUP"
+        asset: "detail-001"
+        region:
+          x: 0.20
+          y: 0.20
+          width: 0.35
+          height: 0.35
+
+      - id: "block-015"
+        type: "CLOSEUP"
+        asset: "detail-002"
+        region:
+          x: 0.40
+          y: 0.25
+          width: 0.30
+          height: 0.30
+
+      - id: "block-016"
+        type: "CAPTION"
+        content: "Short surrounding words or annotations."
+    layout:
+      type: "detail-and-annotation"
+
+  - id: "page-013"
+    pages: [13]
+    section: "reflection"
+    blocks:
+      - id: "block-017"
+        type: "PHOTO"
+        asset: "photo-009"
+
+      - id: "block-018"
+        type: "TEXT"
+        content: "Short supporting text."
+    layout:
+      type: "image-with-short-text"
+
+  - id: "page-014"
+    pages: [14]
+    section: "memory"
+    blocks:
+      - id: "block-019"
+        type: "PHOTO"
+        asset: "photo-010"
+    layout:
+      type: "full-page"
+
+  - id: "page-015"
+    pages: [15]
+    section: "reflection"
+    blocks:
+      - id: "block-020"
+        type: "PHOTO"
+        asset: "photo-011"
+
+      - id: "block-021"
+        type: "TEXT"
+        content: "A short written passage positioned separately from the image."
+    layout:
+      type: "image-text-offset"
+
+  - id: "spread-016-017"
+    pages: [16, 17]
+    section: "memory"
+    blocks:
+      - id: "block-022"
+        type: "PHOTO"
+        asset: "photo-012"
+    layout:
+      type: "full-bleed-spread"
+
+  - id: "spread-018-019"
+    pages: [18, 19]
+    section: "memory"
+    blocks:
+      - id: "block-023"
+        type: "GALLERY"
+        assets:
+          - "photo-013"
+          - "photo-014"
+          - "photo-015"
+          - "photo-016"
+        caption: "Multi-image narrative."
+      - id: "block-024"
+        type: "TEXT"
+        content: "Short nearby words or notes accompanying the images."
+    layout:
+      type: "editorial-collage"
+
+  - id: "page-020"
+    pages: [20]
+    section: "reflection"
+    blocks:
+      - id: "block-025"
+        type: "TEXT"
+        content: |
+          Writing page.
+
+          This page is primarily for written reflection, memory, or narrative text.
+    layout:
+      type: "text-page"
+      variant: "lined"
+
+  - id: "page-021"
+    pages: [21]
+    section: "memory"
+    blocks:
+      - id: "block-026"
+        type: "PHOTO"
+        asset: "photo-017"
+    layout:
+      type: "full-page"
+
+  - id: "spread-022-023"
+    pages: [22, 23]
+    section: "future"
+    blocks:
+      - id: "block-027"
+        type: "CHECKLIST"
+        title: "Things We Want to Do"
+        items:
+          - text: "Return to a favorite place"
+            checked: false
+          - text: "Make more memories"
+            checked: false
+          - text: "Try something new together"
+            checked: false
+          - text: "Write it down while it is still fresh"
+            checked: false
+
+      - id: "block-028"
+        type: "CHECKLIST"
+        title: "Things We Want to Do"
+        items:
+          - text: "Go somewhere we have never been"
+            checked: false
+          - text: "Take more photographs"
+            checked: false
+          - text: "Leave room for unplanned moments"
+            checked: false
+          - text: "Come back again"
+            checked: false
+    layout:
+      type: "twin-checklists"
+
+  - id: "page-024"
+    pages: [24]
+    section: "memory"
+    blocks:
+      - id: "block-029"
+        type: "PHOTO"
+        asset: "photo-018"
+    layout:
+      type: "full-page"
+
+  - id: "page-025"
+    pages: [25]
+    section: "future"
+    blocks:
+      - id: "block-030"
+        type: "QUESTION"
+        content: "Where do you want to go?"
+    layout:
+      type: "question-page"
+      settings:
+        response_lines: 4
+
+  - id: "page-026"
+    pages: [26]
+    section: "ending"
+    blocks:
+      - id: "block-031"
+        type: "TEXT"
+        content: "Closing Memory Grid"
+
+      - id: "block-032"
+        type: "TEXT"
+        content: "An ending that echoes the opening Memory Index."
+    layout:
+      type: "closing-memory-grid"
+      settings:
+        rows: 5
+        columns: 6
         filled_cells:
           - 1
           - 2
+          - 3
           - 4
-          - 6
+          - 5
           - 7
           - 8
           - 9
@@ -141,133 +521,19 @@ pages:
           - 11
           - 13
           - 14
-        empty_cells_meaning: "Pages not yet filled by memory."
-        visual_reference: "■■□■□ / ■■■■■ / ■□■■□ / □□□□□"
-
-  - id: "page-005"
-    pages: [5]
-    section: "journey"
-    blocks:
-      - id: "block-005"
-        type: "MAP"
-        asset: "map-001"
-        caption: "Route and places"
-    layout:
-      type: "map-page"
-
-  - id: "page-006"
-    pages: [6]
-    section: "reflection"
-    blocks:
-      - id: "block-006"
-        type: "ESSAY"
-        asset: "essay-001"
-    layout:
-      type: "essay-page"
-
-  - id: "page-007"
-    pages: [7]
-    section: "journey"
-    blocks:
-      - id: "block-007"
-        type: "PHOTO"
-        asset: "photo-002"
-    layout:
-      type: "full-page"
-
-  - id: "page-008"
-    pages: [8]
-    section: "memory"
-    blocks:
-      - id: "block-008"
-        type: "CLOSEUP"
-        asset: "photo-003"
-        region:
-          x: 0.35
-          y: 0.20
-          width: 0.30
-          height: 0.30
-    layout:
-      type: "detail-page"
-
-  - id: "page-009"
-    pages: [9]
-    section: "memory"
-    blocks:
-      - id: "block-009"
-        type: "GALLERY"
-        assets:
-          - "photo-004"
-          - "photo-005"
-          - "photo-006"
-          - "photo-007"
-        caption: "A set of remembered moments"
-    layout:
-      type: "gallery-grid"
-
-  - id: "page-010"
-    pages: [10]
-    section: "reflection"
-    blocks:
-      - id: "block-010"
-        type: "QUESTION"
-        content: "What place would you return to?"
-    layout:
-      type: "question-page"
-
-  - id: "page-011"
-    pages: [11]
-    section: "future"
-    blocks:
-      - id: "block-011"
-        type: "CHECKLIST"
-        title: "Things we did"
-        items:
-          - text: "Followed the route"
-            checked: true
-          - text: "Collected small memories"
-            checked: true
-          - text: "Tried to write them down"
-            checked: true
-    layout:
-      type: "checklist-page"
-
-  - id: "page-012"
-    pages: [12]
-    section: "future"
-    blocks:
-      - id: "block-012"
-        type: "CHECKLIST"
-        title: "Things to do next time"
-        items:
-          - text: "Return to a favorite place"
-            checked: false
-          - text: "Leave more empty space"
-            checked: false
-          - text: "Record the memories we missed"
-            checked: false
-    layout:
-      type: "checklist-page"
-
-  - id: "page-013"
-    pages: [13]
-    section: "ending"
-    blocks:
-      - id: "block-013"
-        type: "QUOTE"
-        content: "Some memories stay unfinished on purpose."
-    layout:
-      type: "quote-page"
-
-  - id: "page-014"
-    pages: [14]
-    section: "ending"
-    blocks:
-      - id: "block-014"
-        type: "TEXT"
-        content: "End."
-    layout:
-      type: "minimal"
+          - 15
+          - 16
+          - 18
+          - 19
+          - 20
+          - 21
+          - 23
+          - 24
+          - 25
+          - 26
+          - 28
+        relationship_to_opening: "Echoes Page 1 and acts as an ending memory structure."
+        unresolved_space: true
 
 output:
   medium: "print"
