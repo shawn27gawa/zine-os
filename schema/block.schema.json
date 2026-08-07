@@ -1,0 +1,419 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ZineOS Block Schema",
+  "description": "Defines the structure and validation rules for editorial Blocks in ZineOS.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/photo"
+    },
+    {
+      "$ref": "#/$defs/text"
+    },
+    {
+      "$ref": "#/$defs/essay"
+    },
+    {
+      "$ref": "#/$defs/quote"
+    },
+    {
+      "$ref": "#/$defs/caption"
+    },
+    {
+      "$ref": "#/$defs/map"
+    },
+    {
+      "$ref": "#/$defs/gallery"
+    },
+    {
+      "$ref": "#/$defs/checklist"
+    },
+    {
+      "$ref": "#/$defs/question"
+    },
+    {
+      "$ref": "#/$defs/timeline"
+    },
+    {
+      "$ref": "#/$defs/closeup"
+    }
+  ],
+  "$defs": {
+    "baseBlock": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional unique identifier for the Block."
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional editorial role or semantic hint."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Optional metadata associated with the Block.",
+          "additionalProperties": true
+        }
+      }
+    },
+
+    "photo": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "PHOTO"
+            },
+            "asset": {
+              "type": "string",
+              "minLength": 1
+            },
+            "caption": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "asset"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "text": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "TEXT"
+            },
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "content"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "essay": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "ESSAY"
+            },
+            "asset": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "type",
+            "asset"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "quote": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "QUOTE"
+            },
+            "content": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "content"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "caption": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "CAPTION"
+            },
+            "content": {
+              "type": "string"
+            },
+            "for": {
+              "type": "string",
+              "description": "Optional identifier of the Block or asset this caption refers to."
+            }
+          },
+          "required": [
+            "type",
+            "content"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "map": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "MAP"
+            },
+            "asset": {
+              "type": "string",
+              "minLength": 1
+            },
+            "caption": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "asset"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "gallery": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "GALLERY"
+            },
+            "assets": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "caption": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "assets"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "checklist": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "CHECKLIST"
+            },
+            "title": {
+              "type": "string"
+            },
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "checked": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "type",
+            "items"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "question": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "QUESTION"
+            },
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "content"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "timeline": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "TIMELINE"
+            },
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "type",
+            "items"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+
+    "closeup": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseBlock"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "CLOSEUP"
+            },
+            "asset": {
+              "type": "string",
+              "minLength": 1
+            },
+            "region": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "y": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "width": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                },
+                "height": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "width",
+                "height"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "type",
+            "asset",
+            "region"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}
