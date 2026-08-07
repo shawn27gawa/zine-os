@@ -1,0 +1,79 @@
+zineos_version: "0.1"
+
+project:
+  id: "example-zine"
+  title: "Untitled Zine"
+  description: ""
+  language: "en"
+  status: "draft"
+
+metadata:
+  creator: ""
+  contributors: []
+  edition: 1
+  created: ""
+  published: null
+  tags: []
+
+assets:
+  - id: "photo-001"
+    type: "image"
+    source: "assets/photo-001.jpg"
+
+  - id: "text-001"
+    type: "text"
+    source: "content/text-001.md"
+
+sequence:
+  - id: "opening"
+    title: "Opening"
+
+  - id: "main"
+    title: "Main"
+
+  - id: "ending"
+    title: "Ending"
+
+pages:
+  - id: "page-001"
+    pages: [1]
+    section: "opening"
+
+    blocks:
+      - id: "block-001"
+        type: "PHOTO"
+        asset: "photo-001"
+
+    layout:
+      type: "full-page"
+
+  - id: "spread-002-003"
+    pages: [2, 3]
+    section: "main"
+
+    blocks:
+      - id: "block-002"
+        type: "ESSAY"
+        asset: "text-001"
+
+    layout:
+      type: "open"
+
+  - id: "page-004"
+    pages: [4]
+    section: "ending"
+
+    blocks:
+      - id: "block-003"
+        type: "TEXT"
+        content: "End."
+
+    layout:
+      type: "minimal"
+
+output:
+  medium: "print"
+  page_size: "A5"
+  orientation: "portrait"
+  binding: "saddle-stitch"
+  bleed_mm: 3
