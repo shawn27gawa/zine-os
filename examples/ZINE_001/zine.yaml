@@ -454,11 +454,6 @@ pages:
             checked: false
           - text: "Write it down while it is still fresh"
             checked: false
-
-      - id: "block-028"
-        type: "CHECKLIST"
-        title: "Things We Want to Do"
-        items:
           - text: "Go somewhere we have never been"
             checked: false
           - text: "Take more photographs"
@@ -468,7 +463,9 @@ pages:
           - text: "Come back again"
             checked: false
     layout:
-      type: "twin-checklists"
+      type: "spread-checklist"
+      settings:
+        columns: 2
 
   - id: "page-024"
     pages: [24]
