@@ -806,6 +806,104 @@ def build_html(zine_data, zine_path, output_path):
 }
 
 
+/* Editorial route map spread */
+
+.layout-trace-map-spread {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 0;
+    padding: 12mm;
+    background: #f7f7f5;
+}
+
+.layout-trace-map-spread > .block-map {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-trace-map-spread > .block-map .block-label,
+.layout-trace-map-spread > .block-map figcaption,
+.layout-trace-map-spread > .block-photo .block-label,
+.layout-trace-map-spread > .block-caption .block-label {
+    display: none;
+}
+
+.layout-trace-map-spread > .block-map .asset,
+.layout-trace-map-spread > .block-map img {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-trace-map-spread > .block-map img {
+    display: block;
+    object-fit: cover;
+}
+
+.layout-trace-map-spread > .block-photo {
+    grid-column: 1 / span 5;
+    grid-row: 4 / span 5;
+    z-index: 2;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+}
+
+.layout-trace-map-spread > .block-photo .asset,
+.layout-trace-map-spread > .block-photo .asset-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 3mm;
+    border: 1px solid rgba(93, 98, 101, 0.09);
+    background: rgba(255, 255, 253, 0.88);
+    box-shadow: 0 2mm 8mm rgba(39, 43, 45, 0.05);
+}
+
+.layout-trace-map-spread > .block-photo .asset img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.layout-trace-map-spread > .block-photo .asset-placeholder {
+    color: #6f7477;
+    backdrop-filter: blur(4px);
+}
+
+.layout-trace-map-spread > .block-caption {
+    grid-column: 9 / span 4;
+    grid-row: 7 / span 2;
+    z-index: 2;
+    align-self: center;
+    margin: 0;
+    padding: 5mm 6mm;
+    border: 1px solid rgba(93, 98, 101, 0.08);
+    border-radius: 3mm;
+    background: rgba(255, 255, 253, 0.78);
+    box-shadow: 0 1mm 5mm rgba(39, 43, 45, 0.04);
+    backdrop-filter: blur(5px);
+}
+
+.layout-trace-map-spread > .block-caption .text-content {
+    color: #4f5559;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 1.7;
+    letter-spacing: 0.08em;
+}
+
+
 /* Photo + reflection */
 
 .layout-image-with-reflection,

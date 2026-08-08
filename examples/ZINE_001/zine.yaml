@@ -35,8 +35,8 @@ assets:
 
   - id: "map-001"
     type: "map"
-    source: "assets/map-001.jpg"
-    title: "Route map"
+    source: "assets/trace-map-europe.svg"
+    title: "Europe air route"
 
   - id: "photo-002"
     type: "image"
@@ -193,30 +193,25 @@ pages:
         empty_cells_meaning: "Unrecorded, unfinished, or future memory."
         title_style: "hand-drawn"
 
-  - id: "page-002"
-    pages: [2]
+  - id: "spread-002-003"
+    pages: [2, 3]
     section: "place"
     blocks:
+      - id: "block-005"
+        type: "MAP"
+        asset: "map-001"
+
       - id: "block-003"
         type: "PHOTO"
         asset: "photo-001"
 
       - id: "block-004"
         type: "CAPTION"
-        content: "Place, address, or location note."
+        content: |
+          AIR
+          ROMA → VENEZIA → MÜNCHEN → BERN → AMSTERDAM → PARIS → BARCELONA → MADRID → LISBON
     layout:
-      type: "photo-with-location-note"
-
-  - id: "page-003"
-    pages: [3]
-    section: "place"
-    blocks:
-      - id: "block-005"
-        type: "MAP"
-        asset: "map-001"
-        caption: "Route and places."
-    layout:
-      type: "map-page"
+      type: "trace-map-spread"
 
   - id: "spread-004-005"
     pages: [4, 5]
