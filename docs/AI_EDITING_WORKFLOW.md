@@ -1,4 +1,4 @@
-# ZineOS Studio v0.2 — AI-Native Editing Workflow
+# ZineOS Studio v0.3 — AI-Native Editing Workflow
 
 ZineOS uses AI to reduce mechanical editing work while keeping authorship and creative direction with the creator.
 
@@ -6,144 +6,165 @@ ZineOS uses AI to reduce mechanical editing work while keeping authorship and cr
 
 > We don't automate creativity. We automate repetition.
 
-The operating contract for agents is defined in [`AGENTS.md`](../AGENTS.md). This guide explains how creator intent moves through a reviewable editing cycle.
+The authoritative operating contract is [`AGENTS.md`](../AGENTS.md). This guide explains how its roles hand work to one another. They are conceptual accountability boundaries, not an agent framework or a claim that multiple autonomous processes exist.
 
-## Workflow
+## ZineOS Studio v0.2.1 Review Baseline
+
+ZineOS Studio v0.2.1 established this rule:
+
+> The artifact reviewed by the creator is part of the validation target.
+
+The Reviewer identifies the exact creator-facing artifact and compares its environment with the validation and visual-regression environments. Internal evidence is not interchangeable with the artifact the creator receives when path resolution, asset reachability, serving mode, viewport behavior, fonts, CSS, JavaScript, responsive behavior, or print behavior could differ.
+
+For relevant creator-facing pages and spreads, asset evidence uses **ASSET PASS**, **ASSET FAIL**, or **ASSET UNVERIFIED**. A required broken asset blocks approval. Relative paths are evaluated from the artifact's actual resolved location; symlinked and lexical output paths are not assumed equivalent.
+
+These v0.2.1 gates remain mandatory in v0.3.
+
+## Complete Workflow
 
 ```text
 Creator intent
 → Editor
-→ implementation
+→ specialist evidence or visual options when needed
+→ creator direction when required
+→ Builder
 → validation
+→ creator-facing artifact and asset verification
 → visual regression
 → Reviewer
 → creator approval
-→ Publisher
-→ PR
+→ Publisher when authorized
+→ PR when authorized
 → creator merge approval
 ```
 
-Editor, Reviewer, and Publisher are conceptual accountability roles. Role separation makes interpretation, verification, and Git delivery explicit; it does not pretend that multiple autonomous AI processes exist. A single Codex session may perform multiple roles when it clearly separates their responsibilities and reports. The creator remains the final decision-maker.
+A single Codex session may perform several roles, but it must label transitions and preserve each approval boundary. One role cannot use another role's authority to choose a creative direction, repair its own review findings silently, publish without authorization, or merge.
 
-### 1. Creator intent
+## Role Responsibilities
 
-The creator describes the desired outcome and retains decisions about content, sequence, layout, typography, whitespace, imagery, crop, rhythm, and intentional imperfection. A useful request names the page or spread, the intended change, and the behavior that must remain unchanged.
+### Creator
 
-The creator does not need to prescribe implementation details. The agent must not fill gaps in creative intent with silent design choices.
+The Creator owns final decisions about story, sequence, layout, imagery, crop, typography, whitespace, rhythm, intentional irregularity, visual acceptance, and merge approval.
 
-### 2. Editor interpretation
+### Editor
 
-The agent translates the request into a concrete scope, identifies ambiguity, and classifies the highest risk involved:
+The Editor interprets intent, establishes scope and risk, identifies what must be preserved, inspects Git history for restoration work, and produces the implementation brief. Material visual ambiguity is routed to the Art Director rather than resolved silently.
 
-- **LOW**: copy, minor spacing, isolated typography, or a small page-local correction. Implement and validate directly; the change may remain uncommitted until creator approval.
-- **MEDIUM**: layout, responsive behavior, reusable Block behavior, or page structure. Implement as a reviewable diff, use a dedicated task branch before committing, validate affected modes, and report visual consequences.
-- **HIGH**: schema, architecture, major deletion, build/publishing infrastructure, or destructive migration. Stop after analysis, propose a plan and rollback path, and wait for creator approval.
+### Art Director
 
-Interpretation is not authorization to redesign adjacent work.
+The Art Director analyzes composition and develops two or three materially distinct options when visual direction requires creator choice. It explains tradeoffs and returns the creator-selected direction as an explicit brief. It does not select or implement.
 
-If an aesthetic request is materially underspecified and multiple creative directions would produce materially different results, the Editor presents 2–3 concise options before implementation. For example:
+### Asset Curator
 
-- **Option A — whitespace-led:** More negative space, restrained scale changes, and quieter hierarchy.
-- **Option B — typography-led:** Stronger type hierarchy, tighter editorial rhythm, and more assertive text composition.
-- **Option C — image-led:** Larger image presence, more aggressive cropping, and stronger visual dominance.
+The Asset Curator inventories relevant media, verifies references and basic properties, distinguishes asset, crop, focal-point, renderer, path, and layout problems, and reports factual evidence. It does not replace, delete, crop, or rank imagery without creator direction.
 
-This applies to ambiguous directions such as “more magazine-like,” “more premium,” “cooler,” or “more editorial energy.” It does not require clarification for every subjective request—only when choosing among plausible interpretations would materially change the creative direction.
+### Builder
 
-### 3. Repository inspection
+The Builder receives the approved brief, implements the smallest coherent diff, preserves unrelated behavior and responsive/print separation, runs validation, and builds the exact creator-review artifact. It does not reinterpret the brief or declare creative approval.
 
-Before editing, the agent inspects the working tree and the smallest relevant set of sources: publication YAML, page map, Blocks, schemas, renderer, responsive and print rules, validation automation, and recent Git history.
+### Reviewer
 
-If the creator says “previous,” “restore,” “rollback,” or otherwise refers to an earlier appearance, Git history is evidence. The agent compares the relevant old and current implementations instead of guessing. A restoration should recover only the requested visual properties and retain unrelated later improvements.
+The Reviewer independently checks scope, diff, mechanical validation, asset integrity, environment parity, visual regression, responsive/print evidence, and the exact creator-facing artifact. It reports missing evidence and never silently repairs the implementation.
 
-### 4. Minimal implementation
+### Publisher
 
-The agent makes the smallest coherent change that expresses the approved intent. Page-local problems should normally receive page- or layout-local fixes. Structure, style, and rendering remain separate, and new abstractions are added only when an actual reusable responsibility exists.
+The Publisher packages only creator-approved work after review. It stages, commits, pushes, or opens a PR only with authorization and never merges autonomously.
 
-The implementation preserves unrelated pages, current desktop/mobile behavior, print/screen separation, assets, and editorial sequence unless the request explicitly changes them.
+## Task-Specific Orchestration
 
-### 5. Validation
-
-The agent runs the existing schema validators and preview builder, following `.github/workflows/validate.yml`. The canonical local command is documented in `AGENTS.md` under **Validation Requirements**.
-
-Validation expands with the change:
-
-- publication edits require schema validation and a successful preview build;
-- visual edits require preview inspection at affected desktop and mobile widths;
-- responsive edits require checking both narrow and wide behavior;
-- print edits require checking page/spread dimensions, fold, margins, bleed, and print-specific behavior;
-- reusable renderer or Block edits require checking every affected page, not only the page that prompted the change.
-
-The agent must not report success when a required command failed or a required review could not be performed. Limitations remain visible in the task report.
-
-### 6. Visual regression
-
-The preview is a review surface, not a new source of truth. The publication files remain authoritative.
-
-Before a visual change, establish the relevant baseline Git reference and build its preview when practical. After the change, build the new preview, compare the relevant pages or spreads, inspect desktop and mobile behavior when affected, and identify intended changes and unintended visual drift. Check print behavior when the request affects physical output.
-
-Classify the evidence explicitly:
-
-- **INTENDED visual change:** A difference requested or approved by the creator.
-- **UNINTENDED visual change:** Drift outside the requested outcome or scope.
-- **UNCHANGED relevant areas:** Relevant states inspected and found equivalent.
-- **UNVERIFIED areas:** Relevant states that could not be inspected, with the reason.
-
-The repository does not currently include automated screenshot generation or comparison. ZineOS Studio v0.2 therefore uses manual or preview-based visual regression. Screenshot automation is a future enhancement, not new infrastructure to invent during an editing task. If it becomes available through existing repository tooling, reuse it.
-
-### 7. Reviewer
-
-The Reviewer independently inspects the diff, validation evidence, visual-regression evidence, relevant desktop/mobile/print states, and the creator's acceptance criteria. It identifies unintended drift and assigns evidence-based Confidence: HIGH, MEDIUM, or LOW. It rejects claims of completion that lack required evidence and does not silently fix or reinterpret the implementation while reviewing.
-
-The creator reviews the Editor's interpretation, implementation result, and Reviewer evidence. Technical validation does not determine whether a creative result is right.
-
-### 8. Publisher and PR
-
-`main` represents creator-approved work. AI implementation should normally happen on a dedicated task branch. LOW-risk work may remain as an uncommitted working-tree change until creator approval, while MEDIUM-risk work should use a dedicated task branch before it is committed. HIGH-risk work still requires plan approval before implementation.
-
-After review, the creator may authorize the agent to commit, push, or prepare a pull request. The agent inspects the final diff, includes only the approved scope, and uses a concise imperative commit subject consistent with repository history. The agent does not commit directly to `main` unless the creator explicitly authorizes a direct-main commit, and it does not push or open a pull request without creator authorization. It never merges into `main` autonomously.
-
-The normal reviewed workflow is:
+### Simple LOW-risk mechanical task
 
 ```text
-creator intent
-→ task branch
-→ implementation
-→ validation
-→ creator review
-→ commit/push/PR when authorized
-→ creator merge approval
+Creator → Editor → Builder → Reviewer → creator approval if visual → Publisher when authorized
 ```
 
-Rollback remains possible through a narrow forward fix or a creator-approved Git operation.
+### Aesthetic task with meaningful ambiguity
 
-### 9. Creator merge approval
+```text
+Creator → Editor → Art Director → creator selects direction → Builder
+→ Asset Curator when media is involved → Reviewer → creator approval → Publisher
+```
 
-The creator is the final editor in chief. The Publisher never merges into `main` autonomously. The creator decides whether approved work should merge.
+### Media-heavy task
 
-Approval closes the editing cycle. If the result is not right, the creator can refine the intent, request a targeted rollback, or choose another reviewable alternative.
+```text
+Creator → Editor → Asset Curator → Art Director if composition is involved
+→ creator direction → Builder → Reviewer → creator approval → Publisher
+```
 
-## Example: Selective Restoration
+### Historical restoration
 
-Request:
+```text
+Creator → Editor → Git history → Art Director when multiple appearances are plausible
+→ creator chooses target → Builder → Asset Curator when assets are involved
+→ Reviewer → creator approval → Publisher
+```
 
-> Restore P1 to the previous look, but preserve the current mobile full-bleed behavior.
+Git history is evidence, not an instruction to revert entire files. The Builder restores only the selected characteristics and preserves unrelated later improvements.
 
-The agent should:
+### HIGH-risk task
 
-1. inspect P1 and renderer history;
-2. identify the relevant previous implementation;
-3. compare it with the current implementation;
-4. isolate the earlier P1 visual characteristics;
-5. retain later mobile full-bleed behavior and other unrelated improvements;
-6. validate publication schemas and rebuild the preview;
-7. inspect P1 and affected full-bleed layouts at desktop and mobile widths;
-8. report the historical Git reference, exact diff, validation result, and remaining risks.
+```text
+Creator → Editor analysis → plan → creator approval → appropriate specialist roles
+→ Builder → Reviewer → creator approval → Publisher
+```
 
-The agent should not revert the whole renderer merely because the desired P1 appearance existed in an older revision.
+Implementation does not begin until the creator approves the plan.
 
-## Review Handoff
+## Validation and Review Evidence
 
-Every completed editing task should report:
+The Builder follows `.github/workflows/validate.yml` and the canonical commands in `AGENTS.md`. The evidence expands with the task:
+
+- publication edits require schema validation and a preview build;
+- visual edits require relevant desktop and mobile review;
+- responsive or print edits require their affected states;
+- reusable renderer or Block edits require checks of every affected consumer;
+- media work requires asset integrity from the creator-facing artifact location.
+
+The exact artifact for creator review must be identified. The Reviewer compares:
+
+- validation environment;
+- visual-regression environment;
+- creator-facing environment.
+
+Any material mismatch is reported. It prevents **HIGH** Confidence unless the creator-facing artifact itself is verified.
+
+Visual-regression evidence remains:
+
+- **INTENDED visual change**
+- **UNINTENDED visual change**
+- **UNCHANGED relevant areas**
+- **UNVERIFIED areas**
+
+Asset evidence remains:
+
+- **ASSET PASS**
+- **ASSET FAIL**
+- **ASSET UNVERIFIED**
+
+The repository does not currently include screenshot automation. Manual or preview-based comparison is used without inventing parallel infrastructure.
+
+## Reviewer Approval Gate
+
+`APPROVE` requires all of the following:
+
+- requested scope matched;
+- required validation passed;
+- required visual evidence exists;
+- the creator-facing artifact is identified;
+- required assets loaded or were explicitly verified;
+- no blocking environment mismatch exists;
+- relevant responsive and print states were inspected or clearly marked unverified.
+
+Missing required evidence results in `REVISE` or `BLOCK` as appropriate, and Confidence cannot be **HIGH**.
+
+## Git Delivery
+
+`main` represents creator-approved work. LOW-risk work may remain uncommitted until creator approval; MEDIUM-risk work uses a task branch before commit; HIGH-risk implementation requires prior plan approval.
+
+The Publisher confirms authorization separately for staging, commit, push, and PR creation. It stages only approved files and never merges into `main`. The creator retains merge approval.
+
+## Task Report
 
 ```text
 Summary
@@ -152,16 +173,19 @@ Visual impact
 Responsive impact
 Validation performed
 Validation result
+Asset integrity
+Creator-facing artifact
+Environment parity
 Visual regression
 Confidence
 Git reference
 Remaining risks
 ```
 
-Confidence must include one short evidence-based reason rather than a decorative percentage:
+Confidence is evidence-based:
 
-- **HIGH:** The request was well-scoped, validation passed, and all relevant visual states were inspected.
-- **MEDIUM:** Implementation and mechanical validation passed, but a visual state, device condition, or ambiguity remains.
-- **LOW:** Important validation, visual inspection, historical evidence, or creator intent remains unresolved.
+- **HIGH:** All required mechanical validation, visual states, asset integrity, and creator-facing artifact checks passed.
+- **MEDIUM:** Implementation is likely correct, but one non-blocking relevant state remains creator-verified or technically unverified.
+- **LOW:** Important evidence, intent, asset integrity, historical reference, or environment parity remains unresolved.
 
-This makes each AI-assisted change inspectable, reversible, and ready for creator judgment.
+The creator remains the final decision-maker throughout the workflow.
