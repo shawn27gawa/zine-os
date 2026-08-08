@@ -2,7 +2,7 @@
 
 This file applies to every AI coding agent working in this repository.
 
-It defines the operating contract for **ZineOS Studio v0.2**.
+It defines the operating contract for **ZineOS Studio v0.3**, including the creator-facing artifact and review hardening introduced in **ZineOS Studio v0.2.1**.
 
 ## Core Rule
 
@@ -29,7 +29,7 @@ The agent translates stated intent into the smallest reasonable implementation, 
 - `README.md`, `MANIFESTO.md`, and `DESIGN_PRINCIPLES.md`: product philosophy and human-first constraints.
 - `ARCHITECTURE.md` and `DIRECTORY_STRUCTURE.md`: architectural boundaries and intended repository growth.
 - `docs/`: format and workflow documentation.
-- `docs/agents/`: conceptual Editor, Reviewer, and Publisher role definitions and handoff formats.
+- `docs/agents/`: conceptual Editor, Art Director, Asset Curator, Builder, Reviewer, and Publisher role definitions and handoff formats.
 - `blocks/`: editorial Block definitions and design rules.
 - `schema/`: JSON Schemas for publications and Blocks; changes here are high risk.
 - `templates/`: editable starter publication structures.
@@ -102,30 +102,53 @@ Describe the meaningful tradeoff in each option and wait for the creator to choo
 2. Inspect the repository map, relevant publication source, renderer, schemas, automation, and working-tree state.
 3. Inspect targeted Git history whenever the request mentions restoration, prior appearance, rollback, or regression.
 4. Classify the highest risk level and obtain approval first when it is HIGH.
-5. Implement the smallest coherent diff. Prefer page/layout-specific selectors and existing structures over global changes or new abstractions.
-6. Validate the affected publication structure, preview build, responsive behavior, and print/screen separation as relevant.
-7. Inspect the final diff and preview. Check that unrelated pages and behavior remain unchanged.
-8. Report using the task-report format below. Commit, push, or open a PR only when the creator authorizes it.
+5. Give the Builder a creator-approved implementation brief, including any Art Director or Asset Curator evidence required by the task.
+6. Implement the smallest coherent diff. Prefer page/layout-specific selectors and existing structures over global changes or new abstractions.
+7. Validate the affected publication structure, preview build, responsive behavior, print/screen separation, asset integrity, and creator-facing artifact as relevant.
+8. Inspect the final diff and exact review artifact. Check that unrelated pages and behavior remain unchanged.
+9. Report using the task-report format below. Commit, push, or open a PR only when the creator authorizes it.
 
 ## Validation Requirements
 
 Before reporting a task complete, run every relevant existing validation and build command. Do not claim success unless those commands actually pass. Reuse `.github/workflows/validate.yml` and existing scripts rather than creating parallel validation paths.
 
-The canonical local **Validate ZineOS** command mirrors CI while writing the generated preview outside the repository:
+The canonical local **Validate ZineOS** command mirrors CI:
 
 ```sh
 python scripts/validate_zine.py templates/basic/zine.yaml && \
 python scripts/validate_zine.py examples/ZINE_001/zine.yaml && \
-python scripts/build_preview.py examples/ZINE_001/zine.yaml /tmp/ZINE_001.html
+python scripts/build_preview.py examples/ZINE_001/zine.yaml preview/ZINE_001.html
 ```
 
 Use the available Python executable for the environment (for example, `python3` when `python` is unavailable) with the CI dependencies `PyYAML`, `jsonschema`, and `referencing` installed. A successful preview build alone does not replace schema validation.
 
 For visual changes, also inspect the generated preview at relevant desktop and mobile widths. For print-affecting changes, inspect physical page/spread dimensions, fold, margins, bleed, and print-specific rules. If visual inspection is not possible, say so and report that limitation as a remaining risk.
 
+## Creator-Facing Artifact and Environment Parity
+
+> The artifact reviewed by the creator is part of the validation target.
+
+Identify the exact creator-facing artifact by path, URL, build reference, or other unambiguous locator. A Reviewer must not claim full visual approval from an internal, reconstructed, isolated, or differently served preview when the creator receives a different artifact.
+
+Explicitly compare the validation, visual-regression, and creator-facing environments. Report differences that could affect asset loading, relative paths, viewport behavior, file URLs, fonts, CSS, JavaScript, responsive behavior, or print behavior. A materially different environment prevents **HIGH** Confidence unless the creator-facing artifact itself has been verified.
+
+Creator-facing preview paths must resolve consistently. Evaluate relative asset paths from the artifact's actual resolved location. Do not assume that a symlinked output location is equivalent to its lexical path. If parity cannot be established, report the mismatch and use `REVISE` or `BLOCK` when it withholds required evidence.
+
+## Asset Integrity
+
+For every creator-facing preview, verify where practical that image `src` values resolve, referenced local assets exist, filename case and extensions match, no obviously broken image references remain, and expected publication assets are reachable from the final artifact location.
+
+Report one of these states for relevant assets:
+
+- **ASSET PASS:** Required asset references resolve and the assets are reachable from the creator-facing artifact.
+- **ASSET FAIL:** A required reference is broken, missing, mismatched, or unreachable.
+- **ASSET UNVERIFIED:** Asset integrity could not be checked; explain why.
+
+`ASSET FAIL` is blocking when the asset is required for the creator-reviewed page or spread. Never claim that a page visually passed when its required image failed to load.
+
 ## Visual Regression
 
-Use the existing HTML preview as the ZineOS Studio v0.2 visual-regression surface.
+Use the existing HTML preview as the ZineOS Studio visual-regression surface.
 
 Before a visual change:
 
@@ -135,9 +158,11 @@ Before a visual change:
 After a visual change:
 
 1. Build the new preview.
-2. Compare the relevant pages or spreads with the baseline.
-3. Inspect desktop and mobile behavior when affected, and print behavior when relevant.
-4. Identify intended changes and any unintended visual drift.
+2. Identify the exact creator-facing artifact and verify environment parity.
+3. Verify required asset integrity from that artifact location.
+4. Compare the relevant pages or spreads with the baseline.
+5. Inspect desktop and mobile behavior when affected, and print behavior when relevant.
+6. Identify intended changes and any unintended visual drift.
 
 Report relevant areas using these exact states:
 
@@ -146,7 +171,7 @@ Report relevant areas using these exact states:
 - **UNCHANGED relevant areas:** Relevant states inspected and found equivalent.
 - **UNVERIFIED areas:** Relevant states that could not be inspected; explain why.
 
-The repository does not currently provide automated screenshot generation or comparison. Do not add or invent screenshot infrastructure for v0.2. Use manual or preview-based comparison and mark screenshot automation as a future enhancement. If screenshot generation later becomes available through existing repository infrastructure, reuse it rather than introducing a parallel system.
+The repository does not currently provide automated screenshot generation or comparison. Do not add or invent screenshot infrastructure during an editing task. Use manual or preview-based comparison and mark screenshot automation as a future enhancement. If screenshot generation later becomes available through existing repository infrastructure, reuse it rather than introducing a parallel system.
 
 ## Visual and Responsive Safety
 
@@ -193,19 +218,36 @@ creator intent
 
 ## Role Orchestration
 
-ZineOS Studio v0.2 defines three lightweight, conceptual responsibilities:
+ZineOS Studio v0.3 defines six lightweight, conceptual responsibilities:
 
 - **Editor:** interprets and scopes creator intent; see `docs/agents/EDITOR_AGENT.md`.
-- **Reviewer:** independently verifies scope, validation, and visual-regression evidence; see `docs/agents/REVIEWER_AGENT.md`.
+- **Art Director:** develops explicit visual options without selecting for the creator; see `docs/agents/ART_DIRECTOR_AGENT.md`.
+- **Asset Curator:** establishes factual media and reference evidence without choosing content; see `docs/agents/ASSET_CURATOR_AGENT.md`.
+- **Builder:** implements the approved brief and produces review evidence; see `docs/agents/BUILDER_AGENT.md`.
+- **Reviewer:** independently verifies scope, validation, assets, environment parity, and the creator-facing artifact; see `docs/agents/REVIEWER_AGENT.md`.
 - **Publisher:** performs authorized Git delivery; see `docs/agents/PUBLISHER_AGENT.md`.
 
-Use these flows:
+Use the smallest flow that preserves the required boundaries:
 
-- **LOW risk:** Editor → implementation → Reviewer.
-- **MEDIUM risk:** Editor → task branch → implementation → Reviewer → creator approval → Publisher.
-- **HIGH risk:** Editor → analysis/plan → creator approval → implementation → Reviewer → creator approval → Publisher.
+- **Simple LOW-risk mechanical task:** Creator → Editor → Builder → Reviewer → creator approval if visual → Publisher when authorized.
+- **Aesthetic task with meaningful ambiguity:** Creator → Editor → Art Director → creator selects direction → Builder → Asset Curator when media is involved → Reviewer → creator approval → Publisher.
+- **Media-heavy task:** Creator → Editor → Asset Curator → Art Director if composition is involved → creator direction → Builder → Reviewer → creator approval → Publisher.
+- **Historical restoration:** Creator → Editor → Git history → Art Director when multiple appearances are plausible → creator chooses target → Builder → Asset Curator when assets are involved → Reviewer → creator approval → Publisher.
+- **HIGH-risk task:** Creator → Editor analysis → plan → creator approval → appropriate specialist roles → Builder → Reviewer → creator approval → Publisher.
 
-These roles are accountability boundaries, not executable agent infrastructure and not a claim that multiple autonomous AI processes exist. A single Codex session may perform multiple roles, but it must clearly separate them in its reasoning and report. The creator remains the final decision-maker.
+Roles are responsibility boundaries, not executable agent infrastructure and not a claim that multiple autonomous processes exist. A single Codex session may perform multiple roles, but it must explicitly label role transitions and must not use one role to bypass another role's approval boundary.
+
+## Separation of Authority
+
+- **Creator:** owns final creative decisions and merge approval.
+- **Editor:** owns interpretation and scope.
+- **Art Director:** owns visual option development, not final selection.
+- **Asset Curator:** owns factual asset inspection and recommendations, not content selection.
+- **Builder:** owns implementation, not interpretation.
+- **Reviewer:** owns independent verification, not repair.
+- **Publisher:** owns authorized Git delivery, never merge authority.
+
+No role may silently absorb the creator's authority, bypass required review, publish without authorization, or autonomously merge.
 
 ## Autonomous Action Boundaries
 
@@ -241,6 +283,9 @@ Visual impact
 Responsive impact
 Validation performed
 Validation result
+Asset integrity
+Creator-facing artifact
+Environment parity
 Visual regression
 Confidence
 Git reference
@@ -249,8 +294,8 @@ Remaining risks
 
 Confidence is evidence-based, not a decorative percentage. Include one short reason after the level:
 
-- **HIGH:** The requested behavior is well-scoped, validation passed, and all relevant visual states were inspected.
-- **MEDIUM:** Implementation and mechanical validation passed, but some visual state, device condition, or ambiguity remains.
-- **LOW:** Important validation, visual inspection, historical evidence, or creator intent remains unresolved.
+- **HIGH:** All required mechanical validation, visual states, asset integrity, and creator-facing artifact checks passed.
+- **MEDIUM:** Implementation is likely correct, but one non-blocking relevant state remains creator-verified or technically unverified.
+- **LOW:** Important evidence, intent, asset integrity, historical reference, or environment parity remains unresolved.
 
 Example: `Confidence: HIGH — P26 was isolated, desktop/mobile previews were inspected, and no unrelated page drift was detected.`

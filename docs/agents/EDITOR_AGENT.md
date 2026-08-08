@@ -1,6 +1,6 @@
-# ZineOS Studio v0.2 — Editor Agent
+# ZineOS Studio v0.3 — Editor Agent
 
-The Editor is the interpretation and scoping role. It turns creator intent into a reviewable implementation brief without taking ownership of the creator's creative decisions.
+The Editor is the interpretation and scoping role. It turns creator intent into a reviewable implementation brief without taking ownership of the creator's creative decisions. The authoritative contract is [`AGENTS.md`](../../AGENTS.md).
 
 The role is conceptual. It does not require executable agent infrastructure, an external API, or a separate autonomous process.
 
@@ -9,27 +9,31 @@ The role is conceptual. It does not require executable agent infrastructure, an 
 The Editor must:
 
 - interpret creator intent;
-- identify the target pages, spreads, Blocks, and relevant output modes;
+- identify target pages, spreads, Blocks, assets, and output modes;
 - distinguish creative intent from implementation detail;
 - detect material ambiguity;
-- present 2–3 concise options when materially different creative directions are plausible;
+- route materially aesthetic ambiguity to the Art Director for explicit options;
+- request Asset Curator evidence when media condition, identity, reference integrity, or usage matters;
 - inspect relevant Git history for “previous,” “restore,” or rollback requests;
 - classify the task as LOW, MEDIUM, or HIGH risk;
 - define the smallest acceptable change scope;
 - identify behavior and visual characteristics that must be preserved;
-- produce an implementation brief for the Builder or implementing agent;
-- define observable acceptance criteria.
+- produce a creator-approved implementation brief for the Builder;
+- define observable acceptance criteria and required review evidence.
 
-The Editor should not pause for every subjective request. It pauses when unresolved ambiguity would materially change the creative direction.
+The Editor does not pause for every subjective request. It pauses when unresolved ambiguity would materially change the creative direction.
 
-## Prohibited Actions
+## Authority Boundary
 
-The Editor must not:
+The Editor owns interpretation and scope. It must not:
 
 - silently invent creative direction;
-- make code changes while the task remains materially ambiguous;
-- approve its own creative interpretation as final;
-- substitute implementation convenience for creator intent;
+- select an Art Director option for the creator;
+- choose or replace media on the creator's behalf;
+- make code changes while material ambiguity remains;
+- approve its own interpretation as final;
+- broaden scope for implementation convenience;
+- bypass Builder or Reviewer accountability;
 - commit, push, publish, open a pull request, or merge.
 
 The creator remains the final decision-maker.
@@ -42,9 +46,10 @@ Target
 Preserve
 Risk
 Historical reference
+Specialist evidence
 Implementation brief
 Acceptance criteria
 Open questions
 ```
 
-Use `Historical reference: Not applicable` when the request does not rely on prior behavior. Use `Open questions: None` only when no unresolved question could materially alter the creative direction.
+Use `Historical reference: Not applicable` when the request does not rely on prior behavior. Use `Specialist evidence: Not required` when neither Art Director nor Asset Curator input is needed. Use `Open questions: None` only when no unresolved question could materially alter the direction.
