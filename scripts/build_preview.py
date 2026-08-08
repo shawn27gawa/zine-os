@@ -306,6 +306,7 @@ def render_block(block, assets, zine_dir, output_dir):
 def render_page_unit(page_unit, assets, zine_dir, output_dir):
     pages = page_unit.get("pages", [])
     layout = page_unit.get("layout", {})
+    layout_settings = layout.get("settings", {})
 
     layout_type = layout.get("type", "unspecified")
 
@@ -343,6 +344,13 @@ def render_page_unit(page_unit, assets, zine_dir, output_dir):
 
     section = page_unit.get("section", "")
 
+    image_position = layout_settings.get("image_position")
+    image_position_style = (
+        f' style="--image-position: {escape(image_position.strip())};"'
+        if isinstance(image_position, str) and image_position.strip()
+        else ""
+    )
+
     return f"""
     <article class="page-unit {unit_class}">
         <header class="page-header">
@@ -354,7 +362,7 @@ def render_page_unit(page_unit, assets, zine_dir, output_dir):
         </header>
 
         <div class="page-sheet">
-            <div class="page-body layout-{escape(layout_slug)}">
+            <div class="page-body layout-{escape(layout_slug)}"{image_position_style}>
                 {special_layout}
                 {blocks_html}
             </div>
@@ -706,6 +714,7 @@ def build_html(zine_data, zine_path, output_path):
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: var(--image-position, center center);
 }
 
 .layout-full-page .asset-placeholder,
@@ -878,6 +887,30 @@ def build_html(zine_data, zine_path, output_path):
             rgba(0, 0, 0, 0.28) 12mm,
             rgba(0, 0, 0, 0.28) calc(12mm + 1px)
         );
+}
+
+
+/* Memory Index */
+
+.layout-memory-index-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-memory-index-grid > .block-text:first-of-type {
+    order: 1;
+}
+
+.layout-memory-index-grid > .memory-grid {
+    order: 2;
+}
+
+.layout-memory-index-grid > .block-text:last-of-type {
+    order: 3;
+}
+
+.layout-memory-index-grid > .memory-note {
+    order: 4;
 }
 
 

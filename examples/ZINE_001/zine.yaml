@@ -245,6 +245,8 @@ pages:
         asset: "photo-006"
     layout:
       type: "full-bleed-spread"
+      settings:
+        image_position: "center 70%"
 
   - id: "page-008"
     pages: [8]
