@@ -2,7 +2,7 @@
 
 This file applies to every AI coding agent working in this repository.
 
-It defines the operating contract for **ZineOS Studio v0.3**, including the creator-facing artifact and review hardening introduced in **ZineOS Studio v0.2.1**.
+It defines the operating contract for **ZineOS Studio v0.3.1**, including the creator-facing artifact and review hardening introduced in **ZineOS Studio v0.2.1**.
 
 ## Core Rule
 
@@ -36,6 +36,7 @@ The agent translates stated intent into the smallest reasonable implementation, 
 - `examples/ZINE_001/`: the first real publication, its source YAML, page map, documentation, and assets.
 - `scripts/validate_zine.py`: schema validation entry point.
 - `scripts/build_preview.py`: deterministic HTML preview renderer, including screen, responsive, and layout-specific styles.
+- `scripts/test_preview_asset_paths.py`: deterministic preview asset-path regression coverage.
 - `.github/workflows/validate.yml`: CI source of truth for the supported validation and preview-build sequence.
 
 Do not create future directories or abstractions until a concrete repository responsibility requires them.
@@ -117,7 +118,8 @@ The canonical local **Validate ZineOS** command mirrors CI:
 ```sh
 python scripts/validate_zine.py templates/basic/zine.yaml && \
 python scripts/validate_zine.py examples/ZINE_001/zine.yaml && \
-python scripts/build_preview.py examples/ZINE_001/zine.yaml preview/ZINE_001.html
+python scripts/build_preview.py examples/ZINE_001/zine.yaml preview/ZINE_001.html && \
+python scripts/test_preview_asset_paths.py
 ```
 
 Use the available Python executable for the environment (for example, `python3` when `python` is unavailable) with the CI dependencies `PyYAML`, `jsonschema`, and `referencing` installed. A successful preview build alone does not replace schema validation.
@@ -133,6 +135,8 @@ Identify the exact creator-facing artifact by path, URL, build reference, or oth
 Explicitly compare the validation, visual-regression, and creator-facing environments. Report differences that could affect asset loading, relative paths, viewport behavior, file URLs, fonts, CSS, JavaScript, responsive behavior, or print behavior. A materially different environment prevents **HIGH** Confidence unless the creator-facing artifact itself has been verified.
 
 Creator-facing preview paths must resolve consistently. Evaluate relative asset paths from the artifact's actual resolved location. Do not assume that a symlinked output location is equivalent to its lexical path. If parity cannot be established, report the mismatch and use `REVISE` or `BLOCK` when it withholds required evidence.
+
+The preview renderer keeps local asset references relative while calculating them from resolved filesystem locations. This preserves portable preview packages and makes symlinked creator-facing output paths reliable.
 
 ## Asset Integrity
 
