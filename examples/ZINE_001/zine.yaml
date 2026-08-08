@@ -60,7 +60,7 @@ assets:
 
   - id: "photo-006"
     type: "image"
-    source: "assets/photo-006.jpg"
+    source: "assets/photo-006.jpeg"
     title: "Full spread image 1"
 
   - id: "bottle-001"
