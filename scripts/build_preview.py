@@ -924,21 +924,26 @@ def build_html(zine_data, zine_path, output_path):
     border-left: 1px dashed rgba(0, 0, 0, 0.30);
     z-index: 999;
 }
-    @media (max-width: 700px) {
-        .site-header,
-        .publication {
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        .page-body {
-            padding: 20px;
-        }
-
-        .gallery {
-            grid-template-columns: 1fr;
-        }
+@media (max-width: 700px) {
+    .site-header,
+    .publication {
+        padding-left: 20px;
+        padding-right: 20px;
     }
+
+    .page-body {
+        padding: 20px;
+    }
+
+    .layout-full-page,
+    .layout-full-bleed-spread {
+        padding: 0;
+    }
+
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+}
     """
 
     return f"""<!DOCTYPE html>
