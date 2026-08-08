@@ -303,12 +303,18 @@ def render_block(block, assets, zine_dir, output_dir):
     </section>
     """
 
-
 def render_page_unit(page_unit, assets, zine_dir, output_dir):
     pages = page_unit.get("pages", [])
     layout = page_unit.get("layout", {})
 
     layout_type = layout.get("type", "unspecified")
+
+    layout_slug = "".join(
+        character
+        if character.isalnum() or character == "-"
+        else "-"
+        for character in layout_type.lower()
+    )
 
     if len(pages) == 2:
         page_label = f"Pages {pages[0]}–{pages[1]}"
@@ -348,13 +354,14 @@ def render_page_unit(page_unit, assets, zine_dir, output_dir):
         </header>
 
         <div class="page-sheet">
-            <div class="page-body">
+            <div class="page-body layout-{escape(layout_slug)}">
                 {special_layout}
                 {blocks_html}
             </div>
         </div>
     </article>
     """
+
 
 
 def build_html(zine_data, zine_path, output_path):
@@ -668,7 +675,255 @@ def build_html(zine_data, zine_path, output_path):
         font-size: 12px;
         opacity: 0.55;
     }
+/* --------------------------------------------------
+   Layout-aware Renderer v0.3
+   -------------------------------------------------- */
 
+
+/* Full-page photography */
+
+.layout-full-page,
+.layout-full-bleed-spread {
+    padding: 0;
+}
+
+.layout-full-page > .block-photo,
+.layout-full-bleed-spread > .block-photo {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-full-page .asset,
+.layout-full-bleed-spread .asset {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-full-page .asset img,
+.layout-full-bleed-spread .asset img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.layout-full-page .asset-placeholder,
+.layout-full-bleed-spread .asset-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border: 0;
+}
+
+.layout-full-page .block-label,
+.layout-full-bleed-spread .block-label {
+    position: absolute;
+    top: 4mm;
+    left: 4mm;
+    z-index: 20;
+}
+
+
+/* Image + offset text */
+
+.layout-image-text-offset {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 8mm;
+}
+
+.layout-image-text-offset > .block-photo {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+}
+
+.layout-image-text-offset > .block-text {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+}
+
+.layout-image-text-offset .asset-placeholder {
+    height: 100%;
+    min-height: 0;
+}
+
+
+/* Recipe page */
+
+.layout-recipe-page {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 8mm;
+    align-items: stretch;
+}
+
+.layout-recipe-page > .block-text {
+    grid-column: 1;
+    align-self: start;
+}
+
+.layout-recipe-page > .block-photo {
+    grid-column: 2;
+    align-self: end;
+}
+
+.layout-recipe-page .asset-placeholder {
+    min-height: 95mm;
+}
+
+
+/* Photo + location */
+
+.layout-photo-with-location-note {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 7mm;
+}
+
+.layout-photo-with-location-note > .block-photo {
+    min-height: 0;
+    margin: 0;
+}
+
+.layout-photo-with-location-note .asset-placeholder {
+    height: 100%;
+}
+
+
+/* Photo + reflection */
+
+.layout-image-with-reflection,
+.layout-image-with-short-text {
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    gap: 7mm;
+}
+
+.layout-image-with-reflection > .block-photo,
+.layout-image-with-short-text > .block-photo {
+    min-height: 0;
+    margin: 0;
+}
+
+.layout-image-with-reflection .asset-placeholder,
+.layout-image-with-short-text .asset-placeholder {
+    height: 100%;
+}
+
+
+/* One checklist across a spread */
+
+.layout-spread-checklist {
+    padding-left: 16mm;
+    padding-right: 16mm;
+}
+
+.layout-spread-checklist > .block-checklist {
+    width: 100%;
+}
+
+.layout-spread-checklist .block-title {
+    margin: 5mm 0 10mm;
+    text-align: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 28px;
+    font-weight: 400;
+}
+
+.layout-spread-checklist .checklist {
+    max-width: none;
+    column-count: 2;
+    column-gap: 28mm;
+}
+
+.layout-spread-checklist .checklist-item {
+    break-inside: avoid;
+    margin-bottom: 3mm;
+}
+
+
+/* Question page */
+
+.layout-question-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.layout-question-page .block-question {
+    margin-top: 25mm;
+}
+
+.layout-question-page .question {
+    margin: 0;
+    text-align: center;
+}
+
+.layout-question-page::after {
+    content: "";
+    display: block;
+    width: 82%;
+    height: 55mm;
+    margin: 16mm auto 0;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 12mm,
+            rgba(0, 0, 0, 0.28) 12mm,
+            rgba(0, 0, 0, 0.28) calc(12mm + 1px)
+        );
+}
+
+
+/* Memory Index */
+
+.layout-memory-index-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-memory-index-grid > .block-text:first-of-type {
+    order: 1;
+}
+
+.layout-memory-index-grid > .memory-grid {
+    order: 2;
+}
+
+.layout-memory-index-grid > .block-text:last-of-type {
+    order: 3;
+}
+
+.layout-memory-index-grid > .memory-note {
+    order: 4;
+}
+
+
+/* Closing memory grid */
+
+.layout-closing-memory-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.layout-closing-memory-grid > .memory-grid {
+    margin-top: 0;
+}
+
+
+/* Stronger center fold */
+
+.page-unit.spread .page-sheet::after {
+    border-left: 1px dashed rgba(0, 0, 0, 0.30);
+    z-index: 999;
+}
     @media (max-width: 700px) {
         .site-header,
         .publication {
@@ -724,7 +979,7 @@ def build_html(zine_data, zine_path, output_path):
 </main>
 
 <footer class="footer">
-    Generated by ZineOS Preview Renderer v0.1
+    Generated by ZineOS Preview Renderer v0.3
 </footer>
 
 </body>
