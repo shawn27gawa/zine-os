@@ -61,6 +61,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: ZINE_001-preview
-          path: preview/ZINE_001.html
+          path: |
+            preview/ZINE_001.html
+            examples/ZINE_001/assets/
           if-no-files-found: error
           retention-days: 14
