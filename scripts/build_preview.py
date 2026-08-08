@@ -44,12 +44,15 @@ def resolve_asset_path(asset_id, assets, zine_dir, output_dir):
     if not source:
         return asset, None
 
-    source_path = zine_dir / source
+    source_path = (zine_dir / source).resolve()
 
     if not source_path.exists():
         return asset, None
 
-    relative_path = os.path.relpath(source_path, output_dir)
+    relative_path = os.path.relpath(
+        source_path,
+        output_dir.resolve(),
+    )
 
     return asset, relative_path
 
