@@ -881,41 +881,7 @@ def build_html(zine_data, zine_path, output_path):
 }
 
 
-/* Memory Index */
 
-.layout-memory-index-grid {
-    display: flex;
-    flex-direction: column;
-}
-
-.layout-memory-index-grid > .block-text:first-of-type {
-    order: 1;
-}
-
-.layout-memory-index-grid > .memory-grid {
-    order: 2;
-}
-
-.layout-memory-index-grid > .block-text:last-of-type {
-    order: 3;
-}
-
-.layout-memory-index-grid > .memory-note {
-    order: 4;
-}
-
-
-/* Closing memory grid */
-
-.layout-closing-memory-grid {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.layout-closing-memory-grid > .memory-grid {
-    margin-top: 0;
-}
 
 
 /* Stronger center fold */
