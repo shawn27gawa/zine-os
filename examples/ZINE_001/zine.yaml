@@ -68,6 +68,11 @@ assets:
     source: "assets/bottle-001.png"
     title: "ITALY — Aperol bottle cutout"
 
+  - id: "glass-001"
+    type: "image"
+    source: "assets/glass-001.png"
+    title: "ITALY — two Aperol glasses cutout"
+
   - id: "photo-007"
     type: "image"
     source: "assets/photo-007.jpg"
@@ -82,11 +87,6 @@ assets:
     type: "image"
     source: "assets/detail-001.jpg"
     title: "MÜNCHEN / BERN — detail photograph 1"
-
-  - id: "detail-002"
-    type: "image"
-    source: "assets/detail-002.jpg"
-    title: "MÜNCHEN / BERN — detail photograph 2"
 
   - id: "photo-009"
     type: "image"
@@ -138,6 +138,97 @@ assets:
     source: "assets/photo-018.jpg"
     title: "LISBON — final travel photograph"
 
+  - id: "memory-001"
+    type: "image"
+    source: "assets/memory-grid/IMG_1097.jpeg"
+  - id: "memory-002"
+    type: "image"
+    source: "assets/memory-grid/IMG_1240.jpeg"
+  - id: "memory-003"
+    type: "image"
+    source: "assets/memory-grid/IMG_1355.jpeg"
+  - id: "memory-004"
+    type: "image"
+    source: "assets/memory-grid/IMG_1640.jpeg"
+  - id: "memory-005"
+    type: "image"
+    source: "assets/memory-grid/IMG_1658.jpeg"
+  - id: "memory-006"
+    type: "image"
+    source: "assets/memory-grid/IMG_1886.jpeg"
+  - id: "memory-007"
+    type: "image"
+    source: "assets/memory-grid/IMG_1889.jpeg"
+  - id: "memory-008"
+    type: "image"
+    source: "assets/memory-grid/IMG_6361.jpeg"
+  - id: "memory-009"
+    type: "image"
+    source: "assets/memory-grid/IMG_6670.jpeg"
+  - id: "memory-010"
+    type: "image"
+    source: "assets/memory-grid/IMG_6820.jpeg"
+  - id: "memory-011"
+    type: "image"
+    source: "assets/memory-grid/IMG_6827.jpeg"
+  - id: "memory-012"
+    type: "image"
+    source: "assets/memory-grid/IMG_6949.jpeg"
+  - id: "memory-013"
+    type: "image"
+    source: "assets/memory-grid/IMG_6995.jpeg"
+  - id: "memory-014"
+    type: "image"
+    source: "assets/memory-grid/IMG_7281.jpeg"
+  - id: "memory-015"
+    type: "image"
+    source: "assets/memory-grid/IMG_7358.jpeg"
+  - id: "memory-016"
+    type: "image"
+    source: "assets/memory-grid/IMG_7641.jpeg"
+  - id: "memory-017"
+    type: "image"
+    source: "assets/memory-grid/IMG_7642.jpeg"
+  - id: "memory-018"
+    type: "image"
+    source: "assets/memory-grid/IMG_7790.jpeg"
+  - id: "memory-019"
+    type: "image"
+    source: "assets/memory-grid/IMG_7815.jpeg"
+  - id: "memory-020"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-17 140359.060.jpg"
+  - id: "memory-021"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-17 162939.942.jpg"
+  - id: "memory-022"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-17 182151.541.jpg"
+  - id: "memory-023"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-18 153107.245.jpg"
+  - id: "memory-024"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-19 114415.039.jpg"
+  - id: "memory-025"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-23 155520.186.jpg"
+  - id: "memory-026"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-23 202050.131.jpg"
+  - id: "memory-027"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-24 123520.793.jpg"
+  - id: "memory-028"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-08-26 105806.729.jpg"
+  - id: "memory-029"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-09-01 194019.438.jpg"
+  - id: "memory-030"
+    type: "image"
+    source: "assets/memory-grid/ccdr 2024-09-04 175153.581.jpg"
+
 sequence:
   - id: "opening"
     title: "Our Memory"
@@ -177,33 +268,50 @@ pages:
     pages: [1]
     section: "opening"
     blocks:
+      - id: "block-034"
+        type: "TEXT"
+        content: "Europe 2024"
+
       - id: "block-001"
         type: "TEXT"
         content: "OUR MEMORY"
 
-      - id: "block-002"
-        type: "TEXT"
-        content: "Filled cells indicate remembered moments. Empty cells remain open for unfinished or future memory."
     layout:
       type: "memory-index-grid"
       settings:
         rows: 5
         columns: 6
-        filled_cells:
-          - 1
-          - 3
-          - 4
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 13
-          - 15
-          - 16
-          - 18
-        empty_cells_meaning: "Unrecorded, unfinished, or future memory."
-        title_style: "hand-drawn"
+        assets:
+          - "memory-001"
+          - "memory-002"
+          - "memory-003"
+          - "memory-004"
+          - "memory-005"
+          - "memory-006"
+          - "memory-007"
+          - "memory-008"
+          - "memory-009"
+          - "memory-010"
+          - "memory-011"
+          - "memory-012"
+          - "memory-013"
+          - "memory-014"
+          - "memory-015"
+          - "memory-016"
+          - "memory-017"
+          - "memory-018"
+          - "memory-019"
+          - "memory-020"
+          - "memory-021"
+          - "memory-022"
+          - "memory-023"
+          - "memory-024"
+          - "memory-025"
+          - "memory-026"
+          - "memory-027"
+          - "memory-028"
+          - "memory-029"
+          - "memory-030"
 
   - id: "spread-002-003"
     pages: [2, 3]
@@ -222,6 +330,18 @@ pages:
         content: |
           AIR
           ROMA → VENEZIA → MÜNCHEN → BERN → AMSTERDAM → PARIS → BARCELONA → MADRID → LISBON
+
+      - id: "block-035"
+        type: "TEXT"
+        content: |
+          すごく暑かった。
+          でも、どこを見てもきれいだった。
+
+          ローマを歩いていると、ヨーロッパの長い時間に、そのまま飲み込まれていくような感覚があった。
+
+          コロッセオでは、昔ここで何千、何万もの人が、ひとつのことに熱中していたのだと思った。
+
+          遠い時代の人たちと、少しだけつながれた気がした。
     layout:
       type: "trace-map-spread"
 
@@ -237,6 +357,17 @@ pages:
           - "photo-004"
           - "photo-005"
         caption: "ROMA → VENEZIA — fragments from the journey."
+
+      - id: "block-036"
+        type: "TEXT"
+        content: |
+          列車でヴェネツィアへ。
+
+          着いてすぐに水上バスに乗ると、「水の都」という言葉が、景色ではなく感覚になった。
+
+          水の音と、あたたかい空気。都会の喧騒に、おいしいイタリアンの匂いが混じっていた。
+
+          「暑いね」と何度も言いながら、ふたりとも新しい世界に触れることにわくわくしていた。
     layout:
       type: "asymmetric-gallery"
       settings:
@@ -282,6 +413,10 @@ pages:
           3. Add Prosecco.
           4. Top with soda water.
           5. Garnish with an orange slice.
+
+      - id: "block-033"
+        type: "PHOTO"
+        asset: "glass-001"
     layout:
       type: "recipe-page"
       notes: "Represented with PHOTO + TEXT until a dedicated RECIPE Block exists."
@@ -296,7 +431,16 @@ pages:
 
       - id: "block-011"
         type: "TEXT"
-        content: "A small memory from Italy — text to be written after the photograph is selected."
+        content: |
+          ヴェネツィアを出る日は、まいちゃんのファインプレーで、飛行機に乗り遅れずにすんだ。
+
+          あのとき食べたティラミスは、いろいろな意味で忘れられない味になった。
+
+          ヴェネツィアの素敵なAirbnbで、「こんなことを自分もやりたい」と話した。
+
+          「しゅんやの好きなのをやりなよ。形にしていきなよ」
+
+          あの言葉は、今も何かを始めるときに思い出す。
     layout:
       type: "image-with-reflection"
       settings:
@@ -319,9 +463,15 @@ pages:
       - id: "block-013"
         type: "TEXT"
         content: |
-          MÜNCHEN / BERN
+          MÜNCHEN
 
-          Text to be written after the photographs are selected.
+          ミュンヘンにはヨーロッパらしい空気が残っていた。
+
+          その中に、物事がきちんと整えられているような、几帳面さを感じた。
+
+          BMW博物館では、少し退屈な時間を過ごさせちゃったかもしれない。
+
+          それでも付き合ってくれて、ありがとう。
     layout:
       type: "reflective-notes"
       settings:
@@ -333,28 +483,10 @@ pages:
     section: "munchen-bern"
     blocks:
       - id: "block-014"
-        type: "CLOSEUP"
+        type: "PHOTO"
         asset: "detail-001"
-        region:
-          x: 0.20
-          y: 0.20
-          width: 0.35
-          height: 0.35
-
-      - id: "block-015"
-        type: "CLOSEUP"
-        asset: "detail-002"
-        region:
-          x: 0.40
-          y: 0.25
-          width: 0.30
-          height: 0.30
-
-      - id: "block-016"
-        type: "CAPTION"
-        content: "MÜNCHEN / BERN — details and short annotations."
     layout:
-      type: "detail-and-annotation"
+      type: "full-page"
 
   - id: "page-013"
     pages: [13]
@@ -366,7 +498,16 @@ pages:
 
       - id: "block-018"
         type: "TEXT"
-        content: "MÜNCHEN / BERN — supporting text to be written after the photograph is selected."
+        content: |
+          BERN
+
+          ベルンは、目に入るものすべてが驚くほどきれいだった。物価の高さにも、同じくらい驚いた。
+
+          一番心に残ったのは、そこにいる人たちだった。
+
+          行き交う人がみんな楽しそうで、自分のために人生を生きているように見えた。
+
+          僕も、そんなふうに生きてみたいと思った。
     layout:
       type: "image-with-short-text"
 
@@ -377,8 +518,27 @@ pages:
       - id: "block-019"
         type: "PHOTO"
         asset: "photo-010"
+
+      - id: "block-037"
+        type: "TEXT"
+        content: |
+          PARIS
+
+          パリには、とにかく洗練された美しさがあった。
+
+          世界中の人がこの街へ行きたいと思う気持ちが、少しわかった。
+
+          思っていたより、みんなずっと親切だった。人と人の距離が、どこか日本の田舎みたいだった。
+
+          オニオンスープとワインも、忘れたくない。
+
+          A SMALL MEMORY
+
+          モン・サン＝ミシェルへ向かうバスでは、『相席食堂』をたくさん見た。
+
+          テレビっ子じゃない僕に、新しい面白いものを教えてもらった気分だった。
     layout:
-      type: "full-page"
+      type: "full-page-story"
 
   - id: "page-015"
     pages: [15]
@@ -390,7 +550,14 @@ pages:
 
       - id: "block-021"
         type: "TEXT"
-        content: "AMSTERDAM / PARIS — text to be written after the photograph is selected."
+        content: |
+          PALAIS GARNIER
+
+          ガルニエ宮に入ったとき、まいちゃんが本当にうれしそうだった。
+
+          あの日はバレエを観られなかったけれど、次にパリへ行くときは、一緒に観よう。
+
+          パリには、また行きたい。今度は、まいちゃんにバレエを見せてあげたい。
     layout:
       type: "image-text-offset"
 
@@ -401,8 +568,25 @@ pages:
       - id: "block-022"
         type: "PHOTO"
         asset: "photo-012"
+
+      - id: "block-038"
+        type: "TEXT"
+        content: |
+          AMSTERDAM
+
+          アムステルダムは、小さな街だった。
+
+          限られたものを無駄にせず、その中でうまく暮らしているように見えた。
+
+          ボートハウスはかわいく、街にはたくさんの色があった。天気が良くなくても、不思議と明るく感じた。
+
+          日本と少し似ている気がした。
+
+          小さな場所でうまく生きることは、僕も真似したいと思った。
+
+          フレンチフライも、おいしかった。
     layout:
-      type: "full-bleed-spread"
+      type: "full-bleed-story-spread"
 
   - id: "spread-018-019"
     pages: [18, 19]
@@ -418,7 +602,12 @@ pages:
         caption: "BARCELONA → MADRID — collage of travel fragments."
       - id: "block-024"
         type: "TEXT"
-        content: "Memories and text to be written after the photographs are selected."
+        content: |
+          旅にも、少しずつ慣れてきた。
+
+          知らない街を歩くことも、予定外の出来事も、少しずつふたりの日常になっていた。
+
+          いろいろな景色を楽しそうに見ているまいちゃんを、よく覚えている。
     layout:
       type: "editorial-collage"
 
@@ -429,9 +618,30 @@ pages:
       - id: "block-025"
         type: "TEXT"
         content: |
-          BARCELONA / MADRID
+          BARCELONA
 
-          Writing to be developed after the photographs are selected.
+          バルセロナは賑やかで、空気まであたたかい街だった。
+
+          建物は、ほかの国では見たことのない形をしていた。うまく言葉にできないけれど、街そのものに独特のリズムがあった。
+
+          サグラダ・ファミリアでは、ステンドグラスを通った光が、教会の中をやわらかく染めていた。
+
+          一番覚えているのは、まいちゃんがオレンジジュースを買いに行ってくれたこと。
+
+          パエリアを本当においしそうに食べていたことも、うれしかった。僕は、ししとうの揚げ焼きみたいな料理が好きだった。
+
+      - id: "block-040"
+        type: "TEXT"
+        content: |
+          MADRID
+
+          マドリードは二度目だった。でも、まいちゃんと一緒だと、初めて来た街のように新鮮だった。
+
+          国外のクレジットカードでは、レアル・マドリードのチケットを買えないというハプニング。ドタバタしながら、どうにかチケットを取った。
+
+          ベルナベウの熱気と歓声。夢が叶った達成感と、あの高揚感は忘れられない。
+
+          市場で食べたピンチョスと、ワインのカクテルもおいしかった。
     layout:
       type: "text-page"
       variant: "lined"
@@ -452,23 +662,21 @@ pages:
     blocks:
       - id: "block-027"
         type: "CHECKLIST"
-        title: "Things We Want to Do"
+        title: "THINGS WE WANT TO DO"
         items:
-          - text: "Return to a favorite place"
+          - text: "もっといろいろな景色を、ふたりで見る。"
             checked: false
-          - text: "Make more memories"
+          - text: "まいちゃんがもっとわくわくする世界を、一緒に見つける。"
             checked: false
-          - text: "Try something new together"
+          - text: "ふたりの共通の趣味を、もっと増やす。"
             checked: false
-          - text: "Write it down while it is still fresh"
+          - text: "お互いにごはんを作る。"
             checked: false
-          - text: "Go somewhere we have never been"
+          - text: "一緒に早起きして、朝の時間を楽しむ。"
             checked: false
-          - text: "Take more photographs"
+          - text: "ふたりで何かを作る。"
             checked: false
-          - text: "Leave room for unplanned moments"
-            checked: false
-          - text: "Come back again"
+          - text: "素敵な将来を、一緒に考えて、一緒に作る。"
             checked: false
     layout:
       type: "spread-checklist"
@@ -489,6 +697,15 @@ pages:
     pages: [25]
     section: "future"
     blocks:
+      - id: "block-039"
+        type: "TEXT"
+        content: |
+          あの頃は、まだお互いに少し気を遣っていた。
+
+          今は、相手の考えていることが少しわかる。
+
+          あの旅の頃よりも、心を通わせられるようになったと思う。
+
       - id: "block-030"
         type: "QUESTION"
         content: "WHERE DO YOU WANT TO GO?"
@@ -503,42 +720,43 @@ pages:
     blocks:
       - id: "block-031"
         type: "TEXT"
-        content: "Closing Memory Grid"
-
-      - id: "block-032"
-        type: "TEXT"
-        content: "An ending that echoes the opening Memory Index."
+        content: ""
     layout:
       type: "closing-memory-grid"
       settings:
         rows: 5
         columns: 6
-        filled_cells:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 13
-          - 14
-          - 15
-          - 16
-          - 18
-          - 19
-          - 20
-          - 21
-          - 23
-          - 24
-          - 25
-          - 26
-          - 28
-        relationship_to_opening: "Echoes Page 1 and acts as an ending memory structure."
-        unresolved_space: true
+        assets:
+          - "memory-001"
+          - "memory-002"
+          - "memory-003"
+          - "memory-004"
+          - "memory-005"
+          - "memory-006"
+          - "memory-007"
+          - "memory-008"
+          - "memory-009"
+          - "memory-010"
+          - "memory-011"
+          - "memory-012"
+          - "memory-013"
+          - "memory-014"
+          - "memory-015"
+          - "memory-016"
+          - "memory-017"
+          - "memory-018"
+          - "memory-019"
+          - "memory-020"
+          - "memory-021"
+          - "memory-022"
+          - "memory-023"
+          - "memory-024"
+          - "memory-025"
+          - "memory-026"
+          - "memory-027"
+          - "memory-028"
+          - "memory-029"
+          - "memory-030"
 
 output:
   medium: "print"
