@@ -1050,13 +1050,10 @@ def build_html(zine_data, zine_path, output_path):
     margin: 16mm auto 0;
 
     background:
-        repeating-linear-gradient(
-            to bottom,
-            transparent 0,
-            transparent 12mm,
-            rgba(0, 0, 0, 0.28) 12mm,
-            rgba(0, 0, 0, 0.28) calc(12mm + 1px)
-        );
+        linear-gradient(rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.24)) 0 0 / 100% 1px no-repeat,
+        linear-gradient(rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.24)) 0 33.333% / 100% 1px no-repeat,
+        linear-gradient(rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.24)) 0 66.666% / 100% 1px no-repeat,
+        linear-gradient(rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.24)) 0 100% / 100% 1px no-repeat;
 }
 
 
@@ -1519,8 +1516,8 @@ def build_html(zine_data, zine_path, output_path):
 /* P18–19: people-led editorial collage */
 
 .layout-editorial-collage {
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
+    position: relative;
+    display: block;
     padding: 0;
 }
 
@@ -1530,13 +1527,17 @@ def build_html(zine_data, zine_path, output_path):
     margin: 0;
 }
 
+.layout-editorial-collage > .block-gallery {
+    height: 100%;
+}
+
 .layout-editorial-collage .gallery {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 1.5mm;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 0;
 }
 
 .layout-editorial-collage .asset {
@@ -1562,8 +1563,14 @@ def build_html(zine_data, zine_path, output_path):
 .layout-editorial-collage .asset:nth-child(2) img { object-position: center 52%; }
 
 .layout-editorial-collage > .block-text {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    width: 50%;
     margin: 0;
     padding: 5mm 8mm;
+    background: rgba(248, 247, 242, 0.94);
 }
 
 .layout-editorial-collage > .block-text .block-label {
