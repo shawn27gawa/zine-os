@@ -3,7 +3,7 @@ zineos_version: "0.1"
 project:
   id: "zine-001-our-memory"
   title: "Our Memory"
-  description: "A 26-page zine about memory, place, photography, reflection, unfinished space, and future desire."
+  description: "A 26-page zine connecting memories of a journey with a partner to the journeys still ahead."
   language: "en"
   status: "draft"
 
@@ -31,7 +31,7 @@ assets:
   - id: "photo-001"
     type: "image"
     source: "assets/photo-001.jpg"
-    title: "Place photograph"
+    title: "ROMA — journey opening photograph"
 
   - id: "map-001"
     type: "map"
@@ -41,121 +41,133 @@ assets:
   - id: "photo-002"
     type: "image"
     source: "assets/photo-002.jpg"
-    title: "Gallery image 1"
+    title: "ROMA → VENEZIA — travel fragment 1"
 
   - id: "photo-003"
     type: "image"
     source: "assets/photo-003.jpg"
-    title: "Gallery image 2"
+    title: "ROMA → VENEZIA — travel fragment 2"
 
   - id: "photo-004"
     type: "image"
     source: "assets/photo-004.jpg"
-    title: "Gallery image 3"
+    title: "ROMA → VENEZIA — travel fragment 3"
 
   - id: "photo-005"
     type: "image"
     source: "assets/photo-005.jpg"
-    title: "Gallery image 4"
+    title: "ROMA → VENEZIA — travel fragment 4"
 
   - id: "photo-006"
     type: "image"
     source: "assets/photo-006.jpeg"
-    title: "Full spread image 1"
+    title: "VENEZIA — full-spread memory"
 
   - id: "bottle-001"
     type: "image"
     source: "assets/bottle-001.png"
-    title: "Aperol bottle cutout"
+    title: "ITALY — Aperol bottle cutout"
 
   - id: "photo-007"
     type: "image"
     source: "assets/photo-007.jpg"
-    title: "Drink memory photograph"
+    title: "ITALY — small memory photograph"
 
   - id: "photo-008"
     type: "image"
     source: "assets/photo-008.jpg"
-    title: "Reflection photograph"
+    title: "MÜNCHEN / BERN — full-page photograph"
 
   - id: "detail-001"
     type: "image"
     source: "assets/detail-001.jpg"
-    title: "Detail image 1"
+    title: "MÜNCHEN / BERN — detail photograph 1"
 
   - id: "detail-002"
     type: "image"
     source: "assets/detail-002.jpg"
-    title: "Detail image 2"
+    title: "MÜNCHEN / BERN — detail photograph 2"
 
   - id: "photo-009"
     type: "image"
     source: "assets/photo-009.jpg"
-    title: "Context photograph"
+    title: "MÜNCHEN / BERN — context photograph"
 
   - id: "photo-010"
     type: "image"
     source: "assets/photo-010.jpg"
-    title: "Standalone photograph"
+    title: "AMSTERDAM / PARIS — full-page photograph"
 
   - id: "photo-011"
     type: "image"
     source: "assets/photo-011.jpg"
-    title: "Image-text page photograph"
+    title: "AMSTERDAM / PARIS — image-and-text photograph"
 
   - id: "photo-012"
     type: "image"
     source: "assets/photo-012.jpg"
-    title: "Full spread image 2"
+    title: "AMSTERDAM / PARIS — full-spread photograph"
 
   - id: "photo-013"
     type: "image"
     source: "assets/photo-013.jpg"
-    title: "Collage image 1"
+    title: "BARCELONA / MADRID — collage photograph 1"
 
   - id: "photo-014"
     type: "image"
     source: "assets/photo-014.jpg"
-    title: "Collage image 2"
+    title: "BARCELONA / MADRID — collage photograph 2"
 
   - id: "photo-015"
     type: "image"
     source: "assets/photo-015.jpg"
-    title: "Collage image 3"
+    title: "BARCELONA / MADRID — collage photograph 3"
 
   - id: "photo-016"
     type: "image"
     source: "assets/photo-016.jpg"
-    title: "Collage image 4"
+    title: "BARCELONA / MADRID — collage photograph 4"
 
   - id: "photo-017"
     type: "image"
     source: "assets/photo-017.jpg"
-    title: "Writing transition photograph"
+    title: "BARCELONA / MADRID — memory photograph"
 
   - id: "photo-018"
     type: "image"
     source: "assets/photo-018.jpg"
-    title: "Question lead-in photograph"
+    title: "LISBON — final travel photograph"
 
 sequence:
   - id: "opening"
-    title: "Opening"
+    title: "Our Memory"
 
-  - id: "place"
-    title: "Place"
+  - id: "roma"
+    title: "ROMA"
 
-  - id: "memory"
-    title: "Memory"
+  - id: "roma-venezia"
+    title: "ROMA → VENEZIA"
 
-  - id: "drink"
-    title: "Drink"
+  - id: "venezia"
+    title: "VENEZIA"
 
-  - id: "reflection"
-    title: "Reflection"
+  - id: "italy"
+    title: "ITALY"
+
+  - id: "munchen-bern"
+    title: "MÜNCHEN / BERN"
+
+  - id: "amsterdam-paris"
+    title: "AMSTERDAM / PARIS"
+
+  - id: "barcelona-madrid"
+    title: "BARCELONA / MADRID"
 
   - id: "future"
     title: "Future"
+
+  - id: "lisbon"
+    title: "LISBON"
 
   - id: "ending"
     title: "Ending"
@@ -195,7 +207,7 @@ pages:
 
   - id: "spread-002-003"
     pages: [2, 3]
-    section: "place"
+    section: "roma"
     blocks:
       - id: "block-005"
         type: "MAP"
@@ -215,7 +227,7 @@ pages:
 
   - id: "spread-004-005"
     pages: [4, 5]
-    section: "memory"
+    section: "roma-venezia"
     blocks:
       - id: "block-006"
         type: "GALLERY"
@@ -224,7 +236,7 @@ pages:
           - "photo-003"
           - "photo-004"
           - "photo-005"
-        caption: "Fragmented memory gallery."
+        caption: "ROMA → VENEZIA — fragments from the journey."
     layout:
       type: "asymmetric-gallery"
       settings:
@@ -233,7 +245,7 @@ pages:
 
   - id: "spread-006-007"
     pages: [6, 7]
-    section: "memory"
+    section: "venezia"
     blocks:
       - id: "block-007"
         type: "PHOTO"
@@ -245,12 +257,12 @@ pages:
 
   - id: "page-008"
     pages: [8]
-    section: "drink"
+    section: "italy"
     blocks:
       - id: "block-008"
         type: "PHOTO"
         asset: "bottle-001"
-        caption: "Aperol"
+        caption: "ITALY — Aperol Spritz"
 
       - id: "block-009"
         type: "TEXT"
@@ -276,7 +288,7 @@ pages:
 
   - id: "page-009"
     pages: [9]
-    section: "drink"
+    section: "italy"
     blocks:
       - id: "block-010"
         type: "PHOTO"
@@ -284,7 +296,7 @@ pages:
 
       - id: "block-011"
         type: "TEXT"
-        content: "A short reflection or memory connected to the drink."
+        content: "A small memory from Italy — text to be written after the photograph is selected."
     layout:
       type: "image-with-reflection"
       settings:
@@ -292,7 +304,7 @@ pages:
 
   - id: "page-010"
     pages: [10]
-    section: "reflection"
+    section: "munchen-bern"
     blocks:
       - id: "block-012"
         type: "PHOTO"
@@ -302,15 +314,14 @@ pages:
 
   - id: "page-011"
     pages: [11]
-    section: "reflection"
+    section: "munchen-bern"
     blocks:
       - id: "block-013"
         type: "TEXT"
         content: |
-          A message, reflection, or written response to the image on Page 10.
+          MÜNCHEN / BERN
 
-          This page is intended to hold words:
-          messages, thoughts, remembered events, or short writing connected to the previous image.
+          Text to be written after the photographs are selected.
     layout:
       type: "reflective-notes"
       settings:
@@ -319,7 +330,7 @@ pages:
 
   - id: "page-012"
     pages: [12]
-    section: "memory"
+    section: "munchen-bern"
     blocks:
       - id: "block-014"
         type: "CLOSEUP"
@@ -341,13 +352,13 @@ pages:
 
       - id: "block-016"
         type: "CAPTION"
-        content: "Short surrounding words or annotations."
+        content: "MÜNCHEN / BERN — details and short annotations."
     layout:
       type: "detail-and-annotation"
 
   - id: "page-013"
     pages: [13]
-    section: "reflection"
+    section: "munchen-bern"
     blocks:
       - id: "block-017"
         type: "PHOTO"
@@ -355,13 +366,13 @@ pages:
 
       - id: "block-018"
         type: "TEXT"
-        content: "Short supporting text."
+        content: "MÜNCHEN / BERN — supporting text to be written after the photograph is selected."
     layout:
       type: "image-with-short-text"
 
   - id: "page-014"
     pages: [14]
-    section: "memory"
+    section: "amsterdam-paris"
     blocks:
       - id: "block-019"
         type: "PHOTO"
@@ -371,7 +382,7 @@ pages:
 
   - id: "page-015"
     pages: [15]
-    section: "reflection"
+    section: "amsterdam-paris"
     blocks:
       - id: "block-020"
         type: "PHOTO"
@@ -379,13 +390,13 @@ pages:
 
       - id: "block-021"
         type: "TEXT"
-        content: "A short written passage positioned separately from the image."
+        content: "AMSTERDAM / PARIS — text to be written after the photograph is selected."
     layout:
       type: "image-text-offset"
 
   - id: "spread-016-017"
     pages: [16, 17]
-    section: "memory"
+    section: "amsterdam-paris"
     blocks:
       - id: "block-022"
         type: "PHOTO"
@@ -395,7 +406,7 @@ pages:
 
   - id: "spread-018-019"
     pages: [18, 19]
-    section: "memory"
+    section: "barcelona-madrid"
     blocks:
       - id: "block-023"
         type: "GALLERY"
@@ -404,30 +415,30 @@ pages:
           - "photo-014"
           - "photo-015"
           - "photo-016"
-        caption: "Multi-image narrative."
+        caption: "BARCELONA → MADRID — collage of travel fragments."
       - id: "block-024"
         type: "TEXT"
-        content: "Short nearby words or notes accompanying the images."
+        content: "Memories and text to be written after the photographs are selected."
     layout:
       type: "editorial-collage"
 
   - id: "page-020"
     pages: [20]
-    section: "reflection"
+    section: "barcelona-madrid"
     blocks:
       - id: "block-025"
         type: "TEXT"
         content: |
-          Writing page.
+          BARCELONA / MADRID
 
-          This page is primarily for written reflection, memory, or narrative text.
+          Writing to be developed after the photographs are selected.
     layout:
       type: "text-page"
       variant: "lined"
 
   - id: "page-021"
     pages: [21]
-    section: "memory"
+    section: "barcelona-madrid"
     blocks:
       - id: "block-026"
         type: "PHOTO"
@@ -466,7 +477,7 @@ pages:
 
   - id: "page-024"
     pages: [24]
-    section: "memory"
+    section: "lisbon"
     blocks:
       - id: "block-029"
         type: "PHOTO"
@@ -480,7 +491,7 @@ pages:
     blocks:
       - id: "block-030"
         type: "QUESTION"
-        content: "Where do you want to go?"
+        content: "WHERE DO YOU WANT TO GO?"
     layout:
       type: "question-page"
       settings:
