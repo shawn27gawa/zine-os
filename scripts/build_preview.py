@@ -84,22 +84,38 @@ def render_asset_visual(asset_id, assets, zine_dir, output_dir, label="IMAGE"):
     """
 
 
-def render_memory_grid(layout):
+def render_memory_grid(layout, assets, zine_dir, output_dir):
     settings = layout.get("settings", {})
 
     rows = int(settings.get("rows", 4))
     columns = int(settings.get("columns", 5))
 
     filled_cells = set(settings.get("filled_cells", []))
+    image_assets = settings.get("assets", [])
 
     cells = []
 
     for index in range(1, rows * columns + 1):
-        state = "filled" if index in filled_cells else "empty"
+        asset_id = image_assets[index - 1] if index <= len(image_assets) else None
+        asset, relative_path = resolve_asset_path(
+            asset_id,
+            assets,
+            zine_dir,
+            output_dir,
+        ) if asset_id else (None, None)
+        state = "filled" if relative_path or index in filled_cells else "empty"
+        image_html = ""
+
+        if relative_path:
+            title = asset.get("title", asset_id)
+            image_html = (
+                f'<img src="{escape(relative_path)}" '
+                f'alt="{escape(title)}">'
+            )
 
         cells.append(
             f'<div class="memory-cell {state}" '
-            f'title="Memory cell {index}"></div>'
+            f'title="Memory cell {index}">{image_html}</div>'
         )
 
     meaning = settings.get(
@@ -107,16 +123,20 @@ def render_memory_grid(layout):
         settings.get("relationship_to_opening", ""),
     )
 
+    note_html = (
+        f'<div class="memory-note">{escape(meaning)}</div>'
+        if meaning
+        else ""
+    )
+
     return f"""
     <div
         class="memory-grid"
-        style="grid-template-columns: repeat({columns}, 1fr);"
+        style="grid-template-columns: repeat({columns}, 1fr); grid-template-rows: repeat({rows}, 1fr);"
     >
         {''.join(cells)}
     </div>
-    <div class="memory-note">
-        {escape(meaning)}
-    </div>
+    {note_html}
     """
 
 
@@ -343,7 +363,12 @@ def render_page_unit(page_unit, assets, zine_dir, output_dir):
         "memory-index-grid",
         "closing-memory-grid",
     }:
-        special_layout = render_memory_grid(layout)
+        special_layout = render_memory_grid(
+            layout,
+            assets,
+            zine_dir,
+            output_dir,
+        )
 
     section = page_unit.get("section", "")
 
@@ -589,6 +614,10 @@ def build_html(zine_data, zine_path, output_path):
         display: block;
     }
 
+    .asset {
+        margin: 0;
+    }
+
     .asset figcaption {
         margin-top: 8px;
         font-size: 12px;
@@ -730,10 +759,12 @@ def build_html(zine_data, zine_path, output_path):
 
 .layout-full-page .block-label,
 .layout-full-bleed-spread .block-label {
-    position: absolute;
-    top: 4mm;
-    left: 4mm;
-    z-index: 20;
+    display: none;
+}
+
+.layout-full-page figcaption,
+.layout-full-bleed-spread figcaption {
+    display: none;
 }
 
 
@@ -903,6 +934,30 @@ def build_html(zine_data, zine_path, output_path):
     letter-spacing: 0.08em;
 }
 
+.layout-trace-map-spread > .block-text {
+    grid-column: 7 / span 6;
+    grid-row: 1 / span 5;
+    z-index: 2;
+    align-self: start;
+    margin: 0;
+    padding: 5mm 6mm;
+    border: 1px solid rgba(93, 98, 101, 0.08);
+    border-radius: 3mm;
+    background: rgba(255, 255, 253, 0.84);
+    box-shadow: 0 1mm 5mm rgba(39, 43, 45, 0.04);
+    backdrop-filter: blur(5px);
+}
+
+.layout-trace-map-spread > .block-text .block-label {
+    display: none;
+}
+
+.layout-trace-map-spread > .block-text .text-content {
+    color: #3f4548;
+    font-size: 10px;
+    line-height: 1.62;
+}
+
 
 /* Photo + reflection */
 
@@ -964,8 +1019,22 @@ def build_html(zine_data, zine_path, output_path):
     justify-content: flex-start;
 }
 
+.layout-question-page > .block-text {
+    width: 100%;
+    margin: 0;
+}
+
+.layout-question-page > .block-text .block-label {
+    display: none;
+}
+
+.layout-question-page > .block-text .text-content {
+    font-size: 14px;
+    line-height: 1.9;
+}
+
 .layout-question-page .block-question {
-    margin-top: 25mm;
+    margin-top: 18mm;
 }
 
 .layout-question-page .question {
@@ -993,25 +1062,523 @@ def build_html(zine_data, zine_path, output_path):
 
 /* Memory Index */
 
-.layout-memory-index-grid {
+.layout-memory-index-grid,
+.layout-closing-memory-grid {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+}
+
+.layout-memory-index-grid .memory-grid,
+.layout-closing-memory-grid .memory-grid {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    margin: 0;
+    gap: 0;
+}
+
+.layout-memory-index-grid .memory-cell,
+.layout-closing-memory-grid .memory-cell {
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: auto;
+    overflow: hidden;
+    border: 0;
+}
+
+.layout-memory-index-grid .memory-cell img,
+.layout-closing-memory-grid .memory-cell img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    filter: grayscale(1);
+}
+
+.layout-memory-index-grid::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    height: 26%;
+    background: #f7f6f1;
+}
+
+.layout-memory-index-grid .memory-grid {
+    position: absolute;
+    inset: 0 0 26%;
+    z-index: 1;
+    height: auto;
+}
+
+.layout-memory-index-grid > .block-text {
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 3;
+    margin: 0;
+    padding-right: 6mm;
+    padding-left: 6mm;
+    color: #0a0a0a;
+    background: transparent;
+}
+
+.layout-memory-index-grid > .block-text .block-label,
+.layout-closing-memory-grid > .block-text {
+    display: none;
+}
+
+.layout-memory-index-grid > .block-text:nth-of-type(1) {
+    bottom: 17.5%;
+    height: 8.5%;
+    padding-top: 4mm;
+}
+
+.layout-memory-index-grid > .block-text:nth-of-type(1) .text-content {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 3.4mm;
+    line-height: 1;
+    letter-spacing: 0.06em;
+}
+
+.layout-memory-index-grid > .block-text:nth-of-type(2) {
+    bottom: 0;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    height: 17.5%;
+    padding-bottom: 2mm;
 }
 
-.layout-memory-index-grid > .block-text:first-of-type {
-    order: 1;
+.layout-memory-index-grid > .block-text:nth-of-type(2) .text-content {
+    white-space: nowrap;
+    font-family: "Arial Black", Arial, Helvetica, sans-serif;
+    font-size: 16.5mm;
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: -0.07em;
 }
 
-.layout-memory-index-grid > .memory-grid {
-    order: 2;
+
+/* Full-spread editorial gallery */
+
+.layout-asymmetric-gallery {
+    position: relative;
+    padding: 0;
 }
 
-.layout-memory-index-grid > .block-text:last-of-type {
-    order: 3;
+.layout-asymmetric-gallery > .block-gallery,
+.layout-asymmetric-gallery .gallery {
+    width: 100%;
+    height: 100%;
+    margin: 0;
 }
 
-.layout-memory-index-grid > .memory-note {
-    order: 4;
+.layout-asymmetric-gallery .gallery {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1.5mm;
+}
+
+.layout-asymmetric-gallery .asset {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.layout-asymmetric-gallery .asset img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.layout-asymmetric-gallery .block-label,
+.layout-asymmetric-gallery figcaption,
+.layout-asymmetric-gallery .caption {
+    display: none;
+}
+
+.layout-asymmetric-gallery > .block-text {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    margin: 0;
+    padding: 5mm 10mm;
+    background: rgba(247, 246, 241, 0.90);
+    backdrop-filter: blur(4px);
+}
+
+.layout-asymmetric-gallery > .block-text .block-label {
+    display: none;
+}
+
+.layout-asymmetric-gallery > .block-text .text-content {
+    column-count: 2;
+    column-gap: 18mm;
+    font-size: 10.5px;
+    line-height: 1.58;
+}
+
+
+/* Edge-led image and text pages */
+
+.layout-image-with-reflection,
+.layout-image-with-short-text {
+    padding: 0;
+    gap: 0;
+}
+
+.layout-image-with-reflection {
+    grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.layout-image-with-short-text {
+    grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.layout-image-with-reflection .asset,
+.layout-image-with-short-text .asset {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.layout-image-with-reflection .asset img,
+.layout-image-with-short-text .asset img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.layout-image-with-reflection > .block-text,
+.layout-image-with-short-text > .block-text {
+    margin: 0;
+    padding: 7mm 9mm;
+}
+
+.layout-image-with-reflection > .block-text .block-label,
+.layout-image-with-short-text > .block-text .block-label {
+    display: none;
+}
+
+.layout-image-with-reflection > .block-text .text-content {
+    column-count: 2;
+    column-gap: 8mm;
+    font-size: 10.5px;
+    line-height: 1.55;
+}
+
+.layout-image-with-short-text > .block-text {
+    padding: 5mm 8mm;
+}
+
+.layout-image-with-short-text > .block-text .text-content {
+    font-size: 10.5px;
+    line-height: 1.5;
+}
+
+.layout-image-with-reflection .block-photo .block-label,
+.layout-image-with-reflection .block-photo figcaption,
+.layout-image-with-short-text .block-photo .block-label,
+.layout-image-with-short-text .block-photo figcaption {
+    display: none;
+}
+
+
+/* Larger upper-right image with protected copy area */
+
+.layout-image-text-offset {
+    grid-template-columns: 0.5fr 1.5fr;
+    grid-template-rows: 1.45fr 0.55fr;
+    gap: 6mm;
+    padding: 6mm;
+}
+
+.layout-image-text-offset .asset,
+.layout-image-text-offset .asset img {
+    width: 100%;
+    height: 100%;
+}
+
+.layout-image-text-offset .asset img {
+    object-fit: cover;
+}
+
+.layout-image-text-offset .block-photo .block-label,
+.layout-image-text-offset .block-photo figcaption {
+    display: none;
+}
+
+.layout-image-text-offset > .block-text {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+    align-self: start;
+    width: 94mm;
+    max-width: 100%;
+    margin: 0;
+}
+
+.layout-image-text-offset > .block-text .block-label {
+    display: none;
+}
+
+.layout-image-text-offset > .block-text .text-content {
+    font-size: 11.5px;
+    line-height: 1.62;
+}
+
+
+/* Full-image stories with restrained editorial cards */
+
+.layout-full-page-story,
+.layout-full-bleed-story-spread {
+    position: relative;
+    padding: 0;
+}
+
+.layout-full-page-story > .block-photo,
+.layout-full-bleed-story-spread > .block-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-full-page-story .asset,
+.layout-full-page-story .asset img,
+.layout-full-bleed-story-spread .asset,
+.layout-full-bleed-story-spread .asset img {
+    width: 100%;
+    height: 100%;
+}
+
+.layout-full-page-story .asset img,
+.layout-full-bleed-story-spread .asset img {
+    object-fit: cover;
+}
+
+.layout-full-page-story .block-photo .block-label,
+.layout-full-page-story .block-photo figcaption,
+.layout-full-bleed-story-spread .block-photo .block-label,
+.layout-full-bleed-story-spread .block-photo figcaption {
+    display: none;
+}
+
+.layout-full-page-story > .block-text,
+.layout-full-bleed-story-spread > .block-text {
+    position: absolute;
+    z-index: 3;
+    margin: 0;
+    border: 1px solid rgba(35, 35, 32, 0.08);
+    background: rgba(247, 246, 241, 0.88);
+    backdrop-filter: blur(5px);
+}
+
+.layout-full-page-story > .block-text {
+    top: 8mm;
+    left: 8mm;
+    width: 64mm;
+    padding: 5mm;
+}
+
+.layout-full-bleed-story-spread > .block-text {
+    top: 8mm;
+    left: 8mm;
+    width: 78mm;
+    padding: 5mm 6mm;
+}
+
+.layout-full-page-story > .block-text .block-label,
+.layout-full-bleed-story-spread > .block-text .block-label {
+    display: none;
+}
+
+.layout-full-page-story > .block-text .text-content {
+    font-size: 9.5px;
+    line-height: 1.5;
+}
+
+.layout-full-bleed-story-spread > .block-text .text-content {
+    font-size: 10.5px;
+    line-height: 1.58;
+}
+
+
+/* Text-led memory pages */
+
+.layout-reflective-notes > .block-text,
+.layout-text-page > .block-text {
+    margin: 0;
+}
+
+.layout-reflective-notes {
+    position: relative;
+    padding: 14mm 12mm;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 15.8mm,
+            rgba(30, 30, 28, 0.07) 15.8mm,
+            rgba(30, 30, 28, 0.07) calc(15.8mm + 1px)
+        ),
+        #f5f3ed;
+}
+
+.layout-reflective-notes > .block-text .block-label,
+.layout-text-page > .block-text .block-label {
+    display: none;
+}
+
+.layout-reflective-notes > .block-text .text-content {
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.layout-text-page {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: center;
+    gap: 10mm;
+    padding: 12mm;
+    background: #f3f1eb;
+}
+
+.layout-text-page::after {
+    content: "";
+    position: absolute;
+    top: 12mm;
+    bottom: 12mm;
+    left: 50%;
+    border-left: 1px solid rgba(30, 30, 28, 0.09);
+}
+
+.layout-text-page > .block-text .text-content {
+    font-size: 10.5px;
+    line-height: 1.55;
+}
+
+
+/* P8 bottle and paired glasses */
+
+.layout-recipe-page {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    gap: 0;
+    padding: 8mm;
+}
+
+.layout-recipe-page > .block-text {
+    grid-column: 1 / span 6;
+    grid-row: 2 / span 10;
+    z-index: 2;
+    margin: 0;
+}
+
+.layout-recipe-page > .block-photo:first-child {
+    grid-column: 7 / span 5;
+    grid-row: 1 / span 8;
+    z-index: 1;
+    margin: 0;
+    align-self: stretch;
+}
+
+.layout-recipe-page > .block-photo:last-child {
+    grid-column: 6 / span 7;
+    grid-row: 8 / span 5;
+    z-index: 3;
+    margin: 0;
+    align-self: stretch;
+}
+
+.layout-recipe-page .asset,
+.layout-recipe-page .asset img {
+    width: 100%;
+    height: 100%;
+}
+
+.layout-recipe-page .asset img {
+    object-fit: contain;
+}
+
+.layout-recipe-page .block-photo .block-label,
+.layout-recipe-page .block-photo figcaption,
+.layout-recipe-page .block-photo .caption {
+    display: none;
+}
+
+
+/* P18–19: people-led editorial collage */
+
+.layout-editorial-collage {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    padding: 0;
+}
+
+.layout-editorial-collage > .block-gallery,
+.layout-editorial-collage .gallery {
+    min-height: 0;
+    margin: 0;
+}
+
+.layout-editorial-collage .gallery {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1.5mm;
+}
+
+.layout-editorial-collage .asset {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.layout-editorial-collage .asset:nth-child(3) { grid-column: 1; grid-row: 1; }
+.layout-editorial-collage .asset:nth-child(4) { grid-column: 1; grid-row: 2; }
+.layout-editorial-collage .asset:nth-child(1) { grid-column: 2; grid-row: 1; }
+.layout-editorial-collage .asset:nth-child(2) { grid-column: 2; grid-row: 2; }
+
+.layout-editorial-collage .asset img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.layout-editorial-collage .asset:nth-child(3) img { object-position: center 48%; }
+.layout-editorial-collage .asset:nth-child(4) img { object-position: center 24%; }
+.layout-editorial-collage .asset:nth-child(1) img { object-position: center 45%; }
+.layout-editorial-collage .asset:nth-child(2) img { object-position: center 52%; }
+
+.layout-editorial-collage > .block-text {
+    margin: 0;
+    padding: 5mm 8mm;
+}
+
+.layout-editorial-collage > .block-text .block-label {
+    display: none;
+}
+
+.layout-editorial-collage > .block-text .text-content {
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.layout-editorial-collage .block-gallery .block-label,
+.layout-editorial-collage .block-gallery figcaption,
+.layout-editorial-collage .block-gallery .caption {
+    display: none;
 }
 
 
@@ -1036,7 +1603,15 @@ def build_html(zine_data, zine_path, output_path):
     }
 
     .layout-full-page,
-    .layout-full-bleed-spread {
+    .layout-full-bleed-spread,
+    .layout-full-page-story,
+    .layout-full-bleed-story-spread,
+    .layout-memory-index-grid,
+    .layout-closing-memory-grid,
+    .layout-asymmetric-gallery,
+    .layout-image-with-reflection,
+    .layout-image-with-short-text,
+    .layout-editorial-collage {
         padding: 0;
     }
 
