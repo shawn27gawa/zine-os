@@ -3,7 +3,7 @@ zineos_version: "0.1"
 project:
   id: "zine-001-our-memory"
   title: "Our Memory"
-  description: "A 26-page zine connecting memories of a journey with a partner to the journeys still ahead."
+  description: "A 28-page zine connecting memories of a journey with a partner to the journeys still ahead."
   language: "en"
   status: "draft"
 
@@ -315,6 +315,24 @@ pages:
 
   - id: "spread-002-003"
     pages: [2, 3]
+    section: "opening"
+    blocks:
+      - id: "block-041"
+        type: "TEXT"
+        content: "EUROPE 2024"
+
+      - id: "block-042"
+        type: "TEXT"
+        content: "OUR MEMORY"
+
+      - id: "block-043"
+        type: "TEXT"
+        content: "ROMA / VENEZIA / MÜNCHEN / BERN / AMSTERDAM / PARIS / BARCELONA / MADRID / LISBON"
+    layout:
+      type: "opening-breath-spread"
+
+  - id: "spread-004-005"
+    pages: [4, 5]
     section: "roma"
     blocks:
       - id: "block-005"
@@ -328,7 +346,6 @@ pages:
       - id: "block-004"
         type: "CAPTION"
         content: |
-          AIR
           ROMA → VENEZIA → MÜNCHEN → BERN → AMSTERDAM → PARIS → BARCELONA → MADRID → LISBON
 
       - id: "block-035"
@@ -337,16 +354,17 @@ pages:
           すごく暑かった。
           でも、どこを見てもきれいだった。
 
-          ローマを歩いていると、ヨーロッパの長い時間に、そのまま飲み込まれていくような感覚があった。
+          ローマを歩いていると、ヨーロッパの長い時間に、そのまま飲み込まれていく
+          みたいな感覚だった。
 
-          コロッセオでは、昔ここで何千、何万もの人が、ひとつのことに熱中していたのだと思った。
+          コロッセオでは、昔ここで何千、何万もの人が、ひとつのことに熱中していたのだと思うと意外と今も昔も変わらないのかもしれないと思った。
 
           遠い時代の人たちと、少しだけつながれた気がした。
     layout:
       type: "trace-map-spread"
 
-  - id: "spread-004-005"
-    pages: [4, 5]
+  - id: "spread-006-007"
+    pages: [6, 7]
     section: "roma-venezia"
     blocks:
       - id: "block-006"
@@ -363,7 +381,8 @@ pages:
         content: |
           列車でヴェネツィアへ。
 
-          着いてすぐに水上バスに乗ると、「水の都」という言葉が、景色ではなく感覚になった。
+          着いてすぐに水上バスに乗ると、「水の都」という言葉が、
+          景色ではなく感覚になった。
 
           水の音と、あたたかい空気。都会の喧騒に、おいしいイタリアンの匂いが混じっていた。
 
@@ -374,8 +393,8 @@ pages:
         motif: "wave-lines"
         density: "mixed"
 
-  - id: "spread-006-007"
-    pages: [6, 7]
+  - id: "spread-008-009"
+    pages: [8, 9]
     section: "venezia"
     blocks:
       - id: "block-007"
@@ -386,8 +405,8 @@ pages:
       settings:
         image_position: "center 70%"
 
-  - id: "page-008"
-    pages: [8]
+  - id: "page-010"
+    pages: [10]
     section: "italy"
     blocks:
       - id: "block-008"
@@ -421,8 +440,8 @@ pages:
       type: "recipe-page"
       notes: "Represented with PHOTO + TEXT until a dedicated RECIPE Block exists."
 
-  - id: "page-009"
-    pages: [9]
+  - id: "page-011"
+    pages: [11]
     section: "italy"
     blocks:
       - id: "block-010"
@@ -436,18 +455,20 @@ pages:
 
           あのとき食べたティラミスは、いろいろな意味で忘れられない味になった。
 
-          ヴェネツィアの素敵なAirbnbで、「こんなことを自分もやりたい」と話した。
+          ヴェネツィアの素敵なAirbnbで、
+          「こんなことを自分もやりたい」と話した。
 
           「しゅんやの好きなのをやりなよ。形にしていきなよ」
 
-          あの言葉は、今も何かを始めるときに思い出す。
+          あの言葉は、今も何かを始めるときに
+          思い出す。
     layout:
       type: "image-with-reflection"
       settings:
         motif: "wave-lines"
 
-  - id: "page-010"
-    pages: [10]
+  - id: "page-012"
+    pages: [12]
     section: "munchen-bern"
     blocks:
       - id: "block-012"
@@ -456,8 +477,8 @@ pages:
     layout:
       type: "full-page"
 
-  - id: "page-011"
-    pages: [11]
+  - id: "page-013"
+    pages: [13]
     section: "munchen-bern"
     blocks:
       - id: "block-013"
@@ -478,8 +499,8 @@ pages:
         line_structure: "multiple-horizontal-lines"
         handwritten_feel: true
 
-  - id: "page-012"
-    pages: [12]
+  - id: "page-014"
+    pages: [14]
     section: "munchen-bern"
     blocks:
       - id: "block-014"
@@ -488,8 +509,8 @@ pages:
     layout:
       type: "full-page"
 
-  - id: "page-013"
-    pages: [13]
+  - id: "page-015"
+    pages: [15]
     section: "munchen-bern"
     blocks:
       - id: "block-017"
@@ -511,8 +532,8 @@ pages:
     layout:
       type: "image-with-short-text"
 
-  - id: "page-014"
-    pages: [14]
+  - id: "page-016"
+    pages: [16]
     section: "amsterdam-paris"
     blocks:
       - id: "block-019"
@@ -526,22 +547,25 @@ pages:
 
           パリには、とにかく洗練された美しさがあった。
 
-          世界中の人がこの街へ行きたいと思う気持ちが、少しわかった。
+          世界中の人がこの街へ行きたいと思う気持ちが、
+          少しわかった。
 
-          思っていたより、みんなずっと親切だった。人と人の距離が、どこか日本の田舎みたいだった。
+          思っていたより、みんなずっと親切だった。
+          人と人の距離が、どこか日本の田舎みたいだった。
 
           オニオンスープとワインも、忘れたくない。
 
           A SMALL MEMORY
 
-          モン・サン＝ミシェルへ向かうバスでは、『相席食堂』をたくさん見た。
+          モン・サン＝ミシェルへ向かうバスでは、
+          『相席食堂』をたくさん見た。
 
           テレビっ子じゃない僕に、新しい面白いものを教えてもらった気分だった。
     layout:
       type: "full-page-story"
 
-  - id: "page-015"
-    pages: [15]
+  - id: "page-017"
+    pages: [17]
     section: "amsterdam-paris"
     blocks:
       - id: "block-020"
@@ -555,14 +579,15 @@ pages:
 
           ガルニエ宮に入ったとき、まいちゃんが本当にうれしそうだった。
 
-          あの日はバレエを観られなかったけれど、次にパリへ行くときは、一緒に観よう。
+          あの日はバレエを観られなかったけれど、次にパリへ行くときは、一緒に観ようね。
 
-          パリには、また行きたい。今度は、まいちゃんにバレエを見せてあげたい。
+          パリには、また行きたいな。今度は、まいちゃんにバレエを
+          見せてあげたい。
     layout:
       type: "image-text-offset"
 
-  - id: "spread-016-017"
-    pages: [16, 17]
+  - id: "spread-018-019"
+    pages: [18, 19]
     section: "amsterdam-paris"
     blocks:
       - id: "block-022"
@@ -578,7 +603,9 @@ pages:
 
           限られたものを無駄にせず、その中でうまく暮らしているように見えた。
 
-          ボートハウスはかわいく、街にはたくさんの色があった。天気が良くなくても、不思議と明るく感じた。
+          ボートハウスはかわいく、街にはたくさんの色が
+          あった。
+          天気が良くなくても、不思議と明るく感じた。
 
           日本と少し似ている気がした。
 
@@ -588,8 +615,8 @@ pages:
     layout:
       type: "full-bleed-story-spread"
 
-  - id: "spread-018-019"
-    pages: [18, 19]
+  - id: "spread-020-021"
+    pages: [20, 21]
     section: "barcelona-madrid"
     blocks:
       - id: "block-023"
@@ -611,8 +638,8 @@ pages:
     layout:
       type: "editorial-collage"
 
-  - id: "page-020"
-    pages: [20]
+  - id: "page-022"
+    pages: [22]
     section: "barcelona-madrid"
     blocks:
       - id: "block-025"
@@ -622,32 +649,38 @@ pages:
 
           バルセロナは賑やかで、空気まであたたかい街だった。
 
-          建物は、ほかの国では見たことのない形をしていた。うまく言葉にできないけれど、街そのものに独特のリズムがあった。
+          建物は、ほかの国では見たことのない形を
+          していた。うまく言葉にできないけれど、
+          街そのものに独特のリズムがあった。
 
           サグラダ・ファミリアでは、ステンドグラスを通った光が、教会の中をやわらかく染めていた。
 
-          一番覚えているのは、まいちゃんがオレンジジュースを買いに行ってくれたこと。
+          一番覚えているのは、まいちゃんがオレンジジュースをおつかいに行ってくれたこと。
 
-          パエリアを本当においしそうに食べていたことも、うれしかった。僕は、ししとうの揚げ焼きみたいな料理が好きだった。
+          パエリアを本当においしそうに食べていたことも、うれしかった。僕は、ししとうの揚げ焼きとマッシュルームの料理が好きだった。
 
       - id: "block-040"
         type: "TEXT"
         content: |
           MADRID
 
-          マドリードは二度目だった。でも、まいちゃんと一緒だと、初めて来た街のように新鮮だった。
+          マドリードは二度目だった。
+          でも、まいちゃんと一緒だと、初めて来た
+          街のように新鮮だった。
 
-          国外のクレジットカードでは、レアル・マドリードのチケットを買えないというハプニング。ドタバタしながら、どうにかチケットを取った。
+          国外のクレジットカードでは、レアルのチケットを買えないというハプニング。ドタバタしながら、どうにかチケットを取った。
 
-          ベルナベウの熱気と歓声。夢が叶った達成感と、あの高揚感は忘れられない。
+          ベルナベウの熱気と歓声。
+          夢が叶った達成感と高揚感は忘れられない。
 
-          市場で食べたピンチョスと、ワインのカクテルもおいしかった。
+          市場で食べたピンチョスと、ワインの
+          カクテルもおいしかった。
     layout:
       type: "text-page"
       variant: "lined"
 
-  - id: "page-021"
-    pages: [21]
+  - id: "page-023"
+    pages: [23]
     section: "barcelona-madrid"
     blocks:
       - id: "block-026"
@@ -656,13 +689,13 @@ pages:
     layout:
       type: "full-page"
 
-  - id: "spread-022-023"
-    pages: [22, 23]
+  - id: "spread-024-025"
+    pages: [24, 25]
     section: "future"
     blocks:
       - id: "block-027"
         type: "CHECKLIST"
-        title: "THINGS WE WANT TO DO"
+        title: "THINGS I WANT TO DO"
         items:
           - text: "もっといろいろな景色を、ふたりで見る。"
             checked: false
@@ -670,21 +703,21 @@ pages:
             checked: false
           - text: "ふたりの共通の趣味を、もっと増やす。"
             checked: false
-          - text: "お互いにごはんを作る。"
+          - text: "美味しい朝ごはんを作ってあげる。"
             checked: false
           - text: "一緒に早起きして、朝の時間を楽しむ。"
             checked: false
           - text: "ふたりで何かを作る。"
             checked: false
-          - text: "素敵な将来を、一緒に考えて、一緒に作る。"
+          - text: "素敵な将来を一緒に考えて、一緒に作る。"
             checked: false
     layout:
       type: "spread-checklist"
       settings:
         columns: 2
 
-  - id: "page-024"
-    pages: [24]
+  - id: "page-026"
+    pages: [26]
     section: "lisbon"
     blocks:
       - id: "block-029"
@@ -693,8 +726,8 @@ pages:
     layout:
       type: "full-page"
 
-  - id: "page-025"
-    pages: [25]
+  - id: "page-027"
+    pages: [27]
     section: "future"
     blocks:
       - id: "block-039"
@@ -702,7 +735,7 @@ pages:
         content: |
           あの頃は、まだお互いに少し気を遣っていた。
 
-          今は、相手の考えていることが少しわかる。
+          今は、お互い相手の考えていることが少しわかる。
 
           あの旅の頃よりも、心を通わせられるようになったと思う。
 
@@ -714,8 +747,8 @@ pages:
       settings:
         response_lines: 4
 
-  - id: "page-026"
-    pages: [26]
+  - id: "page-028"
+    pages: [28]
     section: "ending"
     blocks:
       - id: "block-031"

@@ -1589,6 +1589,120 @@ def build_html(zine_data, zine_path, output_path):
 }
 
 
+/* P2–3: quiet opening breath inside the heavier cover */
+
+.layout-opening-breath-spread {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+    background: #e9e5dc;
+}
+
+.layout-opening-breath-spread::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    border-left: 1px solid rgba(25, 25, 23, 0.08);
+}
+
+.layout-opening-breath-spread > .block-text {
+    position: absolute;
+    bottom: 12mm;
+    z-index: 1;
+    margin: 0;
+}
+
+.layout-opening-breath-spread > .block-text:first-child {
+    left: 12mm;
+}
+
+.layout-opening-breath-spread > .block-text:nth-child(2) {
+    right: 12mm;
+    bottom: 20mm;
+    text-align: right;
+}
+
+.layout-opening-breath-spread > .block-text:last-child {
+    right: 12mm;
+    width: 120mm;
+    text-align: right;
+}
+
+.layout-opening-breath-spread .block-label {
+    display: none;
+}
+
+.layout-opening-breath-spread .text-content {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.16em;
+}
+
+.layout-opening-breath-spread > .block-text:last-child .text-content {
+    font-size: 7px;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0.1em;
+}
+
+
+/* Creator-approved text placement adjustments */
+
+.layout-trace-map-spread > .block-caption .text-content,
+.layout-trace-map-spread > .block-text .text-content {
+    font-size: 12.75px;
+}
+
+.layout-reflective-notes > .block-text {
+    width: 84%;
+    transform: translateY(6.5mm);
+}
+
+.layout-reflective-notes > .block-text .text-content {
+    line-height: 2.5;
+}
+
+.layout-full-page-story > .block-text {
+    width: 47%;
+    transform: translateX(-7.5mm);
+}
+
+.layout-image-text-offset > .block-text {
+    width: 64%;
+}
+
+.layout-full-bleed-story-spread > .block-text {
+    width: 26%;
+}
+
+.layout-text-page > .block-text:first-child {
+    transform: translateX(-3mm);
+}
+
+.layout-text-page > .block-text:last-child {
+    transform: translateX(3mm);
+}
+
+.layout-recipe-page > .block-text > .block-label,
+.layout-spread-checklist > .block-checklist > .block-label,
+.layout-question-page > .block-question > .block-label {
+    display: none;
+}
+
+.layout-spread-checklist .block-title {
+    width: 89%;
+    transform: translateX(11mm);
+}
+
+.layout-question-page > .block-text {
+    width: 84%;
+}
+
+
 
 
 
@@ -1614,6 +1728,7 @@ def build_html(zine_data, zine_path, output_path):
     .layout-full-page-story,
     .layout-full-bleed-story-spread,
     .layout-memory-index-grid,
+    .layout-opening-breath-spread,
     .layout-closing-memory-grid,
     .layout-asymmetric-gallery,
     .layout-image-with-reflection,
