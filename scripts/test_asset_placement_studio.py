@@ -78,6 +78,11 @@ class AssetPlacementStudioTests(unittest.TestCase):
             for page_unit in config["pageUnits"]
             for slot in page_unit["slots"]
         ]
+        text_slots = [
+            slot
+            for page_unit in config["pageUnits"]
+            for slot in page_unit["textSlots"]
+        ]
 
         memory_slots = [slot for slot in slots if slot["kind"] == "memory-cell"]
         free_layers = [slot for slot in slots if slot["kind"] == "free-layer"]
@@ -97,6 +102,12 @@ class AssetPlacementStudioTests(unittest.TestCase):
             if slot["key"] == "spread-008-009:block-007:photo-006"
         )
         self.assertEqual(p67_slot["defaultPosition"], "center 70%")
+        self.assertEqual(config["format"], "zineos-unified-studio")
+        self.assertEqual(len(text_slots), 32)
+        self.assertIn(
+            "spread-024-025:block-027:text:items[0].text",
+            {slot["key"] for slot in text_slots},
+        )
         self.assertEqual(
             config["sourceReference"]["zineSha256"],
             hashlib.sha256(ZINE_PATH.read_bytes()).hexdigest(),
@@ -110,8 +121,10 @@ class AssetPlacementStudioTests(unittest.TestCase):
             generated = build_studio_html(self.zine_data, ZINE_PATH, output_path)
 
         self.assertEqual(self.zine_data, original)
-        self.assertIn("ZineOS Asset Placement Studio", generated)
-        self.assertIn("Export manifest", generated)
+        self.assertIn("ZineOS Unified Studio", generated)
+        self.assertIn("Export images", generated)
+        self.assertIn("Export text", generated)
+        self.assertIn('id="text-content"', generated)
         self.assertIn("Choose image(s)", generated)
         self.assertIn("Download JSON", generated)
         self.assertIn("Copy JSON", generated)

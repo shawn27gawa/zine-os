@@ -63,9 +63,10 @@ or translate them into stable IDs under creator review; do not guess targets.
 ## Text Rules
 
 Text handoffs use `zineos-text-placement` version 1. Every edit contains a
-stable page-unit ID, Block ID, exact original text, replacement text, and
-optional typography settings. Application stops when the current Block content
-does not exactly equal `originalText`.
+stable page-unit ID, Block ID, field path, exact original text, replacement
+text, and optional typography settings. Supported fields are inline content,
+captions, checklist titles, and individual checklist-item text. Application
+stops when the current target field does not exactly equal `originalText`.
 
 Supported typography fields are font size, line height, width, x/y offset,
 column count, and recorded rule spacing. The preview renderer applies the

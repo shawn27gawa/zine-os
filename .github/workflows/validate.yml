@@ -87,11 +87,11 @@ jobs:
         run: |
           python scripts/test_preview_asset_paths.py
 
-      - name: Build ZINE_001 Asset Placement Studio
+      - name: Build ZINE_001 Unified Studio
         run: |
           python scripts/build_asset_studio.py examples/ZINE_001/zine.yaml preview/ZINE_001_STUDIO.html
 
-      - name: Test Asset Placement Studio
+      - name: Test Unified Studio
         run: |
           python scripts/test_asset_placement_studio.py
 

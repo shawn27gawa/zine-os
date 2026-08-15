@@ -98,6 +98,15 @@ def text_placement_attributes(placement):
     return f' data-studio-text-placement style="{" ".join(values)}"' if values else ""
 
 
+def field_text_placement(studio, field):
+    placements = studio.get("text_placements", {})
+    if field in placements:
+        return placements[field]
+    if field == "content":
+        return studio.get("text_placement")
+    return None
+
+
 def render_asset_visual(
     asset_id, assets, zine_dir, output_dir, label="IMAGE", placement=None
 ):
@@ -191,10 +200,10 @@ def render_memory_grid(layout, assets, zine_dir, output_dir):
     """
 
 
-def render_checklist(block):
+def render_checklist(block, studio):
     items = []
 
-    for item in block.get("items", []):
+    for item_index, item in enumerate(block.get("items", [])):
         checked = bool(item.get("checked", False))
         mark = "✓" if checked else "○"
 
@@ -202,7 +211,7 @@ def render_checklist(block):
             f"""
             <li class="checklist-item">
                 <span class="checkmark">{mark}</span>
-                <span>{escape(item.get("text", ""))}</span>
+                <span{ text_placement_attributes(field_text_placement(studio, f"items[{item_index}].text")) }>{escape(item.get("text", ""))}</span>
             </li>
             """
         )
@@ -210,7 +219,7 @@ def render_checklist(block):
     title = block.get("title")
 
     title_html = (
-        f'<h4 class="block-title">{escape(title)}</h4>'
+        f'<h4 class="block-title"{text_placement_attributes(field_text_placement(studio, "title"))}>{escape(title)}</h4>'
         if title
         else ""
     )
@@ -309,18 +318,18 @@ def render_block(block, assets, zine_dir, output_dir):
         """
 
     elif block_type == "CHECKLIST":
-        content = render_checklist(block)
+        content = render_checklist(block, studio)
 
     elif block_type == "QUESTION":
         content = f"""
-        <div class="question">
+        <div class="question"{text_placement_attributes(field_text_placement(studio, "content"))}>
             {escape(block.get("content", ""))}
         </div>
         """
 
     elif block_type == "QUOTE":
         content = f"""
-        <blockquote>
+        <blockquote{text_placement_attributes(field_text_placement(studio, "content"))}>
             {escape(block.get("content", ""))}
         </blockquote>
         """
@@ -329,7 +338,7 @@ def render_block(block, assets, zine_dir, output_dir):
         text = block.get("content", block.get("caption", ""))
 
         content = f"""
-        <div class="text-content">
+        <div class="text-content"{text_placement_attributes(field_text_placement(studio, "content"))}>
             {escape(text).replace(chr(10), "<br>")}
         </div>
         """
@@ -372,12 +381,16 @@ def render_block(block, assets, zine_dir, output_dir):
     caption = block.get("caption")
 
     caption_html = (
-        f'<div class="caption">{escape(caption)}</div>'
+        f'<div class="caption"{text_placement_attributes(field_text_placement(studio, "caption"))}>{escape(caption)}</div>'
         if caption
         else ""
     )
 
-    text_attributes = text_placement_attributes(studio.get("text_placement"))
+    text_attributes = (
+        text_placement_attributes(studio.get("text_placement"))
+        if not studio.get("text_placements")
+        else ""
+    )
 
     return f"""
     <section class="block block-{escape(block_type.lower())}"{text_attributes}>
@@ -1835,8 +1848,7 @@ def build_html(zine_data, zine_path, output_path):
     ) !important;
 }
 
-[data-studio-text-placement] .text-content,
-[data-studio-text-placement] .question {
+[data-studio-text-placement] {
     font-size: var(--studio-text-font-size, inherit) !important;
     line-height: var(--studio-text-line-height, inherit) !important;
     column-count: var(--studio-text-columns, 1);

@@ -316,13 +316,60 @@ class ManifestApplicationTests(unittest.TestCase):
         block = next(block for block in page["blocks"] if block["id"] == "block-013")
         self.assertEqual(block["content"], manifest["edits"][0]["text"])
         self.assertEqual(
-            block["metadata"]["zineos_studio"]["text_placement"]["font_size_px"],
+            block["metadata"]["zineos_studio"]["text_placements"]["content"]["font_size_px"],
             14,
         )
         self.assertEqual(validate_zine(self.zine), 0)
         rendered = build_html(data, self.zine, self.root / "preview.html")
         self.assertIn("data-studio-text-placement", rendered)
         self.assertIn("--studio-text-font-size: 14px", rendered)
+
+    def test_checklist_title_and_item_apply_as_distinct_stable_fields(self):
+        data = yaml.safe_load(self.zine.read_text(encoding="utf-8"))
+        page = next(page for page in data["pages"] if page["id"] == "spread-024-025")
+        block = next(block for block in page["blocks"] if block["id"] == "block-027")
+        manifest = self.text_manifest()
+        manifest["edits"] = [
+            {
+                "key": "spread-024-025:block-027:text:title",
+                "pageUnitId": "spread-024-025",
+                "blockId": "block-027",
+                "field": "title",
+                "originalText": block["title"],
+                "text": "THINGS WE WILL DO",
+                "typography": None,
+            },
+            {
+                "key": "spread-024-025:block-027:text:items[0].text",
+                "pageUnitId": "spread-024-025",
+                "blockId": "block-027",
+                "field": "items[0].text",
+                "originalText": block["items"][0]["text"],
+                "text": "ふたりで、もっといろいろな景色を見る。",
+                "typography": {
+                    "font_size_px": 16,
+                    "line_height": 1.5,
+                    "width_percent": 100,
+                    "x_mm": 0,
+                    "y_mm": 0,
+                    "columns": 1,
+                    "rule_spacing_mm": None,
+                },
+            },
+        ]
+        self.assertEqual(validate_text(manifest), [])
+        result = self.run_apply(self.write_manifest(manifest), apply=True)
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        updated = yaml.safe_load(self.zine.read_text(encoding="utf-8"))
+        page = next(page for page in updated["pages"] if page["id"] == "spread-024-025")
+        block = next(block for block in page["blocks"] if block["id"] == "block-027")
+        self.assertEqual(block["title"], "THINGS WE WILL DO")
+        self.assertEqual(block["items"][0]["text"], "ふたりで、もっといろいろな景色を見る。")
+        self.assertIn(
+            "items[0].text",
+            block["metadata"]["zineos_studio"]["text_placements"],
+        )
+        self.assertEqual(validate_zine(self.zine), 0)
 
     def test_original_text_mismatch_is_blocking(self):
         manifest = self.text_manifest()

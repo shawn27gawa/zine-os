@@ -145,6 +145,51 @@ def virtual_layout_slots(page_unit, article_index):
     ]
 
 
+def editable_text_slots(page_unit, article_index):
+    slots = []
+
+    for block_index, block in enumerate(page_unit.get("blocks", [])):
+        block_id = block.get("id", f"block-{block_index + 1}")
+        block_type = block.get("type", "TEXT")
+        studio = block.get("metadata", {}).get("zineos_studio", {})
+        placements = studio.get("text_placements", {})
+
+        def add_slot(field, value, label):
+            typography = placements.get(field)
+            if field == "content" and typography is None:
+                typography = studio.get("text_placement")
+            slots.append({
+                "key": f"{page_unit['id']}:{block_id}:text:{field}",
+                "kind": "text",
+                "label": label,
+                "articleIndex": article_index,
+                "blockIndex": block_index,
+                "blockId": block_id,
+                "field": field,
+                "originalText": value,
+                "typography": typography,
+            })
+
+        if isinstance(block.get("content"), str):
+            add_slot("content", block["content"], block_type)
+
+        if isinstance(block.get("caption"), str):
+            add_slot("caption", block["caption"], f"{block_type} caption")
+
+        if block_type == "CHECKLIST":
+            if isinstance(block.get("title"), str):
+                add_slot("title", block["title"], "Checklist title")
+            for item_index, item in enumerate(block.get("items", [])):
+                if isinstance(item.get("text"), str):
+                    add_slot(
+                        f"items[{item_index}].text",
+                        item["text"],
+                        f"Checklist item {item_index + 1}",
+                    )
+
+    return slots
+
+
 def build_studio_config(zine_data, zine_path):
     page_units = []
 
@@ -152,6 +197,7 @@ def build_studio_config(zine_data, zine_path):
         slots = editable_asset_slots(page_unit, article_index)
         slots.extend(memory_grid_slots(page_unit, article_index))
         slots.extend(virtual_layout_slots(page_unit, article_index))
+        text_slots = editable_text_slots(page_unit, article_index)
 
         page_units.append(
             {
@@ -160,13 +206,14 @@ def build_studio_config(zine_data, zine_path):
                 "layoutType": page_unit.get("layout", {}).get("type", "default"),
                 "articleIndex": article_index,
                 "slots": slots,
+                "textSlots": text_slots,
             }
         )
 
     project = zine_data.get("project", {})
 
     return {
-        "format": "zineos-asset-studio",
+        "format": "zineos-unified-studio",
         "version": 1,
         "project": {
             "id": project.get("id"),
@@ -190,13 +237,13 @@ def build_studio_html(zine_data, zine_path, output_path):
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{title} — ZineOS Asset Placement Studio</title>
+    <title>{title} — ZineOS Unified Studio</title>
     <style>{studio_css}</style>
 </head>
 <body>
     <header class="studio-toolbar">
         <div>
-            <strong>ZineOS Asset Placement Studio</strong>
+            <strong>ZineOS Unified Studio</strong>
             <span class="studio-project">{title}</span>
         </div>
         <div class="studio-toolbar-actions">
@@ -204,7 +251,8 @@ def build_studio_html(zine_data, zine_path, output_path):
                 Import manifest
                 <input id="manifest-import" type="file" accept="application/json,.json">
             </label>
-            <button id="manifest-export" type="button">Export manifest</button>
+            <button id="asset-manifest-export" type="button">Export images</button>
+            <button id="text-manifest-export" type="button">Export text</button>
         </div>
     </header>
 
@@ -221,7 +269,7 @@ def build_studio_html(zine_data, zine_path, output_path):
                 <button type="button" data-mode="print">Print</button>
             </div>
             <div id="studio-message" role="status">
-                Drop a photograph onto an editable image slot.
+                Select outlined text or drop a photograph onto an image slot.
             </div>
             <div id="preview-frame-wrap" class="mode-desktop">
                 <iframe id="preview-frame" title="Editable ZineOS preview"></iframe>
@@ -229,8 +277,8 @@ def build_studio_html(zine_data, zine_path, output_path):
         </main>
 
         <aside class="studio-inspector">
-            <h2>Placement</h2>
-            <p id="selection-label">Select an image slot.</p>
+            <h2 id="inspector-title">Edit</h2>
+            <p id="selection-label">Select an image or text slot.</p>
 
             <div id="placement-controls" hidden>
                 <label class="studio-button studio-file-picker">
@@ -285,15 +333,54 @@ def build_studio_html(zine_data, zine_path, output_path):
                 <button id="placement-reset" type="button" class="studio-secondary">Reset current mode</button>
             </div>
 
+            <div id="text-controls" hidden>
+                <label>
+                    Text
+                    <textarea id="text-content" rows="10"></textarea>
+                </label>
+
+                <label>
+                    Font size <output id="text-font-size-output"></output>
+                    <input id="text-font-size" type="range" min="6" max="96" step="0.25">
+                </label>
+
+                <label>
+                    Line height <output id="text-line-height-output"></output>
+                    <input id="text-line-height" type="range" min="0.8" max="4" step="0.05">
+                </label>
+
+                <label>
+                    Width <output id="text-width-output"></output>
+                    <input id="text-width" type="range" min="10" max="100" step="1">
+                </label>
+
+                <label>
+                    Horizontal offset <output id="text-x-output"></output>
+                    <input id="text-x" type="range" min="-100" max="100" step="0.5">
+                </label>
+
+                <label>
+                    Vertical offset <output id="text-y-output"></output>
+                    <input id="text-y" type="range" min="-100" max="100" step="0.5">
+                </label>
+
+                <label>
+                    Columns <output id="text-columns-output"></output>
+                    <input id="text-columns" type="range" min="1" max="4" step="1">
+                </label>
+
+                <button id="text-reset" type="button" class="studio-secondary">Reset text edit</button>
+            </div>
+
             <section class="studio-help">
                 <h3>Safe workflow</h3>
-                <p>Images remain in memory. Export a manifest for Builder review; this Studio never writes the repository.</p>
+                <p>Images and text edits remain in browser memory. Export a manifest for Builder review; this Studio never writes the repository.</p>
                 <p>Memory-grid images are previewed in monochrome. Originals remain unchanged.</p>
             </section>
 
             <section id="manifest-handoff" class="studio-manifest" hidden>
-                <h3>Builder manifest</h3>
-                <textarea id="manifest-output" readonly aria-label="Asset placement manifest"></textarea>
+                <h3 id="manifest-title">Builder manifest</h3>
+                <textarea id="manifest-output" readonly aria-label="Builder manifest"></textarea>
                 <a id="manifest-download" class="studio-button" download>Download JSON</a>
                 <button id="manifest-copy" type="button" class="studio-secondary">Copy JSON</button>
             </section>
@@ -346,7 +433,7 @@ def main():
     except ValueError:
         display_path = output_path
 
-    print(f"ASSET STUDIO ✓ {display_path}")
+    print(f"UNIFIED STUDIO ✓ {display_path}")
     return 0
 
 
