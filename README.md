@@ -21,6 +21,10 @@ ZINE_001 has validated the publication schema, browser preview, creator-facing
 image/text Studio, and A5 saddle-stitch print workflow. The current work focuses
 on connecting those proven parts into a repeatable end-to-end creation flow.
 
+New publications start from a neutral project rather than copying ZINE_001.
+See [Project and Inbox Bootstrap](docs/PROJECT_BOOTSTRAP.md) for the dry-run-first
+workflow that inventories original photographs without selecting or modifying them.
+
 See [docs/V1_ROADMAP.md](docs/V1_ROADMAP.md) for the v1 completion criteria.
 
 ## Core Ideas

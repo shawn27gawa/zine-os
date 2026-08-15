@@ -16,12 +16,15 @@ on:
       - "scripts/apply_manifest.py"
       - "scripts/test_asset_placement_studio.py"
       - "scripts/test_manifest_application.py"
+      - "scripts/bootstrap_project.py"
+      - "scripts/test_project_bootstrap.py"
       - "scripts/test_preview_asset_paths.py"
       - "scripts/build_print_package.py"
       - "scripts/test_print_package.py"
       - "studio/**"
       - "docs/ASSET_PLACEMENT_UI.md"
       - "docs/MANIFEST_APPLICATION.md"
+      - "docs/PROJECT_BOOTSTRAP.md"
       - "docs/PRINT_OUTPUT.md"
       - ".github/workflows/validate.yml"
 
@@ -38,12 +41,15 @@ on:
       - "scripts/apply_manifest.py"
       - "scripts/test_asset_placement_studio.py"
       - "scripts/test_manifest_application.py"
+      - "scripts/bootstrap_project.py"
+      - "scripts/test_project_bootstrap.py"
       - "scripts/test_preview_asset_paths.py"
       - "scripts/build_print_package.py"
       - "scripts/test_print_package.py"
       - "studio/**"
       - "docs/ASSET_PLACEMENT_UI.md"
       - "docs/MANIFEST_APPLICATION.md"
+      - "docs/PROJECT_BOOTSTRAP.md"
       - "docs/PRINT_OUTPUT.md"
       - ".github/workflows/validate.yml"
 
@@ -98,6 +104,10 @@ jobs:
       - name: Test safe manifest application
         run: |
           python scripts/test_manifest_application.py
+
+      - name: Test project and inbox bootstrap
+        run: |
+          python scripts/test_project_bootstrap.py
 
       - name: Test standard print output
         run: |
