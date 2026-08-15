@@ -1,0 +1,290 @@
+:root {
+    color: #161616;
+    background: #e9e9e7;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-width: 960px;
+}
+
+button,
+select,
+input {
+    font: inherit;
+}
+
+button,
+.studio-button {
+    appearance: none;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    border-radius: 9px;
+    padding: 8px 12px;
+    color: inherit;
+    background: rgba(255, 255, 255, 0.76);
+    cursor: pointer;
+}
+
+button:hover,
+.studio-button:hover {
+    background: #fff;
+}
+
+.studio-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    height: 58px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.10);
+    background: rgba(248, 248, 246, 0.94);
+    backdrop-filter: blur(18px);
+}
+
+.studio-project {
+    margin-left: 10px;
+    color: rgba(0, 0, 0, 0.46);
+}
+
+.studio-toolbar-actions,
+.studio-modes {
+    display: flex;
+    gap: 8px;
+}
+
+.studio-button input {
+    display: none;
+}
+
+.studio-file-picker {
+    display: block !important;
+    margin: 0 0 14px !important;
+    text-align: center;
+}
+
+.studio-shell {
+    display: grid;
+    grid-template-columns: 190px minmax(560px, 1fr) 260px;
+    min-height: calc(100vh - 58px);
+}
+
+.studio-pages,
+.studio-inspector {
+    position: sticky;
+    top: 58px;
+    height: calc(100vh - 58px);
+    overflow-y: auto;
+    padding: 18px;
+    background: rgba(248, 248, 246, 0.92);
+}
+
+.studio-pages {
+    border-right: 1px solid rgba(0, 0, 0, 0.10);
+}
+
+.studio-inspector {
+    border-left: 1px solid rgba(0, 0, 0, 0.10);
+}
+
+.studio-pages h2,
+.studio-inspector h2 {
+    margin: 0 0 14px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+#page-navigation {
+    display: grid;
+    gap: 6px;
+}
+
+#page-navigation button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    background: transparent;
+}
+
+#page-navigation button.is-active {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.30);
+}
+
+.studio-page-layout {
+    display: block;
+    margin-top: 2px;
+    color: rgba(0, 0, 0, 0.42);
+    font-size: 10px;
+}
+
+.studio-canvas {
+    min-width: 0;
+    padding: 14px 18px 24px;
+}
+
+.studio-modes {
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.studio-modes button.is-active {
+    color: #fff;
+    border-color: #202020;
+    background: #202020;
+}
+
+#studio-message {
+    min-height: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 12px;
+}
+
+#preview-frame-wrap {
+    width: 100%;
+    min-height: calc(100vh - 145px);
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 14px;
+    background: #d9d9d6;
+}
+
+#preview-frame {
+    width: 100%;
+    min-width: 0;
+    height: calc(100vh - 147px);
+    border: 0;
+    background: #ecebe6;
+    transition: width 180ms ease;
+}
+
+#preview-frame-wrap.mode-mobile #preview-frame {
+    width: 390px;
+    flex: 0 0 390px;
+}
+
+#preview-frame-wrap.mode-print #preview-frame {
+    width: 900px;
+    flex: 0 0 900px;
+}
+
+.studio-inspector label {
+    display: grid;
+    gap: 6px;
+    margin: 16px 0;
+    font-size: 12px;
+}
+
+.studio-inspector output {
+    justify-self: end;
+    color: rgba(0, 0, 0, 0.56);
+}
+
+.studio-inspector input[type="range"] {
+    width: 100%;
+}
+
+.studio-inspector select {
+    width: 100%;
+    padding: 7px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    border-radius: 7px;
+    background: #fff;
+}
+
+.studio-inspector fieldset {
+    margin: 20px 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+}
+
+.studio-inspector legend {
+    padding: 0 5px;
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.studio-file-meta {
+    margin: 0 0 18px;
+}
+
+.studio-file-meta dt {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.48);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.studio-file-meta dd {
+    margin: 4px 0 0;
+    overflow-wrap: anywhere;
+}
+
+.studio-secondary {
+    width: 100%;
+    margin-top: 8px;
+    background: transparent;
+}
+
+.studio-help {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(0, 0, 0, 0.10);
+    color: rgba(0, 0, 0, 0.58);
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+.studio-help h3 {
+    color: #161616;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.studio-manifest {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(0, 0, 0, 0.10);
+}
+
+.studio-manifest h3 {
+    margin: 0 0 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.studio-manifest textarea {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
+    resize: vertical;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    border-radius: 8px;
+    padding: 8px;
+    background: #fff;
+    font: 10px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.studio-manifest .studio-button {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}

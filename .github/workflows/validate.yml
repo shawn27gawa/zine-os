@@ -10,7 +10,15 @@ on:
       - "examples/**"
       - "scripts/validate_zine.py"
       - "scripts/build_preview.py"
+      - "scripts/build_asset_studio.py"
+      - "scripts/validate_asset_placement.py"
+      - "scripts/test_asset_placement_studio.py"
       - "scripts/test_preview_asset_paths.py"
+      - "scripts/build_print_package.py"
+      - "scripts/test_print_package.py"
+      - "studio/**"
+      - "docs/ASSET_PLACEMENT_UI.md"
+      - "docs/PRINT_OUTPUT.md"
       - ".github/workflows/validate.yml"
 
   pull_request:
@@ -20,7 +28,15 @@ on:
       - "examples/**"
       - "scripts/validate_zine.py"
       - "scripts/build_preview.py"
+      - "scripts/build_asset_studio.py"
+      - "scripts/validate_asset_placement.py"
+      - "scripts/test_asset_placement_studio.py"
       - "scripts/test_preview_asset_paths.py"
+      - "scripts/build_print_package.py"
+      - "scripts/test_print_package.py"
+      - "studio/**"
+      - "docs/ASSET_PLACEMENT_UI.md"
+      - "docs/PRINT_OUTPUT.md"
       - ".github/workflows/validate.yml"
 
   workflow_dispatch:
@@ -45,7 +61,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install PyYAML jsonschema referencing
+          pip install PyYAML jsonschema referencing pypdf
 
       - name: Validate basic ZineOS template
         run: |
@@ -63,12 +79,25 @@ jobs:
         run: |
           python scripts/test_preview_asset_paths.py
 
+      - name: Build ZINE_001 Asset Placement Studio
+        run: |
+          python scripts/build_asset_studio.py examples/ZINE_001/zine.yaml preview/ZINE_001_STUDIO.html
+
+      - name: Test Asset Placement Studio
+        run: |
+          python scripts/test_asset_placement_studio.py
+
+      - name: Test standard print output
+        run: |
+          python scripts/test_print_package.py
+
       - name: Upload ZINE_001 HTML preview
         uses: actions/upload-artifact@v7
         with:
           name: ZINE_001-preview
           path: |
             preview/ZINE_001.html
+            preview/ZINE_001_STUDIO.html
             examples/ZINE_001/assets/
           if-no-files-found: error
           retention-days: 14

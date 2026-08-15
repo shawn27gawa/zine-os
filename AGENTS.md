@@ -36,7 +36,13 @@ The agent translates stated intent into the smallest reasonable implementation, 
 - `examples/ZINE_001/`: the first real publication, its source YAML, page map, documentation, and assets.
 - `scripts/validate_zine.py`: schema validation entry point.
 - `scripts/build_preview.py`: deterministic HTML preview renderer, including screen, responsive, and layout-specific styles.
+- `scripts/build_asset_studio.py`: review-first drag-and-drop placement surface that exports Builder manifests without writing publication files.
+- `scripts/validate_asset_placement.py`: deterministic validation for exported asset-placement manifests.
+- `studio/`: dependency-free Asset Placement UI styles and browser behavior.
 - `scripts/test_preview_asset_paths.py`: deterministic preview asset-path regression coverage.
+- `scripts/build_print_package.py`: A5 saddle-stitch CMYK print-package generator.
+- `scripts/test_print_package.py`: deterministic print geometry and packaging regression coverage.
+- `docs/PRINT_OUTPUT.md`: creator-approved standard print-output specification.
 - `.github/workflows/validate.yml`: CI source of truth for the supported validation and preview-build sequence.
 
 Do not create future directories or abstractions until a concrete repository responsibility requires them.
@@ -119,10 +125,13 @@ The canonical local **Validate ZineOS** command mirrors CI:
 python scripts/validate_zine.py templates/basic/zine.yaml && \
 python scripts/validate_zine.py examples/ZINE_001/zine.yaml && \
 python scripts/build_preview.py examples/ZINE_001/zine.yaml preview/ZINE_001.html && \
-python scripts/test_preview_asset_paths.py
+python scripts/test_preview_asset_paths.py && \
+python scripts/build_asset_studio.py examples/ZINE_001/zine.yaml preview/ZINE_001_STUDIO.html && \
+python scripts/test_asset_placement_studio.py && \
+python scripts/test_print_package.py
 ```
 
-Use the available Python executable for the environment (for example, `python3` when `python` is unavailable) with the CI dependencies `PyYAML`, `jsonschema`, and `referencing` installed. A successful preview build alone does not replace schema validation.
+Use the available Python executable for the environment (for example, `python3` when `python` is unavailable) with the CI dependencies `PyYAML`, `jsonschema`, `referencing`, and `pypdf` installed. A successful preview build alone does not replace schema validation.
 
 For visual changes, also inspect the generated preview at relevant desktop and mobile widths. For print-affecting changes, inspect physical page/spread dimensions, fold, margins, bleed, and print-specific rules. If visual inspection is not possible, say so and report that limitation as a remaining risk.
 
