@@ -38,6 +38,8 @@ The agent translates stated intent into the smallest reasonable implementation, 
 - `scripts/build_preview.py`: deterministic HTML preview renderer, including screen, responsive, and layout-specific styles.
 - `scripts/build_asset_studio.py`: review-first drag-and-drop placement surface that exports Builder manifests without writing publication files.
 - `scripts/validate_asset_placement.py`: deterministic validation for exported asset-placement manifests.
+- `scripts/validate_text_placement.py`: deterministic validation for stable text-edit handoffs.
+- `scripts/apply_manifest.py`: dry-run-first, source-verified application for Asset and Text manifests.
 - `studio/`: dependency-free Asset Placement UI styles and browser behavior.
 - `scripts/test_preview_asset_paths.py`: deterministic preview asset-path regression coverage.
 - `scripts/build_print_package.py`: A5 saddle-stitch CMYK print-package generator.
@@ -128,6 +130,7 @@ python scripts/build_preview.py examples/ZINE_001/zine.yaml preview/ZINE_001.htm
 python scripts/test_preview_asset_paths.py && \
 python scripts/build_asset_studio.py examples/ZINE_001/zine.yaml preview/ZINE_001_STUDIO.html && \
 python scripts/test_asset_placement_studio.py && \
+python scripts/test_manifest_application.py && \
 python scripts/test_print_package.py
 ```
 

@@ -84,6 +84,8 @@
                 kind: slot.kind,
                 blockId: slot.blockId || null,
                 assetId: slot.assetId || null,
+                assetIndex: slot.assetIndex ?? null,
+                cellIndex: slot.cellIndex ?? null,
                 role: slot.role || null,
                 monochrome: Boolean(slot.monochrome),
                 source: null,
@@ -478,6 +480,7 @@
         version: 1,
         projectId: config.project.id,
         zinePath: config.zinePath,
+        sourceReference: config.sourceReference,
         createdAt: new Date().toISOString(),
         placements: [...placementState.values()]
             .filter((state) => state.source || state.dirty)

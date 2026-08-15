@@ -53,6 +53,17 @@ Validate a manifest before Builder implementation:
 python scripts/validate_asset_placement.py path/to/asset-placement.json
 ```
 
+Preview the exact publication diff without writing files:
+
+```sh
+python scripts/apply_manifest.py path/to/asset-placement.json \
+  --asset-dir /absolute/path/to/photo-inbox
+```
+
+After reviewing the diff, add `--apply` to write the YAML change and copy new
+images without overwriting an existing publication asset. See
+[MANIFEST_APPLICATION.md](MANIFEST_APPLICATION.md) for the full safety contract.
+
 The Builder uses the validated manifest to make a narrow, reviewable asset and YAML diff. The exact standard preview produced after that diff—not the in-memory Studio state—is the creator-facing approval artifact.
 
 Importing a manifest restores settings and embedded review thumbnails when available. Original full-resolution source files are still required for final publication implementation.

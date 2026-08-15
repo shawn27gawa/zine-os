@@ -12,12 +12,16 @@ on:
       - "scripts/build_preview.py"
       - "scripts/build_asset_studio.py"
       - "scripts/validate_asset_placement.py"
+      - "scripts/validate_text_placement.py"
+      - "scripts/apply_manifest.py"
       - "scripts/test_asset_placement_studio.py"
+      - "scripts/test_manifest_application.py"
       - "scripts/test_preview_asset_paths.py"
       - "scripts/build_print_package.py"
       - "scripts/test_print_package.py"
       - "studio/**"
       - "docs/ASSET_PLACEMENT_UI.md"
+      - "docs/MANIFEST_APPLICATION.md"
       - "docs/PRINT_OUTPUT.md"
       - ".github/workflows/validate.yml"
 
@@ -30,12 +34,16 @@ on:
       - "scripts/build_preview.py"
       - "scripts/build_asset_studio.py"
       - "scripts/validate_asset_placement.py"
+      - "scripts/validate_text_placement.py"
+      - "scripts/apply_manifest.py"
       - "scripts/test_asset_placement_studio.py"
+      - "scripts/test_manifest_application.py"
       - "scripts/test_preview_asset_paths.py"
       - "scripts/build_print_package.py"
       - "scripts/test_print_package.py"
       - "studio/**"
       - "docs/ASSET_PLACEMENT_UI.md"
+      - "docs/MANIFEST_APPLICATION.md"
       - "docs/PRINT_OUTPUT.md"
       - ".github/workflows/validate.yml"
 
@@ -86,6 +94,10 @@ jobs:
       - name: Test Asset Placement Studio
         run: |
           python scripts/test_asset_placement_studio.py
+
+      - name: Test safe manifest application
+        run: |
+          python scripts/test_manifest_application.py
 
       - name: Test standard print output
         run: |

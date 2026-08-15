@@ -51,12 +51,30 @@ def validate_manifest_data(data):
     if not isinstance(data.get("projectId"), str) or not data.get("projectId"):
         errors.append("projectId must be a non-empty string")
 
+    if not isinstance(data.get("zinePath"), str) or not data.get("zinePath"):
+        errors.append("zinePath must be a non-empty string")
+    elif PurePath(data["zinePath"]).is_absolute() or ".." in PurePath(
+        data["zinePath"]
+    ).parts:
+        errors.append("zinePath must be a safe repository-relative path")
+
+    source_reference = data.get("sourceReference")
+    if not isinstance(source_reference, dict):
+        errors.append("sourceReference must be an object")
+    else:
+        digest = source_reference.get("zineSha256")
+        if not isinstance(digest, str) or len(digest) != 64 or any(
+            character not in "0123456789abcdef" for character in digest
+        ):
+            errors.append("sourceReference.zineSha256 must be lowercase SHA-256")
+
     placements = data.get("placements")
     if not isinstance(placements, list):
         errors.append("placements must be an array")
         return errors
 
     seen_keys = set()
+    seen_targets = set()
 
     for index, placement in enumerate(placements):
         path = f"placements[{index}]"
@@ -76,6 +94,33 @@ def validate_manifest_data(data):
         if placement.get("kind") not in {"asset", "memory-cell", "free-layer"}:
             errors.append(f"{path}.kind is unsupported")
 
+        if not isinstance(placement.get("pageUnitId"), str):
+            errors.append(f"{path}.pageUnitId must be a string")
+
+        if placement.get("kind") == "asset":
+            if not isinstance(placement.get("blockId"), str):
+                errors.append(f"{path}.blockId must be a string for asset placement")
+            if not isinstance(placement.get("assetId"), str):
+                errors.append(f"{path}.assetId must be a string for asset placement")
+
+        if placement.get("kind") == "memory-cell" and not isinstance(
+            placement.get("cellIndex"), int
+        ):
+            errors.append(f"{path}.cellIndex must be an integer for memory-cell")
+
+        target = (
+            placement.get("kind"),
+            placement.get("pageUnitId"),
+            placement.get("blockId"),
+            placement.get("assetIndex"),
+            placement.get("cellIndex"),
+        )
+        if isinstance(placement.get("pageUnitId"), str):
+            if target in seen_targets:
+                errors.append(f"{path} duplicates target {target}")
+            else:
+                seen_targets.add(target)
+
         source = placement.get("source")
         if source is not None:
             if not isinstance(source, dict):
@@ -86,6 +131,8 @@ def validate_manifest_data(data):
                     errors.append(f"{path}.source.name must be a non-empty string")
                 elif PurePath(source_name).name != source_name:
                     errors.append(f"{path}.source.name must not contain a path")
+                if not isinstance(source.get("size"), int) or source.get("size") < 0:
+                    errors.append(f"{path}.source.size must be a non-negative integer")
 
         settings = placement.get("settings")
         if not isinstance(settings, dict):
