@@ -57,7 +57,50 @@ def resolve_asset_path(asset_id, assets, zine_dir, output_dir):
     return asset, relative_path
 
 
-def render_asset_visual(asset_id, assets, zine_dir, output_dir, label="IMAGE"):
+def placement_attributes(placement):
+    if not isinstance(placement, dict):
+        return ""
+    desktop = placement.get("desktop", {})
+    mobile = placement.get("mobile", desktop)
+
+    def mode_values(settings, prefix):
+        fit = settings.get("fit", "cover")
+        x = settings.get("x", 50)
+        y = settings.get("y", 50)
+        scale = settings.get("scale", 1)
+        return (
+            f"--studio-{prefix}fit: {escape(str(fit))}; "
+            f"--studio-{prefix}position: {escape(str(x))}% {escape(str(y))}%; "
+            f"--studio-{prefix}scale: {escape(str(scale))};"
+        )
+
+    style = f"{mode_values(desktop, '')} {mode_values(mobile, 'mobile-')}"
+    return f' data-studio-placement style="{style}"'
+
+
+def text_placement_attributes(placement):
+    if not isinstance(placement, dict):
+        return ""
+    variables = {
+        "font_size_px": ("font-size", "px"),
+        "line_height": ("line-height", ""),
+        "width_percent": ("width", "%"),
+        "x_mm": ("x", "mm"),
+        "y_mm": ("y", "mm"),
+        "columns": ("columns", ""),
+        "rule_spacing_mm": ("rule-spacing", "mm"),
+    }
+    values = []
+    for field, (name, unit) in variables.items():
+        value = placement.get(field)
+        if value is not None:
+            values.append(f"--studio-text-{name}: {escape(str(value))}{unit};")
+    return f' data-studio-text-placement style="{" ".join(values)}"' if values else ""
+
+
+def render_asset_visual(
+    asset_id, assets, zine_dir, output_dir, label="IMAGE", placement=None
+):
     asset, relative_path = resolve_asset_path(
         asset_id,
         assets,
@@ -69,7 +112,7 @@ def render_asset_visual(asset_id, assets, zine_dir, output_dir, label="IMAGE"):
 
     if relative_path:
         return f"""
-        <figure class="asset">
+        <figure class="asset"{placement_attributes(placement)}>
             <img src="{escape(relative_path)}" alt="{escape(title)}">
             <figcaption>{escape(title)}</figcaption>
         </figure>
@@ -92,6 +135,7 @@ def render_memory_grid(layout, assets, zine_dir, output_dir):
 
     filled_cells = set(settings.get("filled_cells", []))
     image_assets = settings.get("assets", [])
+    asset_placements = settings.get("asset_placements", {})
 
     cells = []
 
@@ -108,9 +152,16 @@ def render_memory_grid(layout, assets, zine_dir, output_dir):
 
         if relative_path:
             title = asset.get("title", asset_id)
-            image_html = (
+            placement = asset_placements.get(asset_id)
+            image = (
                 f'<img src="{escape(relative_path)}" '
                 f'alt="{escape(title)}">'
+            )
+            image_html = (
+                f'<span class="memory-image"'
+                f'{placement_attributes(placement)}>{image}</span>'
+                if placement
+                else image
             )
 
         cells.append(
@@ -172,8 +223,9 @@ def render_checklist(block):
     """
 
 
-def render_gallery(block, assets, zine_dir, output_dir):
+def render_gallery(block, assets, zine_dir, output_dir, placements=None):
     rendered_assets = []
+    placements = placements or {}
 
     for asset_id in block.get("assets", []):
         rendered_assets.append(
@@ -183,6 +235,7 @@ def render_gallery(block, assets, zine_dir, output_dir):
                 zine_dir,
                 output_dir,
                 label="PHOTO",
+                placement=placements.get(asset_id),
             )
         )
 
@@ -195,6 +248,8 @@ def render_gallery(block, assets, zine_dir, output_dir):
 
 def render_block(block, assets, zine_dir, output_dir):
     block_type = block.get("type", "UNKNOWN")
+    studio = block.get("metadata", {}).get("zineos_studio", {})
+    asset_placements = studio.get("asset_placements", {})
 
     content = ""
 
@@ -205,6 +260,7 @@ def render_block(block, assets, zine_dir, output_dir):
             zine_dir,
             output_dir,
             label="PHOTO",
+            placement=asset_placements.get(block.get("asset")),
         )
 
     elif block_type == "MAP":
@@ -214,6 +270,7 @@ def render_block(block, assets, zine_dir, output_dir):
             zine_dir,
             output_dir,
             label="MAP",
+            placement=asset_placements.get(block.get("asset")),
         )
 
     elif block_type == "GALLERY":
@@ -222,6 +279,7 @@ def render_block(block, assets, zine_dir, output_dir):
             assets,
             zine_dir,
             output_dir,
+            placements=asset_placements,
         )
 
     elif block_type == "CLOSEUP":
@@ -231,6 +289,7 @@ def render_block(block, assets, zine_dir, output_dir):
             zine_dir,
             output_dir,
             label="CLOSEUP",
+            placement=asset_placements.get(block.get("asset")),
         )
 
         region = block.get("region", {})
@@ -318,8 +377,10 @@ def render_block(block, assets, zine_dir, output_dir):
         else ""
     )
 
+    text_attributes = text_placement_attributes(studio.get("text_placement"))
+
     return f"""
-    <section class="block block-{escape(block_type.lower())}">
+    <section class="block block-{escape(block_type.lower())}"{text_attributes}>
         <div class="block-label">{escape(block_type)}</div>
         {content}
         {caption_html}
@@ -1742,6 +1803,62 @@ def build_html(zine_data, zine_path, output_path):
     }
 }
     """
+
+    if "data-studio-" in page_units:
+        css += """
+
+/* ZineOS Studio applied placement controls */
+
+[data-studio-placement] {
+    overflow: hidden;
+}
+
+[data-studio-placement] img {
+    object-fit: var(--studio-fit) !important;
+    object-position: var(--studio-position) !important;
+    transform: scale(var(--studio-scale)) !important;
+    transform-origin: var(--studio-position) !important;
+}
+
+.memory-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+[data-studio-text-placement] {
+    width: var(--studio-text-width, auto) !important;
+    transform: translate(
+        var(--studio-text-x, 0),
+        var(--studio-text-y, 0)
+    ) !important;
+}
+
+[data-studio-text-placement] .text-content,
+[data-studio-text-placement] .question {
+    font-size: var(--studio-text-font-size, inherit) !important;
+    line-height: var(--studio-text-line-height, inherit) !important;
+    column-count: var(--studio-text-columns, 1);
+}
+
+@media (max-width: 760px) {
+    [data-studio-placement] img {
+        object-fit: var(--studio-mobile-fit, var(--studio-fit)) !important;
+        object-position: var(
+            --studio-mobile-position,
+            var(--studio-position)
+        ) !important;
+        transform: scale(
+            var(--studio-mobile-scale, var(--studio-scale))
+        ) !important;
+        transform-origin: var(
+            --studio-mobile-position,
+            var(--studio-position)
+        ) !important;
+    }
+}
+"""
 
     return f"""<!DOCTYPE html>
 <html lang="en">

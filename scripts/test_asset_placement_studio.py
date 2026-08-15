@@ -2,6 +2,7 @@
 
 import base64
 import copy
+import hashlib
 import re
 import tempfile
 import unittest
@@ -34,6 +35,10 @@ def valid_manifest():
         "version": 1,
         "projectId": "zine-001-our-memory",
         "zinePath": "examples/ZINE_001/zine.yaml",
+        "sourceReference": {
+            "gitCommit": "e7a54ff8c886d83051fa37d9ce2c36d6d47ba78e",
+            "zineSha256": "a" * 64,
+        },
         "placements": [
             {
                 "key": "page-008:virtual:secondary-image",
@@ -42,6 +47,8 @@ def valid_manifest():
                 "kind": "free-layer",
                 "blockId": None,
                 "assetId": None,
+                "assetIndex": None,
+                "cellIndex": None,
                 "role": "secondary-image",
                 "monochrome": False,
                 "source": {
@@ -78,6 +85,8 @@ class AssetPlacementStudioTests(unittest.TestCase):
 
         self.assertEqual(len(memory_slots), 60)
         self.assertTrue(all(slot["monochrome"] for slot in memory_slots))
+        self.assertEqual(memory_slots[0]["assetId"], "memory-001")
+        self.assertEqual(memory_slots[30]["assetId"], "memory-001")
         self.assertEqual(free_layers, [])
         self.assertIn("spread-004-005:block-003:photo-001", asset_keys)
         self.assertIn("spread-020-021:block-023:photo-016", asset_keys)
@@ -88,6 +97,10 @@ class AssetPlacementStudioTests(unittest.TestCase):
             if slot["key"] == "spread-008-009:block-007:photo-006"
         )
         self.assertEqual(p67_slot["defaultPosition"], "center 70%")
+        self.assertEqual(
+            config["sourceReference"]["zineSha256"],
+            hashlib.sha256(ZINE_PATH.read_bytes()).hexdigest(),
+        )
 
     def test_studio_build_does_not_mutate_publication_data(self):
         original = copy.deepcopy(self.zine_data)

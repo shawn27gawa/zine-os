@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import base64
+import hashlib
 import html
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -14,6 +16,24 @@ from build_preview import ROOT, build_html, load_yaml
 DEFAULT_ZINE_PATH = ROOT / "examples" / "ZINE_001" / "zine.yaml"
 DEFAULT_OUTPUT_PATH = ROOT / "preview" / "ZINE_001_STUDIO.html"
 STUDIO_DIR = ROOT / "studio"
+
+
+def source_reference(zine_path):
+    try:
+        git_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        git_commit = None
+
+    return {
+        "gitCommit": git_commit,
+        "zineSha256": hashlib.sha256(zine_path.read_bytes()).hexdigest(),
+    }
 
 
 def encode_text(value):
@@ -74,6 +94,7 @@ def memory_grid_slots(page_unit, article_index):
     settings = layout.get("settings", {})
     rows = int(settings.get("rows", 4))
     columns = int(settings.get("columns", 5))
+    image_assets = settings.get("assets", [])
 
     return [
         {
@@ -82,6 +103,11 @@ def memory_grid_slots(page_unit, article_index):
             "label": f"Memory cell {index}",
             "articleIndex": article_index,
             "cellIndex": index - 1,
+            "assetId": (
+                image_assets[index - 1]
+                if index <= len(image_assets)
+                else None
+            ),
             "monochrome": True,
         }
         for index in range(1, rows * columns + 1)
@@ -147,6 +173,7 @@ def build_studio_config(zine_data, zine_path):
             "title": project.get("title", "Untitled Zine"),
         },
         "zinePath": str(zine_path.relative_to(ROOT)),
+        "sourceReference": source_reference(zine_path),
         "pageUnits": page_units,
     }
 
