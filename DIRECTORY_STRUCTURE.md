@@ -28,6 +28,8 @@ zine-os/
 │
 ├── templates/
 │
+├── projects/
+│
 ├── examples/
 │
 ├── agents/
@@ -144,7 +146,18 @@ Templates are conveniences, not rules.
 
 ---
 
-## 5. examples/
+## 5. projects/
+
+The `projects/` directory contains creator-owned publications currently being
+made with ZineOS. New projects start from a neutral template and own their
+source YAML, approved assets, inbox inventory, and review artifacts.
+
+Project bootstrap must not copy the story, photographs, map, page sequence, or
+visual decisions of an example publication.
+
+---
+
+## 6. examples/
 
 The `examples/` directory contains complete or partial examples of publications created with ZineOS.
 
@@ -169,7 +182,7 @@ The first real ZineOS publication should also serve as the first major example p
 
 ---
 
-## 6. agents/
+## 7. agents/
 
 The `agents/` directory defines optional software-assisted editorial roles.
 
@@ -208,7 +221,7 @@ The creator remains the final decision-maker.
 
 ---
 
-## 7. preview/
+## 8. preview/
 
 The `preview/` directory contains tools for reviewing a publication before final export.
 
@@ -227,7 +240,7 @@ Preview should support editorial decision-making, not only technical validation.
 
 ---
 
-## 8. integrations/
+## 9. integrations/
 
 The `integrations/` directory contains optional connections between ZineOS and external tools.
 
@@ -270,13 +283,15 @@ docs/
 blocks/
 schema/
 templates/
+projects/
 examples/
 agents/
 preview/
 integrations/
 ```
 
-This structure is intentionally minimal.
+This structure is intentionally minimal. `projects/` was added when ZineOS
+gained a concrete new-publication bootstrap responsibility.
 
 Future directories should be added only when the project has a concrete need for them.
 

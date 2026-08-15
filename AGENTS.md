@@ -33,10 +33,12 @@ The agent translates stated intent into the smallest reasonable implementation, 
 - `blocks/`: editorial Block definitions and design rules.
 - `schema/`: JSON Schemas for publications and Blocks; changes here are high risk.
 - `templates/`: editable starter publication structures.
+- `projects/`: creator publications generated from neutral templates; keep project decisions separate from completed examples.
 - `examples/ZINE_001/`: the first real publication, its source YAML, page map, documentation, and assets.
 - `scripts/validate_zine.py`: schema validation entry point.
 - `scripts/build_preview.py`: deterministic HTML preview renderer, including screen, responsive, and layout-specific styles.
 - `scripts/build_asset_studio.py`: unified, review-first image/text editing surface that exports Builder manifests without writing publication files.
+- `scripts/bootstrap_project.py`: creates a neutral publication draft and a non-destructive, creator-reviewable photo-inbox inventory.
 - `scripts/validate_asset_placement.py`: deterministic validation for exported asset-placement manifests.
 - `scripts/validate_text_placement.py`: deterministic validation for stable text-edit handoffs.
 - `scripts/apply_manifest.py`: dry-run-first, source-verified application for Asset and Text manifests.
