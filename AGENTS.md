@@ -39,6 +39,8 @@ The agent translates stated intent into the smallest reasonable implementation, 
 - `scripts/build_preview.py`: deterministic HTML preview renderer, including screen, responsive, and layout-specific styles.
 - `scripts/build_asset_studio.py`: unified, review-first image/text editing surface that exports Builder manifests without writing publication files.
 - `scripts/bootstrap_project.py`: creates a neutral publication draft and a non-destructive, creator-reviewable photo-inbox inventory.
+- `scripts/validate_assets.py`: validates required asset references, paths, filename case, and file-format integrity.
+- `scripts/release_zine.py`: fail-fast, non-overwriting orchestration for review and formal print release artifacts.
 - `scripts/validate_asset_placement.py`: deterministic validation for exported asset-placement manifests.
 - `scripts/validate_text_placement.py`: deterministic validation for stable text-edit handoffs.
 - `scripts/apply_manifest.py`: dry-run-first, source-verified application for Asset and Text manifests.
@@ -133,8 +135,22 @@ python scripts/test_preview_asset_paths.py && \
 python scripts/build_asset_studio.py examples/ZINE_001/zine.yaml preview/ZINE_001_STUDIO.html && \
 python scripts/test_asset_placement_studio.py && \
 python scripts/test_manifest_application.py && \
+python scripts/test_project_bootstrap.py && \
+python scripts/validate_assets.py examples/ZINE_001/zine.yaml && \
+python scripts/test_asset_integrity.py && \
+python scripts/test_release_zine.py && \
 python scripts/test_print_package.py
 ```
+
+For a complete, immutable creator-review artifact set, use the canonical
+one-command review release:
+
+```sh
+python scripts/release_zine.py path/to/zine.yaml --mode review
+```
+
+Formal CMYK output uses `--mode print --icc-profile /absolute/path/to/profile.icc`.
+Release output never authorizes publication or replaces creator review.
 
 Use the available Python executable for the environment (for example, `python3` when `python` is unavailable) with the CI dependencies `PyYAML`, `jsonschema`, `referencing`, and `pypdf` installed. A successful preview build alone does not replace schema validation.
 

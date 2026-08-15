@@ -25,6 +25,15 @@ New publications start from a neutral project rather than copying ZINE_001.
 See [Project and Inbox Bootstrap](docs/PROJECT_BOOTSTRAP.md) for the dry-run-first
 workflow that inventories original photographs without selecting or modifying them.
 
+Build a validated creator-review artifact set with one command:
+
+```sh
+python scripts/release_zine.py path/to/zine.yaml --mode review
+```
+
+See [One-command Release](docs/RELEASE_WORKFLOW.md) for immutable output and
+formal CMYK print requirements.
+
 See [docs/V1_ROADMAP.md](docs/V1_ROADMAP.md) for the v1 completion criteria.
 
 ## Core Ideas
