@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
 import json
+import re
 import sys
 from pathlib import Path, PurePath
 
 
 FORMAT = "zineos-text-placement"
 VERSION = 1
+FIELD_PATTERN = re.compile(r"^(content|caption|title|items\[[0-9]+\]\.text)$")
 TYPOGRAPHY_RANGES = {
     "font_size_px": (6, 96),
     "line_height": (0.8, 4),
@@ -89,12 +91,15 @@ def validate_manifest_data(data):
         for field in ("key", "pageUnitId", "blockId", "originalText", "text"):
             if not isinstance(edit.get(field), str):
                 errors.append(f"{path}.{field} must be a string")
+        field = edit.get("field", "content")
+        if not isinstance(field, str) or not FIELD_PATTERN.fullmatch(field):
+            errors.append(f"{path}.field is unsupported")
         key = edit.get("key")
         if isinstance(key, str):
             if key in seen:
                 errors.append(f"{path}.key duplicates {key}")
             seen.add(key)
-        target = (edit.get("pageUnitId"), edit.get("blockId"))
+        target = (edit.get("pageUnitId"), edit.get("blockId"), field)
         if all(isinstance(part, str) for part in target):
             if target in seen_targets:
                 errors.append(f"{path} duplicates target {target}")

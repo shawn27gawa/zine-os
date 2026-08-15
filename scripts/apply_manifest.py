@@ -200,32 +200,56 @@ def validate_target(manifest, zine_path, raw, data):
         )
 
 
+def text_field_target(block, pairs, field):
+    if field in {"content", "caption", "title"}:
+        if field not in pairs or not isinstance(block.get(field), str):
+            raise ManifestError(f"Target block has no inline field: {field}")
+        return block[field], pairs[field][1]
+
+    match = re.fullmatch(r"items\[([0-9]+)]\.text", field)
+    if not match or "items" not in pairs:
+        raise ManifestError(f"Unsupported text field: {field}")
+    index = int(match.group(1))
+    items = block.get("items", [])
+    sequence = pairs["items"][1]
+    if not 0 <= index < len(items) or not 0 <= index < len(sequence.value):
+        raise ManifestError(f"Text item is outside target Block: {field}")
+    item_pairs = node_pairs(sequence.value[index])
+    if "text" not in item_pairs or not isinstance(items[index].get("text"), str):
+        raise ManifestError(f"Target item has no text field: {field}")
+    return items[index]["text"], item_pairs["text"][1]
+
+
 def apply_text_manifest(manifest, data, indexes, replacements):
     _, pages, _, _, block_nodes = indexes
     block_updates = {}
     for edit in manifest["edits"]:
         page_id = edit["pageUnitId"]
         block_id = edit["blockId"]
+        field = edit.get("field", "content")
         if page_id not in pages or (page_id, block_id) not in block_nodes:
             raise ManifestError(f"Text target not found: {page_id}/{block_id}")
         block = next(
             block for block in pages[page_id]["blocks"] if block.get("id") == block_id
         )
-        if block.get("content") != edit["originalText"]:
-            raise ManifestError(f"Original text mismatch: {page_id}/{block_id}")
         block_node, pairs = block_nodes[(page_id, block_id)]
-        if "content" not in pairs:
-            raise ManifestError(f"Target block has no inline content: {block_id}")
-        content_node = pairs["content"][1]
+        current_text, content_node = text_field_target(block, pairs, field)
+        if current_text != edit["originalText"]:
+            raise ManifestError(f"Original text mismatch: {page_id}/{block_id}/{field}")
         replacements.append((
             content_node.start_mark.index,
             content_node.end_mark.index,
             literal_scalar(edit["text"], content_node.start_mark.column),
         ))
-        metadata = deepcopy(block.get("metadata", {}))
         if edit.get("typography") is not None:
+            metadata = deepcopy(
+                block_updates.get(
+                    (page_id, block_id),
+                    (None, block.get("metadata", {})),
+                )[1]
+            )
             studio = metadata.setdefault("zineos_studio", {})
-            studio["text_placement"] = edit["typography"]
+            studio.setdefault("text_placements", {})[field] = edit["typography"]
             block_updates[(page_id, block_id)] = (block_node, metadata)
     for block_node, metadata in block_updates.values():
         set_block_metadata(replacements, block_node, metadata)

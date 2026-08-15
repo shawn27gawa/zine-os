@@ -1,6 +1,8 @@
-# ZineOS Asset Placement UI
+# ZineOS Unified Studio
 
-The Asset Placement UI is a local, review-first surface for assigning photographs and recording creator-approved crop decisions.
+Unified Studio is a local, review-first surface for assigning photographs,
+recording creator-approved crop decisions, and editing publication text and
+relevant typography in one exact preview.
 
 It follows the ZineOS operating rule:
 
@@ -16,7 +18,10 @@ python scripts/build_asset_studio.py \
   preview/ZINE_001_STUDIO.html
 ```
 
-Open the generated HTML in a browser, then drag image files onto outlined PHOTO, GALLERY, CLOSEUP, memory-grid, or free-layer slots.
+Open the generated HTML in a browser. Drag image files onto outlined PHOTO,
+GALLERY, CLOSEUP, memory-grid, or free-layer slots, or select outlined text to
+edit it in the inspector. The historical script and stylesheet filenames retain
+`asset` naming for command compatibility.
 
 ## Controls
 
@@ -43,14 +48,32 @@ Grid photographs are shown in monochrome inside Studio. The source files remain 
 
 The slot defaults to `contain` so the two glasses are not silently cropped. Bottle background removal is a separate, non-destructive asset-preparation task; Studio places the resulting transparent asset but does not generate or alter cutouts.
 
+## Text Editing
+
+Unified Studio exposes inline Block content, captions, questions, checklist
+titles, and individual checklist items through stable page, Block, and field
+targets. The inspector supports text, font size, line height, width, x/y
+offset, and columns. Changes update only the in-memory exact preview until a
+text manifest is exported.
+
+Image and text handoffs remain separate, compatible manifest formats so each
+can be validated, reviewed, and applied independently. Import accepts either
+format only when project, publication path, source SHA-256, and stable targets
+match the open Studio.
+
 ## Manifest
 
-Use **Export manifest** to download a JSON handoff. The manifest records source filenames, placement settings, optional local thumbnails, targets, and responsive overrides. It does not contain repository write authority.
+Use **Export images** or **Export text** to download the applicable JSON
+handoff. Asset manifests record source filenames, placement settings, optional
+local thumbnails, targets, and responsive overrides. Text manifests record
+stable fields, exact original/replacement text, and optional typography. They
+do not contain repository write authority.
 
 Validate a manifest before Builder implementation:
 
 ```sh
 python scripts/validate_asset_placement.py path/to/asset-placement.json
+python scripts/validate_text_placement.py path/to/text-placement.json
 ```
 
 Preview the exact publication diff without writing files:
@@ -72,7 +95,7 @@ Importing a manifest restores settings and embedded review thumbnails when avail
 
 - No backend, database, external API, runtime map service, or agent framework is used.
 - No new browser or package dependency is required.
-- Dragged files remain in browser memory until the creator exports a manifest.
+- Dragged files and text edits remain in browser memory until the creator exports a manifest.
 - Original photographs are never modified.
 - Studio cannot commit, push, publish, or merge.
 - A manifest never replaces schema validation, preview building, asset-integrity checks, responsive review, print review, or creator approval.

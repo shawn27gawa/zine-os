@@ -16,7 +16,8 @@ body {
 
 button,
 select,
-input {
+input,
+textarea {
     font: inherit;
 }
 
@@ -73,7 +74,7 @@ button:hover,
 
 .studio-shell {
     display: grid;
-    grid-template-columns: 190px minmax(560px, 1fr) 260px;
+    grid-template-columns: 190px minmax(560px, 1fr) 300px;
     min-height: calc(100vh - 58px);
 }
 
@@ -205,6 +206,17 @@ button:hover,
     border: 1px solid rgba(0, 0, 0, 0.16);
     border-radius: 7px;
     background: #fff;
+}
+
+#text-content {
+    width: 100%;
+    min-height: 180px;
+    resize: vertical;
+    padding: 9px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    border-radius: 7px;
+    background: #fff;
+    line-height: 1.5;
 }
 
 .studio-inspector fieldset {

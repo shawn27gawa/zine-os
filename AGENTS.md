@@ -36,7 +36,7 @@ The agent translates stated intent into the smallest reasonable implementation, 
 - `examples/ZINE_001/`: the first real publication, its source YAML, page map, documentation, and assets.
 - `scripts/validate_zine.py`: schema validation entry point.
 - `scripts/build_preview.py`: deterministic HTML preview renderer, including screen, responsive, and layout-specific styles.
-- `scripts/build_asset_studio.py`: review-first drag-and-drop placement surface that exports Builder manifests without writing publication files.
+- `scripts/build_asset_studio.py`: unified, review-first image/text editing surface that exports Builder manifests without writing publication files.
 - `scripts/validate_asset_placement.py`: deterministic validation for exported asset-placement manifests.
 - `scripts/validate_text_placement.py`: deterministic validation for stable text-edit handoffs.
 - `scripts/apply_manifest.py`: dry-run-first, source-verified application for Asset and Text manifests.

@@ -18,7 +18,7 @@ ZineOS helps with the mechanics.
 🚧 **Active prototype — ZineOS v1 integration**
 
 ZINE_001 has validated the publication schema, browser preview, creator-facing
-asset placement, and A5 saddle-stitch print workflow. The current work focuses
+image/text Studio, and A5 saddle-stitch print workflow. The current work focuses
 on connecting those proven parts into a repeatable end-to-end creation flow.
 
 See [docs/V1_ROADMAP.md](docs/V1_ROADMAP.md) for the v1 completion criteria.
