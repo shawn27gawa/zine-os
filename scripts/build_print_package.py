@@ -3,8 +3,10 @@
 """Build ZineOS A5 saddle-stitch print data with true 3 mm bleed.
 
 The browser renders each logical page once at finished A5 size. Bleed is added
-after CMYK conversion by reflecting only the outermost page edge outside the
-TrimBox. No bleed layer is allowed to overlap the finished page.
+after CMYK conversion by reflecting only the outermost page edge. Reflected
+regions underlap the finished page by a sub-point amount so PDF rasterizers do
+not expose a stitching seam at the TrimBox; the opaque finished page is merged
+last and remains visually authoritative.
 """
 
 import argparse
@@ -45,6 +47,8 @@ FINAL_SPREAD_WIDTH_MM = BLEED_SPREAD_WIDTH_MM + CROP_MARK_MARGIN_MM * 2
 FINAL_HEIGHT_MM = BLEED_HEIGHT_MM + CROP_MARK_MARGIN_MM * 2
 TARGET_DPI = 300
 NORMALIZE_OVERSCAN_MM = 0.5
+BLEED_SEAM_UNDERLAP_PT = 0.5
+IMPOSITION_SEAM_OVERLAP_PT = 0.5
 
 MM = 72 / 25.4
 A5_WIDTH_PT = A5_WIDTH_MM * MM
@@ -362,7 +366,7 @@ def _merge_region(target, source_page, box, matrix):
 
 
 def add_true_bleed(source_pdf, output_pdf):
-    """Add reflected 3 mm bleed strictly outside every A5 TrimBox."""
+    """Add reflected 3 mm bleed with a concealed seam-safe underlap."""
     from pypdf import PdfReader, PdfWriter
     from pypdf.generic import RectangleObject
 
@@ -371,27 +375,53 @@ def add_true_bleed(source_pdf, output_pdf):
     width = A5_WIDTH_PT
     height = A5_HEIGHT_PT
     bleed = BLEED_PT
+    underlap = BLEED_SEAM_UNDERLAP_PT
     for source_page in reader.pages:
         page = writer.add_blank_page(width=BLEED_WIDTH_PT, height=BLEED_HEIGHT_PT)
+        # Reflected regions extend 0.5 pt beneath the opaque finished page.
+        # This removes viewer-dependent hairlines without changing TrimBox
+        # content, the external 3 mm bleed, or the imposed page geometry.
         # Corners.
-        _merge_region(page, source_page, [0, 0, bleed, bleed],
-                      (-1, 0, 0, -1, bleed, bleed))
-        _merge_region(page, source_page, [width - bleed, 0, width, bleed],
-                      (-1, 0, 0, -1, 2 * width + bleed, bleed))
-        _merge_region(page, source_page, [0, height - bleed, bleed, height],
-                      (-1, 0, 0, -1, bleed, 2 * height + bleed))
+        _merge_region(
+            page,
+            source_page,
+            [0, 0, bleed + underlap, bleed + underlap],
+            (-1, 0, 0, -1, bleed + underlap, bleed + underlap),
+        )
+        _merge_region(
+            page,
+            source_page,
+            [width - bleed - underlap, 0, width, bleed + underlap],
+            (-1, 0, 0, -1, 2 * width + bleed - underlap, bleed + underlap),
+        )
+        _merge_region(
+            page,
+            source_page,
+            [0, height - bleed - underlap, bleed + underlap, height],
+            (-1, 0, 0, -1, bleed + underlap, 2 * height + bleed - underlap),
+        )
         _merge_region(page, source_page,
-                      [width - bleed, height - bleed, width, height],
-                      (-1, 0, 0, -1, 2 * width + bleed, 2 * height + bleed))
+                      [width - bleed - underlap, height - bleed - underlap,
+                       width, height],
+                      (-1, 0, 0, -1, 2 * width + bleed - underlap,
+                       2 * height + bleed - underlap))
         # Edge strips.
-        _merge_region(page, source_page, [0, 0, bleed, height],
-                      (-1, 0, 0, 1, bleed, bleed))
-        _merge_region(page, source_page, [width - bleed, 0, width, height],
-                      (-1, 0, 0, 1, 2 * width + bleed, bleed))
-        _merge_region(page, source_page, [0, 0, width, bleed],
-                      (1, 0, 0, -1, bleed, bleed))
-        _merge_region(page, source_page, [0, height - bleed, width, height],
-                      (1, 0, 0, -1, bleed, 2 * height + bleed))
+        _merge_region(page, source_page, [0, 0, bleed + underlap, height],
+                      (-1, 0, 0, 1, bleed + underlap, bleed))
+        _merge_region(
+            page,
+            source_page,
+            [width - bleed - underlap, 0, width, height],
+            (-1, 0, 0, 1, 2 * width + bleed - underlap, bleed),
+        )
+        _merge_region(page, source_page, [0, 0, width, bleed + underlap],
+                      (1, 0, 0, -1, bleed, bleed + underlap))
+        _merge_region(
+            page,
+            source_page,
+            [0, height - bleed - underlap, width, height],
+            (1, 0, 0, -1, bleed, 2 * height + bleed - underlap),
+        )
         # Finished page is merged last and remains unchanged inside TrimBox.
         _merge_region(page, source_page, [0, 0, width, height],
                       (1, 0, 0, 1, bleed, bleed))
@@ -493,18 +523,22 @@ def impose_saddle_stitch(source_pdf, output_pdf, icc_profile, title):
     trim_top = trim_bottom + A5_HEIGHT_PT
     bleed_right = mark_margin + BLEED_SPREAD_WIDTH_MM * MM
     bleed_top = mark_margin + BLEED_HEIGHT_PT
+    seam_overlap = IMPOSITION_SEAM_OVERLAP_PT
 
     for left_index, right_index in pairs:
         page = writer.add_blank_page(width=media_width, height=media_height)
         _add_crop_marks(page, writer)
         left = deepcopy(reader.pages[left_index])
         left.cropbox = RectangleObject([
-            0, 0, BLEED_PT + A5_WIDTH_PT, BLEED_HEIGHT_PT
+            0, 0,
+            BLEED_PT + A5_WIDTH_PT + seam_overlap,
+            BLEED_HEIGHT_PT,
         ])
         page.merge_translated_page(left, mark_margin, mark_margin)
         right = deepcopy(reader.pages[right_index])
         right.cropbox = RectangleObject([
-            BLEED_PT, 0, BLEED_WIDTH_PT, BLEED_HEIGHT_PT
+            BLEED_PT - seam_overlap, 0,
+            BLEED_WIDTH_PT, BLEED_HEIGHT_PT,
         ])
         page.merge_translated_page(
             right, mark_margin + A5_WIDTH_PT, mark_margin
@@ -700,7 +734,8 @@ def build_print_spec(zine_data):
         f"Logical pages: {page_count}",
         f"Imposed sides: {page_count // 2}",
         f"Trim size per page: {A5_WIDTH_MM} x {A5_HEIGHT_MM} mm",
-        f"Bleed: {BLEED_MM} mm outside TrimBox; no overlap inside trim",
+        f"Bleed: {BLEED_MM} mm outside TrimBox; "
+        "seam-safe underlap concealed beneath trim",
         f"Imposed TrimBox: {TRIM_SPREAD_WIDTH_MM} x {A5_HEIGHT_MM} mm",
         f"Imposed BleedBox: {BLEED_SPREAD_WIDTH_MM} x {BLEED_HEIGHT_MM} mm",
         f"MediaBox with crop marks: {FINAL_SPREAD_WIDTH_MM} x {FINAL_HEIGHT_MM} mm",

@@ -13,13 +13,17 @@ from build_print_package import (
     BLEED_HEIGHT_MM,
     BLEED_HEIGHT_PT,
     BLEED_MM,
+    BLEED_SEAM_UNDERLAP_PT,
     BLEED_SPREAD_WIDTH_MM,
     BLEED_WIDTH_PT,
     CROP_MARK_MARGIN_MM,
+    CROP_MARK_LENGTH_MM,
     FINAL_HEIGHT_MM,
     FINAL_SPREAD_WIDTH_MM,
+    IMPOSITION_SEAM_OVERLAP_PT,
     PRINT_SCRIPT,
     NORMALIZE_OVERSCAN_MM,
+    _add_crop_marks,
     add_true_bleed,
     build_print_html,
     build_print_spec,
@@ -140,6 +144,36 @@ class PrintPackageTests(unittest.TestCase):
         self.assertAlmostEqual(float(page.trimbox.width), A5_WIDTH_PT, places=3)
         self.assertAlmostEqual(float(page.trimbox.height), A5_HEIGHT_PT, places=3)
 
+    def test_true_bleed_underlaps_trim_without_changing_finished_geometry(self):
+        from pypdf import PdfWriter
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "trim.pdf"
+            output = Path(temp_dir) / "bleed.pdf"
+            writer = PdfWriter()
+            writer.add_blank_page(width=A5_WIDTH_PT, height=A5_HEIGHT_PT)
+            with source.open("wb") as stream:
+                writer.write(stream)
+            with patch("build_print_package._merge_region") as merge_region:
+                add_true_bleed(source, output)
+
+        calls = merge_region.call_args_list
+        self.assertEqual(len(calls), 9)
+        left_edge_box = calls[4].args[2]
+        left_edge_matrix = calls[4].args[3]
+        finished_box = calls[-1].args[2]
+        finished_matrix = calls[-1].args[3]
+        self.assertAlmostEqual(
+            left_edge_box[2], BLEED_MM * MM + BLEED_SEAM_UNDERLAP_PT
+        )
+        self.assertAlmostEqual(
+            left_edge_matrix[4], BLEED_MM * MM + BLEED_SEAM_UNDERLAP_PT
+        )
+        self.assertEqual(finished_box, [0, 0, A5_WIDTH_PT, A5_HEIGHT_PT])
+        self.assertEqual(
+            finished_matrix, (1, 0, 0, 1, BLEED_MM * MM, BLEED_MM * MM)
+        )
+
     def test_imposed_pdf_has_standard_boxes_and_output_intent(self):
         from pypdf import PdfReader, PdfWriter
 
@@ -185,6 +219,93 @@ class PrintPackageTests(unittest.TestCase):
             intent["/OutputConditionIdentifier"], "Japan Color 2011 Coated"
         )
         self.assertEqual(intent["/DestOutputProfile"].get_object()["/N"], 4)
+
+    def test_imposition_pages_overlap_at_fold_without_changing_page_boxes(self):
+        from pypdf import PdfWriter
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            profile = Path(temp_dir) / "test-cmyk.icc"
+            header = bytearray(128)
+            header[16:20] = b"CMYK"
+            header[36:40] = b"acsp"
+            profile.write_bytes(header)
+            source = Path(temp_dir) / "bleed.pdf"
+            output = Path(temp_dir) / "imposed.pdf"
+            writer = PdfWriter()
+            for _ in range(4):
+                writer.add_blank_page(
+                    width=BLEED_WIDTH_PT, height=BLEED_HEIGHT_PT
+                )
+            with source.open("wb") as stream:
+                writer.write(stream)
+
+            captured = []
+
+            def capture_merge(page, translated_page, tx, ty):
+                captured.append((list(translated_page.cropbox), tx, ty))
+
+            with patch(
+                "pypdf._page.PageObject.merge_translated_page",
+                autospec=True,
+                side_effect=capture_merge,
+            ):
+                impose_saddle_stitch(source, output, profile, "Test Zine")
+
+        left_box, left_tx, _ = captured[0]
+        right_box, right_tx, _ = captured[1]
+        left_edge = left_tx + float(left_box[2])
+        right_edge = right_tx + float(right_box[0])
+        self.assertAlmostEqual(
+            left_edge - right_edge, 2 * IMPOSITION_SEAM_OVERLAP_PT
+        )
+        self.assertGreater(left_edge, right_edge)
+
+    def test_crop_marks_are_short_and_remain_outside_bleedbox(self):
+        from pypdf import PdfReader, PdfWriter
+        from pypdf.generic import ContentStream
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output = Path(temp_dir) / "marks.pdf"
+            writer = PdfWriter()
+            page = writer.add_blank_page(
+                width=FINAL_SPREAD_WIDTH_MM * MM,
+                height=FINAL_HEIGHT_MM * MM,
+            )
+            _add_crop_marks(page, writer)
+            with output.open("wb") as stream:
+                writer.write(stream)
+            reader = PdfReader(output)
+            operations = ContentStream(
+                reader.pages[0].get_contents(), reader
+            ).operations
+
+        points = []
+        segments = []
+        for operands, operator in operations:
+            if operator == b"m":
+                points = [float(operands[0]), float(operands[1])]
+            elif operator == b"l":
+                end = [float(operands[0]), float(operands[1])]
+                segments.append((*points, *end))
+
+        bleed_left = CROP_MARK_MARGIN_MM * MM
+        bleed_bottom = CROP_MARK_MARGIN_MM * MM
+        bleed_right = bleed_left + BLEED_SPREAD_WIDTH_MM * MM
+        bleed_top = bleed_bottom + BLEED_HEIGHT_MM * MM
+        self.assertEqual(len(segments), 16)
+        tolerance = 0.001
+        for x1, y1, x2, y2 in segments:
+            self.assertLessEqual(
+                max(abs(x2 - x1), abs(y2 - y1)),
+                CROP_MARK_LENGTH_MM * MM + 0.001,
+            )
+            outside_bleed = (
+                max(x1, x2) <= bleed_left + tolerance
+                or min(x1, x2) >= bleed_right - tolerance
+                or max(y1, y2) <= bleed_bottom + tolerance
+                or min(y1, y2) >= bleed_top - tolerance
+            )
+            self.assertTrue(outside_bleed)
 
     def test_icc_validation_rejects_non_profile_data(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -240,7 +361,10 @@ class PrintPackageTests(unittest.TestCase):
         self.assertIn("Format: A5 portrait, left-bound saddle stitch", spec)
         self.assertIn("Logical pages: 28", spec)
         self.assertIn("Imposed sides: 14", spec)
-        self.assertIn("Bleed: 3 mm outside TrimBox; no overlap inside trim", spec)
+        self.assertIn(
+            "Bleed: 3 mm outside TrimBox; seam-safe underlap concealed beneath trim",
+            spec,
+        )
         self.assertIn("Imposed TrimBox: 296 x 210 mm", spec)
         self.assertIn("Imposed BleedBox: 302 x 216 mm", spec)
         self.assertIn("MediaBox with crop marks: 322 x 236 mm", spec)
