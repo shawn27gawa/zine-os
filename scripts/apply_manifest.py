@@ -277,13 +277,19 @@ def replace_block_asset(replacements, block_pairs, placement, new_asset_id):
 def append_asset_records(replacements, assets_node, records):
     if not records:
         return
+    item_indent = (
+        max(0, assets_node.value[0].start_mark.column - 2)
+        if assets_node.value
+        else assets_node.start_mark.column
+    )
+    field_indent = item_indent + 2
     lines = []
     for record in records:
         lines.extend([
-            f'  - id: {quoted(record["id"])}',
-            '    type: "image"',
-            f'    source: {quoted(record["source"])}',
-            f'    title: {quoted(record["title"])}',
+            f'{" " * item_indent}- id: {quoted(record["id"])}',
+            f'{" " * field_indent}type: "image"',
+            f'{" " * field_indent}source: {quoted(record["source"])}',
+            f'{" " * field_indent}title: {quoted(record["title"])}',
             "",
         ])
     replacements.append((

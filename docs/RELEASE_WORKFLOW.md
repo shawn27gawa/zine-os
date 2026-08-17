@@ -4,6 +4,12 @@ ZineOS release is a fail-fast orchestration layer over the existing validators,
 preview renderer, Unified Studio, regression tests, and print builder. It does
 not replace those components or write publication source.
 
+Before creating a release, verify repository health with:
+
+```sh
+python3 scripts/validate_zineos.py
+```
+
 ## Review release
 
 Use a review release during editing and creator approval:
@@ -67,6 +73,11 @@ The command runs these gates in order:
 6. Unified Studio build;
 7. applicable print build;
 8. release report and artifact SHA-256 inventory.
+
+The canonical repository validator additionally runs the non-ZINE_001
+end-to-end workflow fixture. This keeps project bootstrap, manifest application,
+Preview, Studio, and review release generic without using creator-owned source
+material as a test fixture.
 
 Asset integrity blocks required references that are missing, unsafe,
 case-mismatched, format-mismatched, or unknown. An unused asset is retained as

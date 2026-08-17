@@ -4,6 +4,7 @@ import base64
 import hashlib
 import html
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -15,6 +16,14 @@ from build_preview import ROOT, build_html, load_yaml
 
 DEFAULT_ZINE_PATH = ROOT / "examples" / "ZINE_001" / "zine.yaml"
 DEFAULT_OUTPUT_PATH = ROOT / "preview" / "ZINE_001_STUDIO.html"
+
+
+def default_studio_output(zine_data):
+    project_id = zine_data.get("project", {}).get("id", "publication")
+    stem = re.sub(r"[^A-Za-z0-9]+", "_", str(project_id)).strip("_").upper()
+    return ROOT / "preview" / f"{stem or 'PUBLICATION'}_STUDIO.html"
+
+
 STUDIO_DIR = ROOT / "studio"
 
 
@@ -404,13 +413,8 @@ def main():
         return 2
 
     zine_path = Path(sys.argv[1]) if len(sys.argv) >= 2 else DEFAULT_ZINE_PATH
-    output_path = Path(sys.argv[2]) if len(sys.argv) == 3 else DEFAULT_OUTPUT_PATH
-
     if not zine_path.is_absolute():
         zine_path = ROOT / zine_path
-
-    if not output_path.is_absolute():
-        output_path = ROOT / output_path
 
     if not zine_path.exists():
         print(f"ERROR: Zine file not found: {zine_path}")
@@ -421,6 +425,15 @@ def main():
     except yaml.YAMLError as error:
         print(f"ERROR: Unable to parse YAML: {error}")
         return 2
+
+    if len(sys.argv) == 3:
+        output_path = Path(sys.argv[2])
+    elif len(sys.argv) == 1:
+        output_path = DEFAULT_OUTPUT_PATH
+    else:
+        output_path = default_studio_output(zine_data)
+    if not output_path.is_absolute():
+        output_path = ROOT / output_path
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(

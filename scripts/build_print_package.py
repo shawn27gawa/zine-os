@@ -13,6 +13,7 @@ import argparse
 from copy import deepcopy
 import os
 from pathlib import Path
+import re
 import shutil
 import struct
 import subprocess
@@ -26,13 +27,6 @@ from build_preview import build_html
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ZINE_PATH = ROOT / "examples" / "ZINE_001" / "zine.yaml"
-DEFAULT_HTML_PATH = ROOT / "output" / "print" / "ZINE_001_PRINT.html"
-DEFAULT_PDF_PATH = ROOT / "output" / "pdf" / "ZINE_001_RGB_PRINT_PROOF.pdf"
-DEFAULT_CMYK_PDF_PATH = (
-    ROOT / "output" / "pdf" / "ZINE_001_SADDLE_STITCH_CMYK_PRINT.pdf"
-)
-DEFAULT_REPORT_PATH = ROOT / "output" / "print" / "ZINE_001_RESOLUTION_REPORT.md"
-DEFAULT_SPEC_PATH = ROOT / "output" / "print" / "ZINE_001_PRINT_SPEC.txt"
 
 A5_WIDTH_MM = 148
 A5_HEIGHT_MM = 210
@@ -194,6 +188,72 @@ def logical_page_count(zine_data):
         for page_number in page_unit.get("pages", [])
     ]
     return max(pages, default=0)
+
+
+def validate_standard_print_configuration(zine_data):
+    """Return errors when a publication cannot use the v1 print standard."""
+    output = zine_data.get("output", {})
+    expected = {
+        "medium": "print",
+        "page_size": "A5",
+        "orientation": "portrait",
+        "binding": "saddle-stitch",
+        "bleed_mm": BLEED_MM,
+    }
+    errors = []
+    for field, required in expected.items():
+        actual = output.get(field)
+        if actual != required:
+            errors.append(
+                f"output.{field} must be {required!r} for the standard print "
+                f"pipeline; got {actual!r}"
+            )
+    color_mode = output.get("color_mode")
+    if color_mode not in {None, "CMYK"}:
+        errors.append(
+            "output.color_mode must be 'CMYK' or omitted for the standard "
+            f"print pipeline; got {color_mode!r}"
+        )
+
+    page_numbers = [
+        page_number
+        for page_unit in zine_data.get("pages", [])
+        for page_number in page_unit.get("pages", [])
+    ]
+    if not page_numbers:
+        errors.append("publication must contain at least one logical page")
+        return errors
+    duplicates = sorted({page for page in page_numbers if page_numbers.count(page) > 1})
+    if duplicates:
+        errors.append(f"logical page numbers must be unique; duplicates: {duplicates}")
+    expected_pages = list(range(1, max(page_numbers) + 1))
+    if sorted(set(page_numbers)) != expected_pages:
+        missing = sorted(set(expected_pages) - set(page_numbers))
+        errors.append(
+            "logical page numbers must be continuous from 1; "
+            f"missing: {missing}"
+        )
+    if max(page_numbers) % 4:
+        errors.append(
+            "saddle-stitch page count must be a positive multiple of 4; "
+            f"got {max(page_numbers)}"
+        )
+    return errors
+
+
+def default_artifact_paths(project_id):
+    base = re.sub(r"[^A-Za-z0-9]+", "_", str(project_id)).strip("_").upper()
+    base = base or "PUBLICATION"
+    return {
+        "html": ROOT / "output" / "print" / f"{base}_PRINT.html",
+        "pdf": ROOT / "output" / "pdf" / f"{base}_RGB_PRINT_PROOF.pdf",
+        "cmyk_pdf": (
+            ROOT / "output" / "pdf" /
+            f"{base}_SADDLE_STITCH_CMYK_PRINT.pdf"
+        ),
+        "report": ROOT / "output" / "print" / f"{base}_RESOLUTION_REPORT.md",
+        "spec": ROOT / "output" / "print" / f"{base}_PRINT_SPEC.txt",
+    }
 
 
 def saddle_stitch_pairs(page_count):
@@ -681,8 +741,9 @@ def build_resolution_report(zine_data, zine_path):
         for asset in zine_data.get("assets", [])
         if asset.get("id")
     }
+    title = zine_data.get("project", {}).get("title") or zine_path.stem
     lines = [
-        "# ZINE_001 Print Resolution Report",
+        f"# {title} Print Resolution Report",
         "",
         f"- Target: {TARGET_DPI} dpi",
         f"- Trim: A5 ({A5_WIDTH_MM} x {A5_HEIGHT_MM} mm)",
@@ -719,7 +780,8 @@ def build_resolution_report(zine_data, zine_path):
         )
     lines.extend([
         "",
-        "Current ZINE_001 image resolution was accepted by the creator after a physical proof.",
+        "Resolution states are review evidence, not creative approval. "
+        "Physical proof status must be recorded separately for this publication.",
         "",
     ])
     return "\n".join(lines)
@@ -753,11 +815,11 @@ def parse_args(argv=None):
         description="Build standard ZineOS A5 saddle-stitch print data."
     )
     parser.add_argument("zine", nargs="?", type=Path, default=DEFAULT_ZINE_PATH)
-    parser.add_argument("html", nargs="?", type=Path, default=DEFAULT_HTML_PATH)
-    parser.add_argument("--pdf", type=Path, default=DEFAULT_PDF_PATH)
-    parser.add_argument("--cmyk-pdf", type=Path, default=DEFAULT_CMYK_PDF_PATH)
-    parser.add_argument("--report", type=Path, default=DEFAULT_REPORT_PATH)
-    parser.add_argument("--spec", type=Path, default=DEFAULT_SPEC_PATH)
+    parser.add_argument("html", nargs="?", type=Path)
+    parser.add_argument("--pdf", type=Path)
+    parser.add_argument("--cmyk-pdf", type=Path)
+    parser.add_argument("--report", type=Path)
+    parser.add_argument("--spec", type=Path)
     parser.add_argument("--icc-profile", type=Path)
     parser.add_argument("--ghostscript", type=Path)
     parser.add_argument("--chrome", type=Path)
@@ -775,16 +837,28 @@ def resolve_repo_path(path):
 def main(argv=None):
     args = parse_args(argv)
     zine_path = resolve_repo_path(args.zine).resolve()
-    html_path = resolve_repo_path(args.html).resolve()
-    pdf_path = resolve_repo_path(args.pdf).resolve()
-    cmyk_pdf_path = resolve_repo_path(args.cmyk_pdf).resolve()
-    report_path = resolve_repo_path(args.report).resolve()
-    spec_path = resolve_repo_path(args.spec).resolve()
     if not zine_path.is_file():
         print(f"ERROR: Zine file not found: {zine_path}")
         return 2
 
     zine_data = load_yaml(zine_path)
+    project_id = zine_data.get("project", {}).get("id")
+    if not isinstance(project_id, str) or not project_id:
+        print("ERROR: publication project.id is required")
+        return 2
+    defaults = default_artifact_paths(project_id)
+    html_path = resolve_repo_path(args.html or defaults["html"]).resolve()
+    pdf_path = resolve_repo_path(args.pdf or defaults["pdf"]).resolve()
+    cmyk_pdf_path = resolve_repo_path(
+        args.cmyk_pdf or defaults["cmyk_pdf"]
+    ).resolve()
+    report_path = resolve_repo_path(args.report or defaults["report"]).resolve()
+    spec_path = resolve_repo_path(args.spec or defaults["spec"]).resolve()
+    configuration_errors = validate_standard_print_configuration(zine_data)
+    if configuration_errors:
+        for error in configuration_errors:
+            print(f"ERROR: {error}")
+        return 2
     page_count = logical_page_count(zine_data)
     try:
         saddle_stitch_pairs(page_count)

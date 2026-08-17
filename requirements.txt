@@ -1,0 +1,4 @@
+PyYAML
+jsonschema
+referencing
+pypdf
