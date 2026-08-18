@@ -19,6 +19,7 @@ from build_print_package import (
     BLEED_WIDTH_PT,
     CROP_MARK_MARGIN_MM,
     CROP_MARK_LENGTH_MM,
+    CROP_MARK_LINE_WIDTH_PT,
     FINAL_HEIGHT_MM,
     FINAL_SPREAD_WIDTH_MM,
     IMPOSITION_SEAM_OVERLAP_PT,
@@ -301,7 +302,7 @@ class PrintPackageTests(unittest.TestCase):
         )
         self.assertGreater(left_edge, right_edge)
 
-    def test_crop_marks_are_short_and_remain_outside_bleedbox(self):
+    def test_crop_marks_are_paired_and_stop_at_bleedbox(self):
         from pypdf import PdfReader, PdfWriter
         from pypdf.generic import ContentStream
 
@@ -322,8 +323,14 @@ class PrintPackageTests(unittest.TestCase):
 
         points = []
         segments = []
+        line_width = None
+        line_cap = None
         for operands, operator in operations:
-            if operator == b"m":
+            if operator == b"w":
+                line_width = float(operands[0])
+            elif operator == b"J":
+                line_cap = int(operands[0])
+            elif operator == b"m":
                 points = [float(operands[0]), float(operands[1])]
             elif operator == b"l":
                 end = [float(operands[0]), float(operands[1])]
@@ -333,20 +340,62 @@ class PrintPackageTests(unittest.TestCase):
         bleed_bottom = CROP_MARK_MARGIN_MM * MM
         bleed_right = bleed_left + BLEED_SPREAD_WIDTH_MM * MM
         bleed_top = bleed_bottom + BLEED_HEIGHT_MM * MM
+        trim_left = bleed_left + BLEED_MM * MM
+        trim_bottom = bleed_bottom + BLEED_MM * MM
+        trim_right = trim_left + A5_WIDTH_MM * 2 * MM
+        trim_top = trim_bottom + A5_HEIGHT_MM * MM
+        self.assertEqual(line_width, CROP_MARK_LINE_WIDTH_PT)
+        self.assertEqual(line_cap, 0)
         self.assertEqual(len(segments), 16)
         tolerance = 0.001
+        horizontal_levels = set()
+        vertical_levels = set()
         for x1, y1, x2, y2 in segments:
-            self.assertLessEqual(
+            self.assertAlmostEqual(
                 max(abs(x2 - x1), abs(y2 - y1)),
-                CROP_MARK_LENGTH_MM * MM + 0.001,
+                CROP_MARK_LENGTH_MM * MM,
+                places=3,
             )
-            outside_bleed = (
-                max(x1, x2) <= bleed_left + tolerance
-                or min(x1, x2) >= bleed_right - tolerance
-                or max(y1, y2) <= bleed_bottom + tolerance
-                or min(y1, y2) >= bleed_top - tolerance
+            if abs(y2 - y1) <= tolerance:
+                horizontal_levels.add(round(y1, 3))
+                self.assertTrue(
+                    abs(y1 - bleed_bottom) <= tolerance
+                    or abs(y1 - trim_bottom) <= tolerance
+                    or abs(y1 - trim_top) <= tolerance
+                    or abs(y1 - bleed_top) <= tolerance
+                )
+                stops_at_bleed = (
+                    abs(max(x1, x2) - bleed_left) <= tolerance
+                    or abs(min(x1, x2) - bleed_right) <= tolerance
+                )
+            else:
+                self.assertAlmostEqual(x1, x2, places=3)
+                vertical_levels.add(round(x1, 3))
+                self.assertTrue(
+                    abs(x1 - bleed_left) <= tolerance
+                    or abs(x1 - trim_left) <= tolerance
+                    or abs(x1 - trim_right) <= tolerance
+                    or abs(x1 - bleed_right) <= tolerance
+                )
+                stops_at_bleed = (
+                    abs(max(y1, y2) - bleed_bottom) <= tolerance
+                    or abs(min(y1, y2) - bleed_top) <= tolerance
+                )
+            self.assertTrue(stops_at_bleed)
+        self.assertEqual(len(horizontal_levels), 4)
+        self.assertEqual(len(vertical_levels), 4)
+        for expected in (bleed_bottom, trim_bottom, trim_top, bleed_top):
+            self.assertTrue(
+                any(abs(actual - expected) <= 0.002 for actual in horizontal_levels)
             )
-            self.assertTrue(outside_bleed)
+        for expected in (bleed_left, trim_left, trim_right, bleed_right):
+            self.assertTrue(
+                any(abs(actual - expected) <= 0.002 for actual in vertical_levels)
+            )
+        self.assertAlmostEqual(trim_bottom - bleed_bottom, BLEED_MM * MM)
+        self.assertAlmostEqual(bleed_top - trim_top, BLEED_MM * MM)
+        self.assertAlmostEqual(trim_left - bleed_left, BLEED_MM * MM)
+        self.assertAlmostEqual(bleed_right - trim_right, BLEED_MM * MM)
 
     def test_icc_validation_rejects_non_profile_data(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -412,6 +461,11 @@ class PrintPackageTests(unittest.TestCase):
         self.assertIn("Imposed TrimBox: 296 x 210 mm", spec)
         self.assertIn("Imposed BleedBox: 302 x 216 mm", spec)
         self.assertIn("MediaBox with crop marks: 322 x 236 mm", spec)
+        self.assertIn(
+            "Crop marks: paired inner/outer marks; 3 mm separation; "
+            "butt-capped at the BleedBox boundary",
+            spec,
+        )
         self.assertIn("Japan Color 2011 Coated", spec)
 
 
