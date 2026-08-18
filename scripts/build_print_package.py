@@ -37,6 +37,7 @@ BLEED_HEIGHT_MM = A5_HEIGHT_MM + BLEED_MM * 2
 BLEED_SPREAD_WIDTH_MM = TRIM_SPREAD_WIDTH_MM + BLEED_MM * 2
 CROP_MARK_MARGIN_MM = 10
 CROP_MARK_LENGTH_MM = 7
+CROP_MARK_LINE_WIDTH_PT = 0.25
 FINAL_SPREAD_WIDTH_MM = BLEED_SPREAD_WIDTH_MM + CROP_MARK_MARGIN_MM * 2
 FINAL_HEIGHT_MM = BLEED_HEIGHT_MM + CROP_MARK_MARGIN_MM * 2
 TARGET_DPI = 300
@@ -508,21 +509,30 @@ def _add_crop_marks(page, writer):
     trim_bottom = bleed_bottom + BLEED_PT
     trim_right = trim_left + TRIM_SPREAD_WIDTH_MM * MM
     trim_top = trim_bottom + A5_HEIGHT_PT
-    outer = CROP_MARK_LENGTH_MM * MM
+    mark_length = CROP_MARK_LENGTH_MM * MM
     lines = []
     for start, end in (
-        (bleed_left - outer, bleed_left),
-        (bleed_right, bleed_right + outer),
+        (bleed_left - mark_length, bleed_left),
+        (bleed_right, bleed_right + mark_length),
     ):
+        # Japanese print crop marks use paired outer and inner marks. The
+        # outer marks identify the bleed edge; the inner marks identify trim.
         for y in (bleed_bottom, trim_bottom, trim_top, bleed_top):
             lines.append((start, y, end, y))
     for start, end in (
-        (bleed_bottom - outer, bleed_bottom),
-        (bleed_top, bleed_top + outer),
+        (bleed_bottom - mark_length, bleed_bottom),
+        (bleed_top, bleed_top + mark_length),
     ):
         for x in (bleed_left, trim_left, trim_right, bleed_right):
             lines.append((x, start, x, end))
-    commands = ["q", "0 0 0 1 K", "0.25 w"]
+    commands = [
+        "q",
+        "0 0 0 1 K",
+        f"{CROP_MARK_LINE_WIDTH_PT} w",
+        # Explicit butt caps stop the painted line at the BleedBox boundary.
+        # This lets the marks meet the bleed artwork without entering it.
+        "0 J",
+    ]
     commands.extend(
         f"{x1:.4f} {y1:.4f} m {x2:.4f} {y2:.4f} l S"
         for x1, y1, x2, y2 in lines
@@ -801,7 +811,8 @@ def build_print_spec(zine_data):
         f"Imposed TrimBox: {TRIM_SPREAD_WIDTH_MM} x {A5_HEIGHT_MM} mm",
         f"Imposed BleedBox: {BLEED_SPREAD_WIDTH_MM} x {BLEED_HEIGHT_MM} mm",
         f"MediaBox with crop marks: {FINAL_SPREAD_WIDTH_MM} x {FINAL_HEIGHT_MM} mm",
-        "Crop marks: outside BleedBox",
+        f"Crop marks: paired inner/outer marks; {BLEED_MM} mm separation; "
+        "butt-capped at the BleedBox boundary",
         "Color: CMYK, Japan Color 2011 Coated OutputIntent",
         "Rendering intent: perceptual",
         "Fonts: embedded",

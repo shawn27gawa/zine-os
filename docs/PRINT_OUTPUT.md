@@ -19,7 +19,11 @@ fringe, or crop-mark artifact inside the TrimBox.
 - Page count: a positive multiple of four.
 - Delivery: one printer-order, imposed PDF.
 - Bleed: 3 mm outside every outer trim edge.
-- Crop marks: outside the BleedBox.
+- Crop marks: paired inner and outer corner marks. Inner marks identify the
+  finished trim; outer marks identify the 3 mm bleed boundary.
+- Crop-mark safety: each mark meets the BleedBox boundary without a visible
+  gap and uses an explicit butt line cap so it stops at, rather than entering,
+  publication artwork.
 - Color: CMYK.
 - OutputIntent: Japan Color 2011 Coated.
 - Rendering intent: perceptual.
@@ -36,6 +40,9 @@ For an imposed A5 spread, the standard PDF boxes are:
 
 The 10 mm difference between the BleedBox and each MediaBox edge holds crop
 marks and production whitespace. It is not part of the finished publication.
+The outer and inner marks are separated by the same 3 mm as the bleed. Each
+7 mm vector path ends exactly at the BleedBox boundary and uses a butt cap.
+Do not add a visible safety gap or extend a mark into the photograph area.
 
 ## Rendering Pipeline
 
@@ -114,7 +121,11 @@ Before delivery, verify:
 8. Every imposed side renders without PDF errors.
 9. Trimmed page content matches the creator-approved preview.
 10. Full-bleed edges contain no internal seam or white fringe.
-11. The exact PDF sent to the printer is the artifact reviewed by the creator.
+11. Paired inner and outer crop marks are present at all four corners; each
+    pair is separated by exactly 3 mm.
+12. The crop marks visibly meet the BleedBox edge without a gap, use butt line
+    caps, and do not extend into publication imagery.
+13. The exact PDF sent to the printer is the artifact reviewed by the creator.
 
 Image-resolution warnings remain evidence for review, not permission to replace
 or reinterpret creator-selected photographs. ZINE_001's current image
