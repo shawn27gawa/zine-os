@@ -243,12 +243,20 @@ class GenericPublicationWorkflowTests(unittest.TestCase):
             data["pages"][1]["blocks"][0]["content"], "Creator-approved field note."
         )
         self.assertEqual(data["pages"][0]["blocks"][0]["asset"], "studio-replacement")
+        data["pages"][0]["layout"] = {
+            "type": "photo-rhythm-spread",
+            "variant": "grid",
+        }
 
         preview = self.root / "preview.html"
         studio = self.root / "studio.html"
         preview.write_text(build_html(data, self.zine, preview), encoding="utf-8")
         studio.write_text(build_studio_html(data, self.zine, studio), encoding="utf-8")
         assert_local_images_resolve(self, preview)
+        self.assertIn(
+            'class="page-body layout-photo-rhythm-spread variant-grid"',
+            preview.read_text(encoding="utf-8"),
+        )
         studio_config = build_studio_config(data, self.zine)
         self.assertEqual(studio_config["project"]["id"], "field-notes-002")
         self.assertEqual(
