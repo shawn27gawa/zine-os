@@ -421,6 +421,15 @@ def render_page_unit(page_unit, assets, zine_dir, output_dir):
         for character in layout_type.lower()
     )
 
+    layout_variant = layout.get("variant", "")
+    variant_slug = "".join(
+        character
+        if character.isalnum() or character == "-"
+        else "-"
+        for character in layout_variant.lower()
+    )
+    variant_class = f" variant-{variant_slug}" if variant_slug else ""
+
     if len(pages) == 2:
         page_label = f"Pages {pages[0]}–{pages[1]}"
         unit_class = "spread"
@@ -471,7 +480,7 @@ def render_page_unit(page_unit, assets, zine_dir, output_dir):
         </header>
 
         <div class="page-sheet">
-            <div class="page-body layout-{escape(layout_slug)}"{image_position_style}>
+            <div class="page-body layout-{escape(layout_slug)}{escape(variant_class)}"{image_position_style}>
                 {special_layout}
                 {blocks_html}
             </div>
@@ -1302,6 +1311,102 @@ def build_html(zine_data, zine_path, output_path):
 }
 
 
+/* Reusable photo-led rhythm for quiet, energetic, and paired spreads */
+
+.layout-photo-rhythm-spread {
+    position: relative;
+    padding: 0;
+    background: #f3f1eb;
+}
+
+.layout-photo-rhythm-spread > .block-gallery,
+.layout-photo-rhythm-spread .gallery {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-photo-rhythm-spread .gallery {
+    gap: 1.5mm;
+}
+
+.layout-photo-rhythm-spread .asset {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.layout-photo-rhythm-spread .asset img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.layout-photo-rhythm-spread .block-label,
+.layout-photo-rhythm-spread figcaption,
+.layout-photo-rhythm-spread .caption {
+    display: none;
+}
+
+.layout-photo-rhythm-spread > .block-text {
+    position: absolute;
+    z-index: 3;
+    margin: 0;
+}
+
+.layout-photo-rhythm-spread > .block-text .text-content {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.18em;
+}
+
+.layout-photo-rhythm-spread.variant-breath-left .gallery,
+.layout-photo-rhythm-spread.variant-breath-right .gallery {
+    display: grid;
+    grid-template-columns: 44% 56%;
+    gap: 0;
+}
+
+.layout-photo-rhythm-spread.variant-breath-left .asset {
+    grid-column: 1;
+}
+
+.layout-photo-rhythm-spread.variant-breath-right .asset {
+    grid-column: 2;
+}
+
+.layout-photo-rhythm-spread.variant-breath-left > .block-text {
+    right: 12mm;
+    bottom: 12mm;
+    text-align: right;
+}
+
+.layout-photo-rhythm-spread.variant-breath-right > .block-text {
+    left: 12mm;
+    bottom: 12mm;
+}
+
+.layout-photo-rhythm-spread.variant-diptych .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: 1fr;
+}
+
+.layout-photo-rhythm-spread.variant-diptych > .block-text {
+    right: 8mm;
+    bottom: 8mm;
+    padding: 3mm 4mm;
+    background: rgba(247, 246, 241, 0.88);
+    backdrop-filter: blur(4px);
+}
+
+.layout-photo-rhythm-spread.variant-grid .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+
 /* Edge-led image and text pages */
 
 .layout-image-with-reflection,
@@ -1812,6 +1917,7 @@ def build_html(zine_data, zine_path, output_path):
     .layout-opening-breath-spread,
     .layout-closing-memory-grid,
     .layout-asymmetric-gallery,
+    .layout-photo-rhythm-spread,
     .layout-image-with-reflection,
     .layout-image-with-short-text,
     .layout-editorial-collage {

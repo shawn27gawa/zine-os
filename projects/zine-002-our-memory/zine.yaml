@@ -1,0 +1,360 @@
+zineos_version: "0.1"
+
+project:
+  id: "zine-002-our-memory"
+  title: "OUR MEMORY"
+  description: "国内旅行の記録。読み終えたとき、いろいろな場所へ行ったことや様々な思い出を思い出してほしい。"
+  language: "ja"
+  status: "editing"
+
+metadata:
+  creator: "Shunya Ninagawa"
+  contributors: []
+  edition: 1
+  created: ""
+  published: null
+  tags:
+    - "domestic-travel"
+    - "memory"
+
+assets:
+  - {id: "memory-001", type: "image", source: "assets/memory-001.jpg"}
+  - {id: "memory-003", type: "image", source: "assets/memory-003.jpg"}
+  - {id: "memory-004", type: "image", source: "assets/memory-004.jpg"}
+  - {id: "memory-005", type: "image", source: "assets/memory-005.jpg"}
+  - {id: "memory-006", type: "image", source: "assets/memory-006.jpg"}
+  - {id: "memory-008", type: "image", source: "assets/memory-008.jpg"}
+  - {id: "memory-011", type: "image", source: "assets/memory-011.jpg"}
+  - {id: "memory-012", type: "image", source: "assets/memory-012.jpg"}
+  - {id: "memory-013", type: "image", source: "assets/memory-013.jpg"}
+  - {id: "memory-014", type: "image", source: "assets/memory-014.jpg"}
+  - {id: "memory-015", type: "image", source: "assets/memory-015.jpg"}
+  - {id: "memory-017", type: "image", source: "assets/memory-017.jpg"}
+  - {id: "memory-021", type: "image", source: "assets/memory-021.jpg"}
+  - {id: "memory-022", type: "image", source: "assets/memory-022.jpg"}
+  - {id: "memory-024", type: "image", source: "assets/memory-024.jpg"}
+  - {id: "memory-025", type: "image", source: "assets/memory-025.jpg"}
+  - {id: "memory-026", type: "image", source: "assets/memory-026.jpg"}
+  - {id: "memory-028", type: "image", source: "assets/memory-028.jpg"}
+  - {id: "memory-029", type: "image", source: "assets/memory-029.jpg"}
+  - {id: "memory-031", type: "image", source: "assets/memory-031.jpg"}
+  - {id: "memory-032", type: "image", source: "assets/memory-032.jpg"}
+  - {id: "memory-033", type: "image", source: "assets/memory-033.jpg"}
+  - {id: "memory-036", type: "image", source: "assets/memory-036.jpg"}
+  - {id: "memory-039", type: "image", source: "assets/memory-039.jpg"}
+  - {id: "memory-041", type: "image", source: "assets/memory-041.jpg"}
+  - {id: "memory-042", type: "image", source: "assets/memory-042.jpg"}
+  - {id: "memory-043", type: "image", source: "assets/memory-043.jpg"}
+  - {id: "memory-044", type: "image", source: "assets/memory-044.jpg"}
+  - {id: "memory-045", type: "image", source: "assets/memory-045.jpg"}
+  - {id: "memory-047", type: "image", source: "assets/memory-047.jpg"}
+  - {id: "memory-048", type: "image", source: "assets/memory-048.jpg"}
+  - {id: "memory-049", type: "image", source: "assets/memory-049.jpg"}
+  - {id: "memory-050", type: "image", source: "assets/memory-050.jpg"}
+
+sequence:
+  - id: "opening"
+    title: "Opening"
+  - id: "stillness"
+    title: "Stillness"
+  - id: "presence"
+    title: "Presence"
+  - id: "movement"
+    title: "Movement"
+  - id: "play-energy"
+    title: "Play / Energy"
+  - id: "afterglow"
+    title: "Afterglow"
+  - id: "ending"
+    title: "Ending"
+
+pages:
+  - id: "page-001"
+    pages: [1]
+    section: "opening"
+    blocks:
+      - id: "p001-context"
+        type: "TEXT"
+        content: "DOMESTIC TRAVEL"
+      - id: "p001-title"
+        type: "TEXT"
+        content: "OUR MEMORY"
+    layout:
+      type: "memory-index-grid"
+      settings:
+        rows: 5
+        columns: 6
+        assets:
+          - "memory-001"
+          - "memory-003"
+          - "memory-005"
+          - "memory-006"
+          - "memory-011"
+          - "memory-012"
+          - "memory-013"
+          - "memory-014"
+          - "memory-015"
+          - "memory-017"
+          - "memory-021"
+          - "memory-022"
+          - "memory-024"
+          - "memory-025"
+          - "memory-028"
+          - "memory-029"
+          - "memory-031"
+          - "memory-032"
+          - "memory-033"
+          - "memory-036"
+          - "memory-039"
+          - "memory-041"
+          - "memory-042"
+          - "memory-043"
+          - "memory-044"
+          - "memory-045"
+          - "memory-047"
+          - "memory-048"
+          - "memory-049"
+          - "memory-050"
+
+  - id: "spread-002-003"
+    pages: [2, 3]
+    section: "stillness"
+    blocks:
+      - id: "p002-gallery"
+        type: "GALLERY"
+        assets: ["memory-049"]
+        metadata:
+          zineos_studio:
+            asset_placements:
+              memory-049:
+                desktop: {fit: "cover", x: 50, y: 52, scale: 1}
+                mobile: {fit: "cover", x: 50, y: 52, scale: 1}
+      - id: "p002-title"
+        type: "TEXT"
+        content: "STILLNESS"
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "breath-left"
+
+  - id: "spread-004-005"
+    pages: [4, 5]
+    section: "stillness"
+    blocks:
+      - id: "p004-gallery"
+        type: "GALLERY"
+        assets: ["memory-008", "memory-026", "memory-047", "memory-048"]
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "grid"
+
+  - id: "spread-006-007"
+    pages: [6, 7]
+    section: "presence"
+    blocks:
+      - id: "p006-gallery"
+        type: "GALLERY"
+        assets: ["memory-013"]
+        metadata:
+          zineos_studio:
+            asset_placements:
+              memory-013:
+                desktop: {fit: "cover", x: 50, y: 44, scale: 1}
+                mobile: {fit: "cover", x: 50, y: 44, scale: 1}
+      - id: "p006-title"
+        type: "TEXT"
+        content: "PRESENCE"
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "breath-right"
+
+  - id: "spread-008-009"
+    pages: [8, 9]
+    section: "presence"
+    blocks:
+      - id: "p008-gallery"
+        type: "GALLERY"
+        assets: ["memory-001", "memory-011", "memory-014", "memory-032"]
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "grid"
+
+  - id: "spread-010-011"
+    pages: [10, 11]
+    section: "presence"
+    blocks:
+      - id: "p010-gallery"
+        type: "GALLERY"
+        assets: ["memory-036", "memory-025"]
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "diptych"
+
+  - id: "spread-012-013"
+    pages: [12, 13]
+    section: "movement"
+    blocks:
+      - id: "p012-photo"
+        type: "PHOTO"
+        asset: "memory-006"
+        metadata:
+          zineos_studio:
+            asset_placements:
+              memory-006:
+                desktop: {fit: "cover", x: 50, y: 50, scale: 1}
+                mobile: {fit: "cover", x: 50, y: 50, scale: 1}
+      - id: "p012-title"
+        type: "TEXT"
+        content: "MOVEMENT"
+    layout:
+      type: "full-bleed-story-spread"
+
+  - id: "spread-014-015"
+    pages: [14, 15]
+    section: "movement"
+    blocks:
+      - id: "p014-gallery"
+        type: "GALLERY"
+        assets: ["memory-005", "memory-022", "memory-028", "memory-042"]
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "grid"
+
+  - id: "spread-016-017"
+    pages: [16, 17]
+    section: "movement"
+    blocks:
+      - id: "p016-gallery"
+        type: "GALLERY"
+        assets: ["memory-015", "memory-017"]
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "diptych"
+
+  - id: "spread-018-019"
+    pages: [18, 19]
+    section: "play-energy"
+    blocks:
+      - id: "p018-gallery"
+        type: "GALLERY"
+        assets: ["memory-031", "memory-050"]
+        metadata:
+          zineos_studio:
+            asset_placements:
+              memory-031:
+                desktop: {fit: "cover", x: 50, y: 50, scale: 1}
+                mobile: {fit: "cover", x: 50, y: 50, scale: 1}
+              memory-050:
+                desktop: {fit: "cover", x: 50, y: 43, scale: 1}
+                mobile: {fit: "cover", x: 50, y: 43, scale: 1}
+      - id: "p018-title"
+        type: "TEXT"
+        content: "PLAY / ENERGY"
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "diptych"
+
+  - id: "spread-020-021"
+    pages: [20, 21]
+    section: "play-energy"
+    blocks:
+      - id: "p020-gallery"
+        type: "GALLERY"
+        assets: ["memory-012", "memory-029", "memory-033", "memory-045"]
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "grid"
+
+  - id: "spread-022-023"
+    pages: [22, 23]
+    section: "afterglow"
+    blocks:
+      - id: "p022-gallery"
+        type: "GALLERY"
+        assets: ["memory-044"]
+        metadata:
+          zineos_studio:
+            asset_placements:
+              memory-044:
+                desktop: {fit: "cover", x: 50, y: 45, scale: 1}
+                mobile: {fit: "cover", x: 50, y: 45, scale: 1}
+      - id: "p022-title"
+        type: "TEXT"
+        content: "AFTERGLOW"
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "breath-right"
+
+  - id: "spread-024-025"
+    pages: [24, 25]
+    section: "afterglow"
+    blocks:
+      - id: "p024-gallery"
+        type: "GALLERY"
+        assets: ["memory-039", "memory-041", "memory-021", "memory-043"]
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "grid"
+
+  - id: "spread-026-027"
+    pages: [26, 27]
+    section: "afterglow"
+    blocks:
+      - id: "p026-gallery"
+        type: "GALLERY"
+        assets: ["memory-003", "memory-004"]
+    layout:
+      type: "photo-rhythm-spread"
+      variant: "diptych"
+
+  - id: "page-028"
+    pages: [28]
+    section: "ending"
+    blocks:
+      - id: "p028-empty"
+        type: "TEXT"
+        content: ""
+    layout:
+      type: "closing-memory-grid"
+      settings:
+        rows: 5
+        columns: 6
+        assets:
+          - "memory-001"
+          - "memory-003"
+          - "memory-005"
+          - "memory-006"
+          - "memory-011"
+          - "memory-012"
+          - "memory-013"
+          - "memory-014"
+          - "memory-015"
+          - "memory-017"
+          - "memory-021"
+          - "memory-022"
+          - "memory-024"
+          - "memory-025"
+          - "memory-028"
+          - "memory-029"
+          - "memory-031"
+          - "memory-032"
+          - "memory-033"
+          - "memory-036"
+          - "memory-039"
+          - "memory-041"
+          - "memory-042"
+          - "memory-043"
+          - "memory-044"
+          - "memory-045"
+          - "memory-047"
+          - "memory-048"
+          - "memory-049"
+          - "memory-050"
+
+output:
+  medium: "print"
+  page_size: "A5"
+  orientation: "portrait"
+  binding: "saddle-stitch"
+  bleed_mm: 3
+  color_mode: "CMYK"
+  resolution_dpi: 300
