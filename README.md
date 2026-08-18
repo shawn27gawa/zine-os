@@ -15,11 +15,20 @@ ZineOS helps with the mechanics.
 
 ## Project Status
 
-🚧 **Active prototype — ZineOS v1 integration**
+**ZineOS v1 Release Candidate**
 
-ZINE_001 has validated the publication schema, browser preview, creator-facing
-image/text Studio, and A5 saddle-stitch print workflow. The current work focuses
-on connecting those proven parts into a repeatable end-to-end creation flow.
+The repository now provides a repeatable path from a neutral photo inbox to an
+editable publication source, creator-facing Preview and Studio, validated
+review release, and A5 saddle-stitch print output. ZINE_001 remains the complete
+creator-approved example; a generic non-ZINE_001 integration fixture prevents
+the core workflow from depending on that publication's content or paths.
+
+Start with the [Quick Start](docs/QUICK_START.md), then run the canonical local
+validation command:
+
+```sh
+python3 scripts/validate_zineos.py
+```
 
 New publications start from a neutral project rather than copying ZINE_001.
 See [Project and Inbox Bootstrap](docs/PROJECT_BOOTSTRAP.md) for the dry-run-first
@@ -81,6 +90,4 @@ See [docs/V1_ROADMAP.md](docs/V1_ROADMAP.md) for the v1 completion criteria.
 
 ---
 
-ZineOS is just beginning.
-
-Everything is editable.
+Everything remains editable.

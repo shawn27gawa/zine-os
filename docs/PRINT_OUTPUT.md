@@ -69,16 +69,16 @@ profile is not stored in this repository because its redistribution terms must
 be respected.
 
 ```sh
-python scripts/build_print_package.py \
-  examples/ZINE_001/zine.yaml \
-  output/print/ZINE_001_PRINT.html \
+python3 scripts/build_print_package.py \
+  projects/my-zine/zine.yaml \
   --icc-profile /absolute/path/to/JapanColor2011Coated.icc
 ```
 
-The standard final artifact is written to:
+By default, artifact names are derived from `project.id`. For `my-zine`, the
+standard final artifact is written to:
 
 ```text
-output/pdf/ZINE_001_SADDLE_STITCH_CMYK_PRINT.pdf
+output/pdf/MY_ZINE_SADDLE_STITCH_CMYK_PRINT.pdf
 ```
 
 The build also writes an A5 RGB review PDF, a resolution report, and a print

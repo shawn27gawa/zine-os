@@ -1,5 +1,13 @@
 # ZineOS v1 Roadmap
 
+## Current status: Release Candidate
+
+Milestones 0–4 are implemented. The repository also has a deterministic
+non-ZINE_001 integration fixture covering bootstrap through review release.
+Formal v1 graduation still requires creator completion and approval of a real
+second publication; a synthetic fixture protects generic mechanics but does not
+replace that creative production proof.
+
 ZineOS v1 is complete when a creator can move from a folder of source material
 to an editable, reviewable, print-ready publication without losing creative
 authority.
@@ -68,6 +76,11 @@ print build.
 
 Complete another publication from a new source folder. Remove any remaining
 ZINE_001-only assumptions discovered by that test before declaring v1 complete.
+
+Mechanical genericity is continuously checked by
+`scripts/test_generic_publication_workflow.py`. Creator-owned second-publication
+work may pause without weakening that test, but v1 must remain labeled Release
+Candidate until the real publication proof is completed.
 
 ## Non-goals
 

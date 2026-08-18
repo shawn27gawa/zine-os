@@ -39,7 +39,18 @@ class ReleaseZineTests(unittest.TestCase):
         self.zine.write_text(
             yaml.safe_dump({
                 "project": {"id": "test-zine", "title": "Test Zine"},
-                "output": {"medium": "print"},
+                "pages": [
+                    {"id": f"page-{page}", "pages": [page], "blocks": [],
+                     "layout": {"type": "minimal"}}
+                    for page in range(1, 5)
+                ],
+                "output": {
+                    "medium": "print",
+                    "page_size": "A5",
+                    "orientation": "portrait",
+                    "binding": "saddle-stitch",
+                    "bleed_mm": 3,
+                },
             }, sort_keys=False),
             encoding="utf-8",
         )
@@ -176,6 +187,25 @@ class ReleaseZineTests(unittest.TestCase):
             )
         self.assertFalse(self.output.exists())
         self.assertFalse((self.root / "output" / "releases").exists())
+
+    def test_unsupported_print_configuration_stops_before_regressions(self):
+        data = yaml.safe_load(self.zine.read_text(encoding="utf-8"))
+        data["output"]["page_size"] = "Letter"
+        self.zine.write_text(
+            yaml.safe_dump(data, sort_keys=False), encoding="utf-8"
+        )
+        with mock.patch.object(release_module, "validate_zine", return_value=0), mock.patch.object(
+            release_module,
+            "validate_asset_integrity",
+            return_value={
+                "status": "PASS", "zine": str(self.zine), "assets": 0,
+                "references": 0, "errors": [], "warnings": [],
+            },
+        ), mock.patch.object(release_module, "run_regressions") as regressions:
+            with self.assertRaisesRegex(ReleaseError, "output.page_size"):
+                release(release_args(self.zine, self.output))
+            regressions.assert_not_called()
+        self.assertFalse(self.output.exists())
 
     def test_build_failure_removes_partial_staging(self):
         with self.assertRaisesRegex(ReleaseError, "studio failed"):

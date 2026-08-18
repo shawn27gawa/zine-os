@@ -21,6 +21,7 @@ from build_print_package import (
     find_chrome,
     main as build_print_main,
     validate_icc_profile,
+    validate_standard_print_configuration,
 )
 from validate_assets import print_report as print_asset_report
 from validate_assets import validate_asset_integrity
@@ -146,8 +147,9 @@ def run_regressions():
 
 
 def preflight_print(args, zine_data):
-    if zine_data.get("output", {}).get("medium") != "print":
-        raise ReleaseError("print mode requires publication output.medium: print")
+    configuration_errors = validate_standard_print_configuration(zine_data)
+    if configuration_errors:
+        raise ReleaseError("; ".join(configuration_errors))
     if args.icc_profile is None:
         raise ReleaseError("print mode requires --icc-profile")
     icc_profile = resolve_repo_path(args.icc_profile)
@@ -276,6 +278,11 @@ def release(args):
     print_asset_report(asset_report)
     if asset_report["status"] != "PASS":
         raise ReleaseError("asset integrity failed")
+
+    if zine_data.get("output", {}).get("medium") == "print":
+        configuration_errors = validate_standard_print_configuration(zine_data)
+        if configuration_errors:
+            raise ReleaseError("; ".join(configuration_errors))
 
     if args.mode == "print":
         preflight_print(args, zine_data)

@@ -1,5 +1,8 @@
 # Project and Inbox Bootstrap
 
+For dependency setup and the complete first-project sequence, begin with the
+[Quick Start](QUICK_START.md).
+
 ZineOS creates new publications from a neutral starter rather than copying
 ZINE_001. ZINE_001 remains a completed example; its Europe route, writing,
 photographs, layouts, and visual decisions are not new-project defaults.

@@ -2,6 +2,7 @@
 
 import tempfile
 import unittest
+from copy import deepcopy
 from pathlib import Path
 from unittest.mock import patch
 
@@ -28,6 +29,7 @@ from build_print_package import (
     build_print_html,
     build_print_spec,
     build_resolution_report,
+    default_artifact_paths,
     image_dimensions,
     impose_saddle_stitch,
     load_yaml,
@@ -36,6 +38,7 @@ from build_print_package import (
     render_pdf,
     saddle_stitch_pairs,
     validate_icc_profile,
+    validate_standard_print_configuration,
 )
 
 
@@ -53,6 +56,44 @@ class PrintPackageTests(unittest.TestCase):
         page_count = logical_page_count(self.zine_data)
         self.assertEqual(page_count, 28)
         self.assertEqual(page_count % 4, 0)
+
+    def test_standard_print_configuration_accepts_supported_contract(self):
+        self.assertEqual(
+            validate_standard_print_configuration(self.zine_data), []
+        )
+
+    def test_standard_print_configuration_rejects_unsafe_assumptions(self):
+        zine = deepcopy(self.zine_data)
+        zine["output"].update({
+            "page_size": "Letter",
+            "orientation": "landscape",
+            "binding": "perfect-bound",
+            "bleed_mm": 0,
+            "color_mode": "RGB",
+        })
+        zine["pages"][1]["pages"] = [1, 3]
+        errors = validate_standard_print_configuration(zine)
+        joined = "\n".join(errors)
+        self.assertIn("output.page_size", joined)
+        self.assertIn("output.orientation", joined)
+        self.assertIn("output.binding", joined)
+        self.assertIn("output.bleed_mm", joined)
+        self.assertIn("output.color_mode", joined)
+        self.assertIn("duplicates", joined)
+        self.assertIn("missing", joined)
+
+    def test_default_artifact_paths_are_project_specific(self):
+        paths = default_artifact_paths("field-notes-002")
+        self.assertEqual(paths["html"].name, "FIELD_NOTES_002_PRINT.html")
+        self.assertEqual(
+            paths["cmyk_pdf"].name,
+            "FIELD_NOTES_002_SADDLE_STITCH_CMYK_PRINT.pdf",
+        )
+        self.assertNotIn("ZINE_001", "\n".join(str(path) for path in paths.values()))
+
+        unsafe = default_artifact_paths("../Field Notes")
+        self.assertTrue(all(".." not in path.name for path in unsafe.values()))
+        self.assertTrue(all(path.resolve().is_relative_to(ROOT) for path in unsafe.values()))
 
     def test_generic_saddle_stitch_order(self):
         self.assertEqual(
@@ -316,6 +357,9 @@ class PrintPackageTests(unittest.TestCase):
 
     def test_resolution_report_records_known_risks(self):
         report = build_resolution_report(self.zine_data, ZINE_PATH)
+        self.assertIn("# Our Memory Print Resolution Report", report)
+        self.assertNotIn("ZINE_001", report)
+        self.assertIn("Physical proof status must be recorded separately", report)
         self.assertIn(
             "| 8-9 | full-bleed-spread | photo-006 | 1536x2048 | full-spread | 132 | LOW |",
             report,

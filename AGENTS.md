@@ -128,18 +128,7 @@ Before reporting a task complete, run every relevant existing validation and bui
 The canonical local **Validate ZineOS** command mirrors CI:
 
 ```sh
-python scripts/validate_zine.py templates/basic/zine.yaml && \
-python scripts/validate_zine.py examples/ZINE_001/zine.yaml && \
-python scripts/build_preview.py examples/ZINE_001/zine.yaml preview/ZINE_001.html && \
-python scripts/test_preview_asset_paths.py && \
-python scripts/build_asset_studio.py examples/ZINE_001/zine.yaml preview/ZINE_001_STUDIO.html && \
-python scripts/test_asset_placement_studio.py && \
-python scripts/test_manifest_application.py && \
-python scripts/test_project_bootstrap.py && \
-python scripts/validate_assets.py examples/ZINE_001/zine.yaml && \
-python scripts/test_asset_integrity.py && \
-python scripts/test_release_zine.py && \
-python scripts/test_print_package.py
+python3 scripts/validate_zineos.py
 ```
 
 For a complete, immutable creator-review artifact set, use the canonical
@@ -152,7 +141,11 @@ python scripts/release_zine.py path/to/zine.yaml --mode review
 Formal CMYK output uses `--mode print --icc-profile /absolute/path/to/profile.icc`.
 Release output never authorizes publication or replaces creator review.
 
-Use the available Python executable for the environment (for example, `python3` when `python` is unavailable) with the CI dependencies `PyYAML`, `jsonschema`, `referencing`, and `pypdf` installed. A successful preview build alone does not replace schema validation.
+Use the available Python executable for the environment. Install the declared
+dependencies from `requirements.txt`; the validator checks setup first and then
+runs schemas, assets, Preview, Studio, manifest, bootstrap, print, release, and
+non-ZINE_001 integration coverage. A successful preview build alone does not
+replace the canonical validation sequence.
 
 For visual changes, also inspect the generated preview at relevant desktop and mobile widths. For print-affecting changes, inspect physical page/spread dimensions, fold, margins, bleed, and print-specific rules. If visual inspection is not possible, say so and report that limitation as a remaining risk.
 

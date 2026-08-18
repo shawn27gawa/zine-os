@@ -25,7 +25,16 @@ on:
       - "scripts/test_preview_asset_paths.py"
       - "scripts/build_print_package.py"
       - "scripts/test_print_package.py"
+      - "scripts/check_setup.py"
+      - "scripts/validate_zineos.py"
+      - "scripts/test_generic_publication_workflow.py"
+      - "scripts/test_documentation_links.py"
+      - "requirements.txt"
       - "studio/**"
+      - "README.md"
+      - "AGENTS.md"
+      - "docs/QUICK_START.md"
+      - "docs/**"
       - "docs/ASSET_PLACEMENT_UI.md"
       - "docs/MANIFEST_APPLICATION.md"
       - "docs/PROJECT_BOOTSTRAP.md"
@@ -55,7 +64,16 @@ on:
       - "scripts/test_preview_asset_paths.py"
       - "scripts/build_print_package.py"
       - "scripts/test_print_package.py"
+      - "scripts/check_setup.py"
+      - "scripts/validate_zineos.py"
+      - "scripts/test_generic_publication_workflow.py"
+      - "scripts/test_documentation_links.py"
+      - "requirements.txt"
       - "studio/**"
+      - "README.md"
+      - "AGENTS.md"
+      - "docs/QUICK_START.md"
+      - "docs/**"
       - "docs/ASSET_PLACEMENT_UI.md"
       - "docs/MANIFEST_APPLICATION.md"
       - "docs/PROJECT_BOOTSTRAP.md"
@@ -85,55 +103,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install PyYAML jsonschema referencing pypdf
+          pip install -r requirements.txt
 
-      - name: Validate basic ZineOS template
+      - name: Validate ZineOS
         run: |
-          python scripts/validate_zine.py templates/basic/zine.yaml
-
-      - name: Validate ZINE_001
-        run: |
-          python scripts/validate_zine.py examples/ZINE_001/zine.yaml
-
-      - name: Build ZINE_001 HTML preview
-        run: |
-          python scripts/build_preview.py examples/ZINE_001/zine.yaml preview/ZINE_001.html
-
-      - name: Test preview asset path resolution
-        run: |
-          python scripts/test_preview_asset_paths.py
-
-      - name: Build ZINE_001 Unified Studio
-        run: |
-          python scripts/build_asset_studio.py examples/ZINE_001/zine.yaml preview/ZINE_001_STUDIO.html
-
-      - name: Test Unified Studio
-        run: |
-          python scripts/test_asset_placement_studio.py
-
-      - name: Test safe manifest application
-        run: |
-          python scripts/test_manifest_application.py
-
-      - name: Test project and inbox bootstrap
-        run: |
-          python scripts/test_project_bootstrap.py
-
-      - name: Validate ZINE_001 asset integrity
-        run: |
-          python scripts/validate_assets.py examples/ZINE_001/zine.yaml
-
-      - name: Test asset integrity
-        run: |
-          python scripts/test_asset_integrity.py
-
-      - name: Test one-command release
-        run: |
-          python scripts/test_release_zine.py
-
-      - name: Test standard print output
-        run: |
-          python scripts/test_print_package.py
+          python scripts/validate_zineos.py
 
       - name: Upload ZINE_001 HTML preview
         uses: actions/upload-artifact@v7
